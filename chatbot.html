@@ -1,0 +1,61 @@
+<html>
+<head>
+	<title>API Example</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+	<script type="text/javascript">		
+		$(document).ready(function() {
+			$("#input").keypress(function(event) {
+				if (event.which == 13) {
+					$('.chatBox').append('<span class="userInput">' + 'me:'+ $('input').val() + '</span><br><br>');
+					event.preventDefault();
+					let query  = $('input').val();
+					$('input').val('');
+					send(query);
+				}
+			});
+			/*
+			$("#send").click(function(){
+               	$('.chatBox').append('<span class="userInput">' + 'me:'+ $('input').val() + '</span><br><br>');
+				
+					let query  = $('input').val()
+					$('input').val('')
+					send(query);
+
+			});	*/
+		});
+	
+	
+		function send(query) {
+			var text = query;
+			$.ajax({
+				type: "POST",
+				url: "/MyrrorBot/intentDetection.php",
+				//contentType: "application/json; charset=utf-8",
+				data: {testo:text},
+				success: function(data) {
+					setResponse(data);
+				}
+			});
+		}
+		function setResponse(val) {
+			console.log(val);
+			val = JSON.parse(val);
+			$(".chatBox").append('<span class="responseData">'+ 'Bot:   ' + val["intentName"] + '<br> Confidence:' + val["confidence"] + '</span><br><br>');
+		}
+	</script>
+	<style type="text/css">
+		body { width: 600px; margin: 0 auto;height: 500px; border: 2px solid black;padding: 0px;	 }
+		div { width: 600px;height: 450px;overflow: auto	 }
+		.userInput{float: left;}
+		.responseData{float:right};
+		#input { width: 500px; }
+		button { width: 50px; }
+	</style>
+</head>
+<body>
+	<div class = 'chatBox'>
+	</div>
+	<input id="input" type="text" style="width: 430px;"> <button id="rec">send</button>
+</body>
+</html>

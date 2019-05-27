@@ -1,0 +1,192 @@
+<?php
+
+
+
+namespace Google\Cloud\Samples\Dialogflow;
+use Google\Cloud\Dialogflow\V2\SessionsClient;
+use Google\Cloud\Dialogflow\V2\TextInput;
+use Google\Cloud\Dialogflow\V2\QueryInput;
+
+require __DIR__.'/vendor/autoload.php';
+include 'Behaviors.php';
+
+
+header('Content-type: text/plain; charset=utf-8');
+//Check if variabile is null or not
+if (isset($_POST{'testo'})) {
+    $testo = $_POST{'testo'};
+}
+
+function detect_intent_texts($projectId, $text, $sessionId, $languageCode = 'it-IT')
+{
+    // new session
+    $test = array('credentials' => 'myrrorbot-4f360-cbcab170b890.json');
+    $sessionsClient = new SessionsClient($test);
+    $session = $sessionsClient->sessionName($projectId, $sessionId ?: uniqid());
+    //STAMPA SESSIONE -------- printf('Session path: %s' . PHP_EOL, $session);
+
+    // create text input
+    $textInput = new TextInput();
+    $textInput->setText($text);
+    $textInput->setLanguageCode($languageCode);
+
+    // create query input
+    $queryInput = new QueryInput();
+    $queryInput->setText($textInput);
+
+    // get response and relevant info
+    $response = $sessionsClient->detectIntent($session, $queryInput);
+    $queryResult = $response->getQueryResult();
+    $queryText = $queryResult->getQueryText();
+    $intent = $queryResult->getIntent();
+    if(!is_null($intent)){
+        $displayName = $intent->getDisplayName(); //Intent name
+        $confidence = $queryResult->getIntentDetectionConfidence();
+        selectIntent($displayName,$confidence,$text);
+      
+        
+        
+    }else{
+        echo "intent non riconosciuto";
+    }
+    
+
+    $fulfilmentText = $queryResult->getFulfillmentText();
+
+
+    // Output relevant info
+    //print(str_repeat("=", 20) . PHP_EOL);
+    //printf('Query text: %s' . PHP_EOL, $queryText);
+    //printf('Detected intent: %s (confidence: %f)' . PHP_EOL, $displayName, $confidence);
+    //print(PHP_EOL);
+    //printf('Fulfilment text: %s' . PHP_EOL, $fulfilmentText);
+
+    
+    $sessionsClient->close();
+}
+
+function selectIntent($intent,$confidence,$text){
+
+
+  if(($confidence > 0.86 ||  str_word_count($text) >= 2) && $confidence > 0.67){
+              
+ 
+
+$answer = null;
+
+switch ($intent) {
+    case 'Attivita fisica':
+    
+    $values = attivitaFisica($text,$confidence);
+
+
+    $activity = $values['nameActivity'];
+    $timestamp = $values['timestamp'];
+    $activityValue = null;
+             //nel caso l'attività sia fairly i minuti di attività sono contenuti in minutesFairlyActive
+
+         if($activity == "fairly"){
+             $activityValue = $values['minutesFairlyActive'];        
+         }else if($activity == "veryActive"){
+             $activityValue = $values["minutesVeryActive"];
+         }else if ($activity == "calories"){
+             $activityValue = $values["activityCalories"];
+         }else{
+             $activityValue = $values[$activity];
+         }
+
+    $answer = "hai svolto ".$values["nameActivity"]. " per ".$activityValue." minuti"; 
+    
+    
+    $arr = array('intentName' => $intent, 'confidence' => $confidence,'answer' => $answer);
+    printf(json_encode($arr,JSON_UNESCAPED_UNICODE)); //JSON_UNESCAPED_UNICODE utilizzato per il formato UTF8
+        # code...
+        break;
+    
+    case 'Battito cardiaco':
+        # code...
+        break;
+     
+
+    case 'Calorie bruciate':
+        # code...
+        break;
+
+
+    case 'Contapassi':
+        # code...
+        break;
+
+
+    case 'Contatti':
+        # code...
+        break;
+
+
+    case 'Email':
+        # code...
+        break;
+
+
+    case 'Emozioni':
+        # code...
+        break;
+
+
+    case 'Eta':
+        # code...
+        break;
+
+
+    case 'Identita utente':
+        # code...
+        break;
+
+    case 'Interessi':
+        # code...
+        break;
+
+    case 'Lavoro':
+        # code...
+        break;
+
+    case 'Luogo di nascita':
+        # code...
+        break;
+
+    case 'Personalita':
+        # code...
+        break;
+
+    case 'Qualita del sonno':
+        # code...
+        break;
+
+    case 'Sedentarieta':
+        # code...
+        break;
+
+    case 'Umore':
+        # code...
+        break;
+        
+
+
+
+    default:
+        # code...
+    echo "intent non riconosciuto";
+        break;
+}
+
+ }else{
+            echo "intent non riconosciuto riprova";
+  }
+
+
+
+}
+
+detect_intent_texts('myrrorbot-4f360',$testo,'123456');
+
+
