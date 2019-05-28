@@ -156,13 +156,8 @@ switch ($intent) {
 
 
     case 'Contatti':
-         $contatti = contatti($text,$confidence);
-        $answer = "I tuoi contatti sono:";
-        printf($answer ."\n");
+        contatti($text,$confidence);
 
-        foreach ($contatti as $item){
-            printf($item ."\n");
-        }
         break;
 
 
