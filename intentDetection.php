@@ -9,6 +9,9 @@ use Google\Cloud\Dialogflow\V2\QueryInput;
 
 require __DIR__.'/vendor/autoload.php';
 include 'Behaviors.php';
+include "myrrorlogin.php";
+include "PhysicalState.php";
+include "Affects.php";
 
 
 header('Content-type: text/plain; charset=utf-8');
@@ -68,9 +71,7 @@ function detect_intent_texts($projectId, $text, $sessionId, $languageCode = 'it-
 function selectIntent($intent,$confidence,$text){
 
 
-  if(($confidence > 0.86 ||  str_word_count($text) >= 2) && $confidence > 0.67){
-              
- 
+if(($confidence > 0.86 ||  str_word_count($text) >= 2) && $confidence > 0.67){              
 
 $answer = null;
 
@@ -78,12 +79,10 @@ switch ($intent) {
     case 'Attivita fisica':
     
     $values = attivitaFisica($text,$confidence);
-
-
     $activity = $values['nameActivity'];
     $timestamp = $values['timestamp'];
     $activityValue = null;
-             //nel caso l'attività sia fairly i minuti di attività sono contenuti in minutesFairlyActive
+    //nel caso l'attività sia fairly i minuti di attività sono contenuti in minutesFairlyActive
 
          if($activity == "fairly"){
              $activityValue = $values['minutesFairlyActive'];        
@@ -96,25 +95,58 @@ switch ($intent) {
          }
 
     $answer = "hai svolto ".$values["nameActivity"]. " per ".$activityValue." minuti"; 
-    
-    
+       
     $arr = array('intentName' => $intent, 'confidence' => $confidence,'answer' => $answer);
     printf(json_encode($arr,JSON_UNESCAPED_UNICODE)); //JSON_UNESCAPED_UNICODE utilizzato per il formato UTF8
         # code...
         break;
     
     case 'Battito cardiaco':
-        # code...
+        $values = getCardio();
+        $timestamp = $values['timestamp'];  
+        $heart = $values['restingHeartRate'];
+       
+        $answer = " il tuo battito cardiaco è ".$heart; 
+
+        $arr = array('intentName' => $intent, 'confidence' => $confidence,'answer' => $answer);
+        printf(json_encode($arr,JSON_UNESCAPED_UNICODE)); //JSON_UNESCAPED_UNICODE utilizzato per il formato UTF8
+
         break;
      
 
     case 'Calorie bruciate':
-        # code...
+        
+        $values = getCalories();
+        $activity = $values['nameActivity'];
+        $timestamp = $values['timestamp'];
+        $activityValue = null;
+        
+        //if ($activity == "calories"){
+        
+         $activityValue = $values['activityCalories'];
+         $answer = "hai bruciato ".$activityValue." calorie"; 
+    
+       // }
+
+        $arr = array('intentName' => $intent, 'confidence' => $confidence,'answer' => $answer);
+        printf(json_encode($arr,JSON_UNESCAPED_UNICODE)); //JSON_UNESCAPED_UNICODE utilizzato per il formato UTF8
+
+
         break;
 
 
     case 'Contapassi':
-        # code...
+        $values = getSteps();
+        $activity = $values['nameActivity'];
+        $timestamp = $values['timestamp'];
+        $activityValue = null;
+        
+         $activityValue = $values['steps'];
+         $answer = "hai fatto un totale di ".$activityValue." passi"; 
+
+        $arr = array('intentName' => $intent, 'confidence' => $confidence,'answer' => $answer);
+        printf(json_encode($arr,JSON_UNESCAPED_UNICODE)); //JSON_UNESCAPED_UNICODE utilizzato per il formato UTF8
+
         break;
 
 
@@ -129,7 +161,34 @@ switch ($intent) {
 
 
     case 'Emozioni':
-        # code...
+        $values = getSentiment();
+        
+        $emotion = $values['emotion'];
+         
+        $answer = "stai provando ".$emotion; 
+
+        $arr = array('intentName' => $intent, 'confidence' => $confidence,'answer' => $answer);
+        printf(json_encode($arr,JSON_UNESCAPED_UNICODE)); //JSON_UNESCAPED_UNICODE utilizzato per il formato UTF8
+
+        break;
+
+        
+    case 'Umore':
+        $values = getSentiment();
+        
+        $mood = $values['sentiment'];
+         
+        if($mood == 1){
+           $answer = "sei di buon umore";
+        }else if($mood == -1){
+            $answer = "sei di cattivo umore";
+        }else{
+            $answer = "il tuo umore è neutro";
+        }
+        
+
+        $arr = array('intentName' => $intent, 'confidence' => $confidence,'answer' => $answer);
+        printf(json_encode($arr,JSON_UNESCAPED_UNICODE)); //JSON_UNESCAPED_UNICODE utilizzato per il formato UTF8
         break;
 
 
@@ -159,16 +218,32 @@ switch ($intent) {
         break;
 
     case 'Qualita del sonno':
-        # code...
+
+        $values = getSleep();
+        $minutesAsleep = $values['minutesAsleep'];
+        $timestamp = $values['timestamp'];
+
+         $answer = "hai dormito ".$minutesAsleep." minuti"; 
+
+        $arr = array('intentName' => $intent, 'confidence' => $confidence,'answer' => $answer);
+        printf(json_encode($arr,JSON_UNESCAPED_UNICODE)); //JSON_UNESCAPED_UNICODE utilizzato per il formato UTF8
         break;
 
     case 'Sedentarieta':
-        # code...
+         
+        $values = getSedentary();
+        $activity = $values['nameActivity'];
+        $timestamp = $values['timestamp'];
+        $activityValue = null;
+               
+        $activityValue = $values['minutesSedentary'];
+        $answer = "sei stato sedentario per ".$activityValue." minuti"; 
+    
+        $arr = array('intentName' => $intent, 'confidence' => $confidence,'answer' => $answer);
+        printf(json_encode($arr,JSON_UNESCAPED_UNICODE)); //JSON_UNESCAPED_UNICODE utilizzato per il formato UTF8
+
         break;
 
-    case 'Umore':
-        # code...
-        break;
         
 
 
