@@ -8,10 +8,15 @@ use Google\Cloud\Dialogflow\V2\TextInput;
 use Google\Cloud\Dialogflow\V2\QueryInput;
 
 require __DIR__.'/vendor/autoload.php';
-include 'Behaviors.php';
 include "myrrorlogin.php";
+
+include 'Behaviors.php';
 include "PhysicalState.php";
 include "Affects.php";
+include 'Demographics.php';
+include 'Interests.php';
+include 'SocialRelations.php';
+include 'CognitiveAspects.php';
 
 
 header('Content-type: text/plain; charset=utf-8');
@@ -151,12 +156,20 @@ switch ($intent) {
 
 
     case 'Contatti':
-        # code...
+         $contatti = contatti($text,$confidence);
+        $answer = "I tuoi contatti sono:";
+        printf($answer ."\n");
+
+        foreach ($contatti as $item){
+            printf($item ."\n");
+        }
         break;
 
 
     case 'Email':
-        # code...
+        $email = email($text,$confidence);
+        $answer = "La tua email è " .$email;
+        printf($answer);
         break;
 
 
@@ -198,15 +211,25 @@ switch ($intent) {
 
 
     case 'Identita utente':
-        # code...
+        $identitaUtente = identitaUtente($text,$confidence);
+        $answer = "Il tuo nome è " .$identitaUtente;
+        printf($answer);
         break;
 
     case 'Interessi':
-        # code...
+        $interessi = interessi($text,$confidence);
+        $answer = "I tuoi interessi sono:";
+        printf($answer ."\n");
+
+        foreach ($interessi as $item){
+            printf($item ."\n");
+        }
         break;
 
     case 'Lavoro':
-        # code...
+        $lavoro = lavoro($text,$confidence);
+        $answer = "Il tuo lavoro è " .$lavoro;
+        printf($answer);
         break;
 
     case 'Luogo di nascita':
@@ -214,7 +237,9 @@ switch ($intent) {
         break;
 
     case 'Personalita':
-        # code...
+        $personalita = personalita($text,$confidence);
+        $answer = "Sei un tipo " .$personalita;
+        printf($answer);
         break;
 
     case 'Qualita del sonno':
