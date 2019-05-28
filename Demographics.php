@@ -27,6 +27,83 @@ foreach ($json_data as $key1 => $value1) {
 
 }
 
+//ETA
+function getEta(){
+
+
+$param = "?f=Demographics&l=10";
+$json_data = queryMyrror($param);
+$result = null;
+$answer = "";
+
+foreach ($json_data as $key1 => $value1) {
+	
+	if(isset($value1['dateOfBirth'])){
+
+		foreach ($value1['dateOfBirth'] as $key2 => $value2) {
+
+			if ($key2 == "value") {
+				
+				//print_r($value2);
+				$result = $value2;
+
+			} 	
+        }	
+	}
+}
+
+if($result == null){
+	$answer = "data non disponibile";
+}else{
+	$today = date("Y-m-d");
+	$diff = abs(strtotime($today) - strtotime($result));
+    $years = floor($diff / (365*60*60*24));
+    $answer = "hai ".$years." anni";
+}
+
+
+	return $result;
+
+}
+
+
+
+}
+
+
+
+//LUOGO DI NASCITA
+function getCountry(){
+
+
+
+$param = "?f=Demographics&l=10";
+$json_data = queryMyrror($param);
+$result = null;
+
+foreach ($json_data as $key1 => $value1) {
+	
+	if(isset($value1['country'])){
+
+		foreach ($value1['country'] as $key2 => $value2) {
+
+			if ($key2 == "value") {
+				
+				//print_r($value2);
+				$result = $value2;
+
+			} 	
+        }	
+	}
+}
+
+	return $result;
+
+}
+
+
+
+}
 
 //LAVORO
 function lavoro($text,$confidence){

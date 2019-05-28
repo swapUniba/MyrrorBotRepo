@@ -206,7 +206,7 @@ switch ($intent) {
 
 
     case 'Eta':
-        # code...
+        $answer = getEta();
         break;
 
 
@@ -233,7 +233,7 @@ switch ($intent) {
         break;
 
     case 'Luogo di nascita':
-        # code...
+        $country = getCountry();
         break;
 
     case 'Personalita':
