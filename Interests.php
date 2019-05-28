@@ -27,6 +27,38 @@ function interessi($text,$confidence){
         }	
     }
 
-	return $categorieArray;
+
+	if (isset($categorieArray)) {
+		switch (rand(1,3)) {
+			case '1':
+				$answer = "I tuoi interessi sono: ";
+				foreach ($categorieArray as $item){
+            		$answer = $answer . "\r\n" . $item ;
+        		}
+				break;
+			case '2':
+				$answer = "Sei interessato a: ";
+				foreach ($categorieArray as $item){
+            		$answer = $answer . "\r\n" . $item ;
+        		}
+				break;
+			default:
+				$answer = "Ecco qui i tuoi interessi: ";
+				foreach ($categorieArray as $item){
+            		$answer = $answer . "\r\n" . $item ;
+        		}
+        		break;
+		}
+
+	}else{
+		$answer = "Interessi non presenti";
+	}
+
+	//A volte la richiesta non restituisce nessun elenco perciò dovrà essere rifatta
+	if ($answer == null) {
+		$answer = "Errore nel caricamento degli interessi. Riprova.";
+	}
+
+	return $answer;
 
 }

@@ -48,18 +48,31 @@ function personalita($text,$confidence){
 		}
 	}
 
+	$personalita = "";
+
 	if ($openness > $conscientiousness && $openness > $extroversion && $openness > $agreeableness && $openness > $neuroticism && $openness > $confidence) {
-		return "aperto";
+		$personalita = "aperto";
 	}elseif ($conscientiousness > $openness && $conscientiousness > $extroversion && $conscientiousness > $agreeableness && $conscientiousness > $neuroticism	 && $conscientiousness > $confidence) {
-		return "coscienzioso";
+		$personalita = "coscienzioso";
 	}elseif ($extroversion > $openness && $extroversion > $conscientiousness && $extroversion > $agreeableness && $extroversion > $neuroticism	 && $extroversion > $confidence) {
-		return "estroverso";
+		$personalita = "estroverso";
 	}elseif ($agreeableness > $openness && $agreeableness > $conscientiousness && $agreeableness > $extroversion && $agreeableness > $neuroticism	 && $agreeableness > $confidence) {
-		return "piacevole";
+		$personalita = "piacevole";
 	}elseif ($neuroticism > $openness && $neuroticism > $conscientiousness && $neuroticism > $extroversion && $neuroticism > $agreeableness	 && $neuroticism > $confidence) {
-		return "nevrotico";
+		$personalita = "nevrotico";
 	}elseif ($confidence > $openness && $confidence > $conscientiousness && $confidence > $extroversion && $confidence > $agreeableness	 && $confidence > $neuroticism) {
-		return "fiducioso";
+		$personalita = "fiducioso";
 	}
+
+	switch (rand(1,2)) {
+		case '1':
+    		$answer = "Sei un tipo ". $personalita;
+			break;
+		case '2':
+			$answer = "Sei " . $personalita;
+			break;
+	}
+
+	return $answer;
 
 }

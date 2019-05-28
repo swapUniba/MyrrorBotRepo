@@ -24,14 +24,19 @@ function contatti($text,$confidence){
     			//Verifico se l'array dei contatti non è vuoto procedo con la selezione dei contatti con cui interagisce maggiormente
     			if(count($contactIdArray) !== 0) {
     				$top3 = contattiFrequenti($contactIdArray);
-    				printAnswer($top3);
+    				$answer = printAnswer($top3);
+    				return $answer;
     			}else{
     				print_r("Non sono presenti contatti sul social network richiesto");
+    				$answer = "Non sono presenti contatti sul social network richiesto";
+    				return $answer;
     			}
 
 
 			}else{
 				print_r("Inserisci un solo social network");
+				$answer = "Inserisci un solo social network";
+    			return $answer;
 			}
 		}
 
@@ -50,13 +55,18 @@ function contatti($text,$confidence){
     			//Verifico se l'array dei contatti non è vuoto procedo con la selezione dei contatti con cui interagisce maggiormente
     			if(count($contactIdArray) !== 0) {
     				$top3 = contattiFrequenti($contactIdArray);
-    				printAnswer($top3);
+    				$answer = printAnswer($top3);
+    				return $answer;
     			}else{
     				print_r("Non sono presenti contatti sul social network richiesto");
+    				$answer = "Non sono presenti contatti sul social network richiesto";
+    				return $answer;
     			}
 
 			}else{
 				print_r("Inserisci un solo social network");
+				$answer = "Inserisci un solo social network";
+    			return $answer;
 			}
 		}
 
@@ -74,17 +84,24 @@ function contatti($text,$confidence){
     			//Verifico se l'array dei contatti non è vuoto procedo con la selezione dei contatti con cui interagisce maggiormente
     			if(count($contactIdArray) !== 0) {
     				$top3 = contattiFrequenti($contactIdArray);
-    				printAnswer($top3);
+    				$answer = printAnswer($top3);
+    				return $answer;
     			}else{
     				print_r("Non sono presenti contatti sul social network richiesto");
+    				$answer = "Non sono presenti contatti sul social network richiesto";
+    				return $answer;
     			}
 
 			}else{
 				print_r("Inserisci un solo social network");
+				$answer = "Inserisci un solo social network";
+    			return $answer;
 			}
 		}
 	}else{
 		print_r("Inserisci il nome di un social network");
+		$answer = "Inserisci il nome di un social network";
+    	return $answer;
 	}
 
 }
@@ -128,8 +145,28 @@ function getContatti($json_data, $contactIdArray, $source){
 
 //Stampa risposta
 function printAnswer($top3){
-	echo "I contatti frequenti sono:\n";
-	foreach ($top3 as $key => $value) {
-   		echo "$key: $value\n";
+
+	if (isset($top3)) {
+		switch (rand(1,2)) {
+			case '1':
+				$answer = "I tuoi contatti sono: ";
+
+        		foreach ($top3 as $key => $value) {
+   					//echo "$key: $value\n";
+   					$answer = $answer . "\r\n" . $key . ": " . $value;;
+				}
+				break;
+			case '2':
+				$answer = "Ecco i tuoi contatti frequenti: ";
+				foreach ($top3 as $item){
+   					$answer = $answer . "\r\n" . $key . ": " . $value;;
+        		}
+				break;
+		}
+
+	}else{
+		$answer = "Contatti non presenti";
 	}
+
+	return $answer;
 }
