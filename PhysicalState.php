@@ -92,15 +92,15 @@ if($result['minutesAsleep'] != null){
  switch (rand(1,3)) {
 
    case 1:
-     $answer = "hai dormito ".$minutesAsleep." minuti su ".$timeinbed ." minuti trascorsi nel letto"; 
+     $answer = "hai dormito ".$minutesAsleep." minuti <br> su ".$timeinbed ." minuti trascorsi nel letto"; 
      break;
 
    case 2:
-      $answer = " Oggi hai dormito ". $minutesAsleep ." minuti su ".$timeinbed." trascorsi nel letto";
+      $answer = " Oggi hai dormito ". $minutesAsleep ." minuti <br> su ".$timeinbed." trascorsi nel letto";
      break;
    
    default:
-     $answer = " Hai trascorso nel letto ".$timeinbed. " minuti dormendo per " .$minutesAsleep." minuti";
+     $answer = " Hai trascorso nel letto ".$timeinbed. " minuti <br> dormendo per " .$minutesAsleep." minuti";
      break;
  }
 
