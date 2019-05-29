@@ -47,18 +47,15 @@ if($flag == 1){
     	}
     
 
-       switch (rand(1,3)) {
+       switch (rand(1,2)) {
        	case 1:
        		$answer = "Stai provando: ".$emotion ;
        		break;
 
        	case 2:
-       		$answer = "Oggi ti senti ".$emotion ;
+       		$answer = "Provi ".$emotion ;
        		break;
        	
-       	default:
-       		$answer = "Sei ".$emotion ;
-       		break;
        }
 
     }else{
