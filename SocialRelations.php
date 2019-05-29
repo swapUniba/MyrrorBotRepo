@@ -28,7 +28,7 @@ function contatti($text,$confidence){
     				return $answer;
     			}else{
     				print_r("Non sono presenti contatti sul social network richiesto");
-    				$answer = "Non sono presenti contatti sul social network richiesto";
+    				$answer = "Errore nel caricamento dei contatti. Riprova!";
     				return $answer;
     			}
 
@@ -59,7 +59,7 @@ function contatti($text,$confidence){
     				return $answer;
     			}else{
     				print_r("Non sono presenti contatti sul social network richiesto");
-    				$answer = "Non sono presenti contatti sul social network richiesto";
+    				$answer = "Errore nel caricamento dei contatti. Riprova!";
     				return $answer;
     			}
 
@@ -88,7 +88,7 @@ function contatti($text,$confidence){
     				return $answer;
     			}else{
     				print_r("Non sono presenti contatti sul social network richiesto");
-    				$answer = "Non sono presenti contatti sul social network richiesto";
+    				$answer = "Errore nel caricamento dei contatti. Riprova!";
     				return $answer;
     			}
 
@@ -149,17 +149,17 @@ function printAnswer($top3){
 	if (isset($top3)) {
 		switch (rand(1,2)) {
 			case '1':
-				$answer = "I tuoi contatti sono: ";
+				$answer = "<br>I tuoi contatti sono: ";
 
         		foreach ($top3 as $key => $value) {
    					//echo "$key: $value\n";
-   					$answer = $answer . "\r\n" . $key . ": " . $value;;
+   					$answer = $answer . "<br>" . $key . ": " . $value;;
 				}
 				break;
 			case '2':
-				$answer = "Ecco i tuoi contatti frequenti: ";
-				foreach ($top3 as $item){
-   					$answer = $answer . "\r\n" . $key . ": " . $value;;
+				$answer = "<br>Ecco i tuoi contatti frequenti: ";
+				foreach ($top3 as $key => $value){
+   					$answer = $answer . "<br>" . $key . ": " . $value;;
         		}
 				break;
 		}

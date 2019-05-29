@@ -22,36 +22,55 @@ function interessi($text,$confidence){
 					}
 
 					$categorieArray[] = $categoria; //Inserisco la categoria nell'array
+
+					//Se l'array delle categorie non è vuoto, trovo gli interessi più frequenti
+					if (count($categorieArray) != 0) {
+						$top5 = interessiFrequenti($categorieArray);
+					}
 				}
 			}
         }	
     }
 
 
-	if (isset($categorieArray)) {
+	if (isset($top5)) {
 		switch (rand(1,3)) {
 			case '1':
-				$answer = "I tuoi interessi sono: ";
-				foreach ($categorieArray as $item){
-            		$answer = $answer . "\r\n" . $item ;
-        		}
+				$answer = "<br>I tuoi interessi sono: ";
+
+				if (count($top5) != 0) {
+					foreach ($top5 as $key => $value){
+   						$answer = $answer . "<br>" . $key . ": " . $value;;
+        			}
+				}else {
+					$answer = "Errore nel caricamento degli interessi. Riprova!";
+				}
+	
 				break;
 			case '2':
-				$answer = "Sei interessato a: ";
-				foreach ($categorieArray as $item){
-            		$answer = $answer . "\r\n" . $item ;
-        		}
+				$answer = "<br>Sei interessato a: ";
+				if (count($top5) != 0) {
+					foreach ($top5 as $key => $value){
+   						$answer = $answer . "<br>" . $key . ": " . $value;;
+        			}
+				}else {
+					$answer = "Errore nel caricamento degli interessi. Riprova!";
+				}
 				break;
 			default:
 				$answer = "Ecco qui i tuoi interessi: ";
-				foreach ($categorieArray as $item){
-            		$answer = $answer . "\r\n" . $item ;
-        		}
+				if (count($top5) != 0) {
+					foreach ($top5 as $key => $value){
+   						$answer = $answer . "<br>" . $key . ": " . $value;;
+        			}
+				}else {
+					$answer = "Errore nel caricamento degli interessi. Riprova!";
+				}
         		break;
 		}
 
 	}else{
-		$answer = "Interessi non presenti";
+		$answer = "Interessi non presenti. Riprova!";
 	}
 
 	//A volte la richiesta non restituisce nessun elenco perciò dovrà essere rifatta
@@ -59,6 +78,23 @@ function interessi($text,$confidence){
 		$answer = "Errore nel caricamento degli interessi. Riprova.";
 	}
 
+	//printf($answer);
+
 	return $answer;
 
 }
+
+
+//Calcolo i contatti con i quali l'utente ha interagito di più
+function interessiFrequenti($categorieArray){
+	
+	$interessiFrequenti = array();
+
+	$interessiFrequenti = array_count_values($categorieArray); //Genera un array associativo: nome->(occorrenze di nome)
+	arsort($interessiFrequenti);//Ordino l'array in relazione al maggior numero di interazioni
+
+	$top5 = array_slice($interessiFrequenti, 0, 5);//Prendo i primi cinque
+
+	return $top5;
+}
+

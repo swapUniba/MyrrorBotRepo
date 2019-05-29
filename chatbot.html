@@ -1,6 +1,6 @@
 <html>
 <head>
-	<title>API Example</title>
+	<title>Chatbot</title>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 	<script type="text/javascript">		
@@ -14,7 +14,7 @@
 					send(query);
 				}
 			});
-			/*
+			
 			$("#send").click(function(){
                	$('.chatBox').append('<span class="userInput">' + 'me:'+ $('input').val() + '</span><br><br>');
 				
@@ -22,7 +22,7 @@
 					$('input').val('')
 					send(query);
 
-			});	*/
+			});	
 		});
 	
 	
@@ -38,24 +38,36 @@
 				}
 			});
 		}
+
 		function setResponse(val) {
 			console.log(val);
 			val = JSON.parse(val);
-			$(".chatBox").append('<span class="responseData">'+ 'Bot:   ' + val["intentName"] + '<br> Confidence:' + val["confidence"] + '</span><br><br>');
+
+			/*$(".chatBox").append('<span class="responseData">'+ 'Bot:   ' + val["intentName"] + '<br> Confidence:' + val["confidence"] + '<br> Answer: '+val["answer"]+'</span><br><br>');*/
+
+			//Stampa risposte
+			if (val["intentName"] == "Interessi" || val["intentName"] == "Contatti" || val["intentName"] == "Esercizio fisico") {
+				$(".chatBox").append('<span class="responseData">'+'Answer: '+val["answer"]+'</span><br><br><br><br><br><br><br>');
+			}else {
+				$(".chatBox").append('<span class="responseData">'+'Answer: '+val["answer"]+'</span><br><br>');
+			}
+
+
 		}
+
 	</script>
 	<style type="text/css">
-		body { width: 600px; margin: 0 auto;height: 500px; border: 2px solid black;padding: 0px;	 }
-		div { width: 600px;height: 450px;overflow: auto	 }
+		body { width: 800px; margin: 0 auto;height: 650px; border: 2px solid black;padding: 10px;	 }
+		div { width: 800px;height: 600px;overflow: auto	 }
 		.userInput{float: left;}
 		.responseData{float:right};
-		#input { width: 500px; }
-		button { width: 50px; }
+		#input { width: 900px; }
+		button { width: 70px; }
 	</style>
 </head>
 <body>
 	<div class = 'chatBox'>
 	</div>
-	<input id="input" type="text" style="width: 430px;"> <button id="rec">send</button>
+	<input id="input" type="text" style="width: 700px;margin-top: 30px;"><button id="send">Invia</button>
 </body>
 </html>
