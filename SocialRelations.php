@@ -27,14 +27,14 @@ function contatti($text,$confidence){
     				$answer = printAnswer($top3);
     				return $answer;
     			}else{
-    				print_r("Non sono presenti contatti sul social network richiesto");
+    				//print_r("Non sono presenti contatti sul social network richiesto");
     				$answer = "Errore nel caricamento dei contatti. Riprova!";
     				return $answer;
     			}
 
 
 			}else{
-				print_r("Inserisci un solo social network");
+				//print_r("Inserisci un solo social network");
 				$answer = "Inserisci un solo social network";
     			return $answer;
 			}
@@ -58,13 +58,13 @@ function contatti($text,$confidence){
     				$answer = printAnswer($top3);
     				return $answer;
     			}else{
-    				print_r("Non sono presenti contatti sul social network richiesto");
+    				//print_r("Non sono presenti contatti sul social network richiesto");
     				$answer = "Errore nel caricamento dei contatti. Riprova!";
     				return $answer;
     			}
 
 			}else{
-				print_r("Inserisci un solo social network");
+				//print_r("Inserisci un solo social network");
 				$answer = "Inserisci un solo social network";
     			return $answer;
 			}
@@ -87,19 +87,19 @@ function contatti($text,$confidence){
     				$answer = printAnswer($top3);
     				return $answer;
     			}else{
-    				print_r("Non sono presenti contatti sul social network richiesto");
+    				//print_r("Non sono presenti contatti sul social network richiesto");
     				$answer = "Errore nel caricamento dei contatti. Riprova!";
     				return $answer;
     			}
 
 			}else{
-				print_r("Inserisci un solo social network");
+				//print_r("Inserisci un solo social network");
 				$answer = "Inserisci un solo social network";
     			return $answer;
 			}
 		}
 	}else{
-		print_r("Inserisci il nome di un social network");
+		//print_r("Inserisci il nome di un social network");
 		$answer = "Inserisci il nome di un social network";
     	return $answer;
 	}
