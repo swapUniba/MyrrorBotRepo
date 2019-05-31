@@ -3,7 +3,7 @@
 //INTERESSI
 function interessi($text,$confidence){
 
-	$param = "?f=Interests";
+	$param = "";
 	$json_data = queryMyrror($param);
 
 	$categorieArray = array();
