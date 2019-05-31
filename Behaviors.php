@@ -1,9 +1,8 @@
 <?php
-#include "myrrorlogin.php";
 
 function attivitaFisica($text,$confidence){
 
-$param = "?f=Behaviors";
+$param = "";
 $json_data = queryMyrror($param);
 $result = null;
 $max = 0;
@@ -184,7 +183,7 @@ return $answer;
 
 function getSedentary(){
 
-$param = "?f=Behaviors";
+$param = "";
 $json_data = queryMyrror($param);
 $result = null;
 
@@ -215,7 +214,7 @@ if(isset($result['minutesSedentary'])){
 	if(rand(1,2) == 1){
         $answer = "sei stato sedentario per ".$activityValue." minuti"; 
 	}else{
-        $answer = "Minuti sedentari: ".$activityValue;
+        $answer = "I Minuti sedentari trascorsi durante la giornata sono: ".$activityValue;
 	}
 	
 }else{
