@@ -96,6 +96,14 @@ function selectIntent($intent, $confidence, $text){
             case 'Email':
                 $answer = email($text,$confidence);
                 break;
+                
+            case 'Peso':
+                $answer = getWeight($text,$confidence);
+                break;
+
+            case 'Altezza':
+                $answer = getHeight($text,$confidence);
+                break;
 
             case 'Emozioni':
                 $answer = getSentiment(1);

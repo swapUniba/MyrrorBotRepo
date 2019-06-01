@@ -38,8 +38,9 @@ function identitaUtente($text,$confidence){
 	}
 
 	return $answer;
-
 }
+
+
 
 //ETA'
 function getEta(){
@@ -86,8 +87,6 @@ function getEta(){
 
 
 
-
-
 //LUOGO DI NASCITA
 function getCountry(){
 
@@ -109,7 +108,7 @@ function getCountry(){
 	if (isset($result)) {
 		switch (rand(1,2)) {
 			case '1':
-				$answer = "Il tuo paese è " . $result;;
+				$answer = "Il tuo paese è " . $result;
 				break;
 			case '2':
 				$answer = "Il tuo luogo di nascita è " . $result;
@@ -126,6 +125,81 @@ function getCountry(){
 }
 
 
+
+//ALTEZZA
+function getHeight(){
+
+	$param = "?f=Demographics&l=10";
+	$json_data = queryMyrror($param);
+	$result = null;
+
+	foreach ($json_data as $key1 => $value1) {
+		if(isset($value1['height'])){
+
+			foreach ($value1['height'] as $key2 => $value2) {
+				if ($key2 == "value") {
+					$result = $value2;
+				} 	
+        	}	
+		}
+	}
+
+	if (isset($result)) {
+		switch (rand(1,2)) {
+			case '1':
+				$answer = "Sei alto " . $result . " cm";
+				break;
+			case '2':
+				$answer = "La tua altezza è " . $result . " cm";
+				break;
+			default:
+				break;
+		}
+
+	}else{
+		$answer = "Altezza non presente";
+	}
+
+	return $answer;
+}
+
+
+//PESO
+function getWeight(){
+
+	$param = "?f=Demographics&l=10";
+	$json_data = queryMyrror($param);
+	$result = null;
+
+	foreach ($json_data as $key1 => $value1) {
+		if(isset($value1['weight'])){
+
+			foreach ($value1['weight'] as $key2 => $value2) {
+				if ($key2 == "value") {
+					$result = $value2;
+				} 	
+        	}	
+		}
+	}
+
+	if (isset($result)) {
+		switch (rand(1,2)) {
+			case '1':
+				$answer = "Pesi " . $result . " kg";
+				break;
+			case '2':
+				$answer = "Il tuo peso è " . $result . " kg";
+				break;
+			default:
+				break;
+		}
+
+	}else{
+		$answer = "Peso non presente";
+	}
+
+	return $answer;
+}
 
 
 
