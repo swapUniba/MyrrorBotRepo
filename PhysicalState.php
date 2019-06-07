@@ -3,7 +3,7 @@
 #include "myrrorlogin.php";
 function getCardio(){
 
-$param = "?f=PhysicalStates";
+$param = "today";
 $json_data = queryMyrror($param);
 $result = null;
 
@@ -60,7 +60,7 @@ return $answer;
 
 function getSleep(){
 
-$param = "?f=PhysicalStates";
+$param = "today";
 $json_data = queryMyrror($param);
 $result = null;
 

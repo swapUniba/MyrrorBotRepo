@@ -3,7 +3,7 @@
 //CONTATTI (Per adesso restituisce solamente l'elenco dei contatti)
 function contatti($text,$confidence){
 
-	$param = "";
+	$param = "past";
 	$json_data = queryMyrror($param);
 	$source = ""; //Twitter/Facebook, Instagram
 

@@ -7,7 +7,7 @@ use Google\Cloud\Dialogflow\V2\QueryInput;
 
 require __DIR__.'/vendor/autoload.php';
 
-include "myrrorlogin.php";
+include "readLocaljson.php";
 include 'Behaviors.php';
 include "PhysicalState.php";
 include "Affects.php";
@@ -30,7 +30,7 @@ function detect_intent_texts($projectId, $text, $sessionId, $languageCode = 'it-
     $test = array('credentials' => 'myrrorbot-4f360-cbcab170b890.json');
     $sessionsClient = new SessionsClient($test);
     $session = $sessionsClient->sessionName($projectId, $sessionId ?: uniqid());
-
+    
     // create text input
     $textInput = new TextInput();
     $textInput->setText($text);
@@ -39,10 +39,17 @@ function detect_intent_texts($projectId, $text, $sessionId, $languageCode = 'it-
     // create query input
     $queryInput = new QueryInput();
     $queryInput->setText($textInput);
-
+    
     // get response and relevant info
     $response = $sessionsClient->detectIntent($session, $queryInput);
     $queryResult = $response->getQueryResult();
+ 
+    //entities
+    $parameters=json_decode($queryResult->getParameters()->serializeToJsonString(), true);
+    
+
+
+
     $queryText = $queryResult->getQueryText();
     $intent = $queryResult->getIntent();
 
@@ -57,12 +64,23 @@ function detect_intent_texts($projectId, $text, $sessionId, $languageCode = 'it-
 
         //Stampo la risposta relativa all'intent non identificato
         $arr = array('intentName' => "Non identificato", 'confidence' => "0",'answer' => $answer);
-        printf(json_encode($arr,JSON_UNESCAPED_UNICODE)); //JSON_UNESCAPED_UNICODE utilizzato per il formato UTF8
+        printf(json_encode($arr,JSON_UNESCAPED_UNICODE));
+         //JSON_UNESCAPED_UNICODE utilizzato per il formato UTF8
     }
     
+    
+
+
+   
+     //risposta intent
     $fulfilmentText = $queryResult->getFulfillmentText();
+    
+   // print($fulfilmentText);
+   
+
     $sessionsClient->close();
 }
+
 
 
 function selectIntent($intent, $confidence, $text){

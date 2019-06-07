@@ -2,7 +2,7 @@
 
 function attivitaFisica($text,$confidence){
 
-$param = "";
+$param = "today";
 $json_data = queryMyrror($param);
 $result = null;
 $max = 0;
@@ -76,7 +76,7 @@ return $answer;
 
 function getCalories(){
 
-$param = "?f=Behaviors";
+$param = "today";
 $json_data = queryMyrror($param);
 $result = null;
 
@@ -128,7 +128,7 @@ return $answer;
 
 function getSteps(){
 
-$param = "?f=Behaviors";
+$param = "today";
 $json_data = queryMyrror($param);
 $result = null;
 $max = -1;
@@ -183,7 +183,7 @@ return $answer;
 
 function getSedentary(){
 
-$param = "";
+$param = "today";
 $json_data = queryMyrror($param);
 $result = null;
 

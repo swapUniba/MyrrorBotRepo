@@ -4,7 +4,7 @@
 
 function personalita($text,$confidence){
 
-	$param = "?f=CognitiveAspects";
+	$param = "today";
 	$json_data = queryMyrror($param);
 	$result = null;
 

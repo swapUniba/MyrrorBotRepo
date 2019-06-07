@@ -3,7 +3,7 @@
 //IDENTITA' UTENTE
 function identitaUtente($text,$confidence){
 
-	$param = "?f=Demographics&l=10";
+	$param = "today";
 	$json_data = queryMyrror($param);
 	$result = null;
 
@@ -45,7 +45,7 @@ function identitaUtente($text,$confidence){
 //ETA'
 function getEta(){
 
-	$param = "?f=Demographics&l=10";
+	$param = "today";
 	$json_data = queryMyrror($param);
 	$result = null;
 	$answer = "";
@@ -90,7 +90,7 @@ function getEta(){
 //LUOGO DI NASCITA
 function getCountry(){
 
-	$param = "?f=Demographics&l=10";
+	$param = "today";
 	$json_data = queryMyrror($param);
 	$result = null;
 
@@ -129,7 +129,7 @@ function getCountry(){
 //ALTEZZA
 function getHeight(){
 
-	$param = "?f=Demographics&l=10";
+	$param = "today";
 	$json_data = queryMyrror($param);
 	$result = null;
 
@@ -167,7 +167,7 @@ function getHeight(){
 //PESO
 function getWeight(){
 
-	$param = "?f=Demographics&l=10";
+	$param = "today";
 	$json_data = queryMyrror($param);
 	$result = null;
 
@@ -206,7 +206,7 @@ function getWeight(){
 //LAVORO
 function lavoro($text,$confidence){
 
-	$param = "?f=Demographics";
+	$param = "today";
 	$json_data = queryMyrror($param);
 	$result = null;
 
@@ -255,7 +255,7 @@ function lavoro($text,$confidence){
 //EMAIL
 function email($text,$confidence){
 
-	$param = "?f=Demographics";
+	$param = "today";
 	$json_data = queryMyrror($param);
 	$result = null;
 

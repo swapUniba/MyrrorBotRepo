@@ -3,7 +3,7 @@
 //INTERESSI
 function interessi($text,$confidence){
 
-	$param = "";
+	$param = "today";
 	$json_data = queryMyrror($param);
 
 	$categorieArray = array();
