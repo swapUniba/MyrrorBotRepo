@@ -52,11 +52,14 @@ function detect_intent_texts($projectId, $text, $sessionId, $languageCode = 'it-
 
     $queryText = $queryResult->getQueryText();
     $intent = $queryResult->getIntent();
+    //risposta intent
+    $fulfilmentText = $queryResult->getFulfillmentText();
+
 
     if(!is_null($intent)){
         $displayName = $intent->getDisplayName(); //Nome dell'intent
         $confidence = $queryResult->getIntentDetectionConfidence(); //Livello di confidence
-        selectIntent($displayName,$confidence,$text);
+        selectIntent($displayName,$confidence,$text,$fulfilmentText,$parameters);
         
     }else{
 
@@ -72,8 +75,7 @@ function detect_intent_texts($projectId, $text, $sessionId, $languageCode = 'it-
 
 
    
-     //risposta intent
-    $fulfilmentText = $queryResult->getFulfillmentText();
+ 
     
    // print($fulfilmentText);
    
@@ -83,7 +85,7 @@ function detect_intent_texts($projectId, $text, $sessionId, $languageCode = 'it-
 
 
 
-function selectIntent($intent, $confidence, $text){
+function selectIntent($intent, $confidence, $text,$resp,$parameters){
 
     if(($confidence > 0.86 ||  str_word_count($text) >= 2) && $confidence > 0.67){              
 
@@ -92,75 +94,75 @@ function selectIntent($intent, $confidence, $text){
         switch ($intent) {
 
             case 'Attivita fisica':
-                $answer = attivitaFisica($text,$confidence);
+                $answer = attivitaFisica($resp,$parameters);
                 break;
     
             case 'Battito cardiaco':
-                $answer= getCardio();
+                $answer= getCardio($resp,$parameters);
                 break;
      
             case 'Calorie bruciate':
-                $answer = getCalories();
+                $answer = getCalories($resp,$parameters);
                 break;
 
             case 'Contapassi':
-                $answer = getSteps();      
+                $answer = getSteps($resp,$parameters);      
                 break;
 
             case 'Contatti':
-                $answer = contatti($text,$confidence);
+                $answer = contatti($resp,$parameters);
                 break;
 
             case 'Email':
-                $answer = email($text,$confidence);
+                $answer = email($resp,$parameters);
                 break;
                 
             case 'Peso':
-                $answer = getWeight($text,$confidence);
+                $answer = getWeight($resp,$parameters);
                 break;
 
             case 'Altezza':
-                $answer = getHeight($text,$confidence);
+                $answer = getHeight($resp,$parameters);
                 break;
 
             case 'Emozioni':
-                $answer = getSentiment(1);
+                $answer = getSentiment(1,$resp,$parameters);
                 break;
 
             case 'Umore':
-                $answer = getSentiment(0);
+                $answer = getSentiment(0,$resp,$parameters);
                 break;
 
             case 'Eta':
-                $answer = getEta();
+                $answer = getEta($resp,$parameters);
                 break;
 
             case 'Identita utente':
-                $answer = identitaUtente($text,$confidence);
+                $answer = identitaUtente($resp,$parameters);
                 break;
 
             case 'Interessi':
-                $answer = interessi($text,$confidence);
+                $answer = interessi($resp,$parameters);
                 break;
 
             case 'Lavoro':
-                $answer = lavoro($text,$confidence);
+                $answer = lavoro($resp,$parameters);
                 break;
 
             case 'Luogo di nascita':
-                $answer = getCountry();
+                $answer = getCountry($resp,$parameters);
                 break;
 
             case 'Personalita':
-                $answer = personalita($text,$confidence);
+                $answer = personalita($resp,$parameters);
                 break;
 
             case 'Qualita del sonno':
-                $answer = getSleep();
+                $answer = getSleep($resp,$parameters);
                 break;
 
             case 'Sedentarieta':
-                $answer = getSedentary();
+                $answer = getSedentary($resp,$parameters);
                 break;
 
             default:

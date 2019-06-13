@@ -12,6 +12,7 @@ $fp = fopen('yesterday.json', 'w');
 fwrite($fp, json_encode($response));
 fclose($fp);
 
+
 $today = date('Y-m-d');
 $response = queryMyrror("?fromDate=".$today);
 $fp = fopen('today.json', 'w');

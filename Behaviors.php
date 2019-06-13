@@ -1,6 +1,6 @@
 <?php
 
-function attivitaFisica($text,$confidence){
+function attivitaFisica($resp){
 
 $param = "today";
 $json_data = queryMyrror($param);
