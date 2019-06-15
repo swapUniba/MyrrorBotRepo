@@ -1,9 +1,9 @@
 <?php
 
 //CONTATTI (Per adesso restituisce solamente l'elenco dei contatti)
-function contatti($text,$confidence){
+function contatti($resp,$parameters,$text){
 
-	$param = "past";
+	$param = "";
 	$json_data = queryMyrror($param);
 	$source = ""; //Twitter/Facebook, Instagram
 
@@ -24,7 +24,7 @@ function contatti($text,$confidence){
     			//Verifico se l'array dei contatti non è vuoto procedo con la selezione dei contatti con cui interagisce maggiormente
     			if(count($contactIdArray) !== 0) {
     				$top3 = contattiFrequenti($contactIdArray);
-    				$answer = printAnswer($top3);
+    				$answer = printAnswer($top3, $resp);
     				return $answer;
     			}else{
     				//print_r("Non sono presenti contatti sul social network richiesto");
@@ -55,7 +55,7 @@ function contatti($text,$confidence){
     			//Verifico se l'array dei contatti non è vuoto procedo con la selezione dei contatti con cui interagisce maggiormente
     			if(count($contactIdArray) !== 0) {
     				$top3 = contattiFrequenti($contactIdArray);
-    				$answer = printAnswer($top3);
+    				$answer = printAnswer($top3, $resp);
     				return $answer;
     			}else{
     				//print_r("Non sono presenti contatti sul social network richiesto");
@@ -84,7 +84,7 @@ function contatti($text,$confidence){
     			//Verifico se l'array dei contatti non è vuoto procedo con la selezione dei contatti con cui interagisce maggiormente
     			if(count($contactIdArray) !== 0) {
     				$top3 = contattiFrequenti($contactIdArray);
-    				$answer = printAnswer($top3);
+    				$answer = printAnswer($top3, $resp);
     				return $answer;
     			}else{
     				//print_r("Non sono presenti contatti sul social network richiesto");
@@ -144,24 +144,13 @@ function getContatti($json_data, $contactIdArray, $source){
 }
 
 //Stampa risposta
-function printAnswer($top3){
+function printAnswer($top3, $resp){
 
 	if (isset($top3)) {
-		switch (rand(1,2)) {
-			case '1':
-				$answer = "<br>I tuoi contatti sono: ";
+		$answer = "<br>". $resp;
 
-        		foreach ($top3 as $key => $value) {
-   					//echo "$key: $value\n";
-   					$answer = $answer . "<br>" . $key . ": " . $value;;
-				}
-				break;
-			case '2':
-				$answer = "<br>Ecco i tuoi contatti frequenti: ";
-				foreach ($top3 as $key => $value){
-   					$answer = $answer . "<br>" . $key . ": " . $value;;
-        		}
-				break;
+        foreach ($top3 as $key => $value) {
+   			$answer = $answer . "<br>" . $key . ": " . $value;
 		}
 
 	}else{

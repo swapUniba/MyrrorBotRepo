@@ -1,97 +1,913 @@
 <?php
 
-function getSentiment($flag){
+function getSentiment($flag, $resp, $parameters){
 
-	//flag 0 per emozioni 1 per umore
+    //flag 1 --> emozioni
+    //flag 0 --> l'umore
 
+    if($flag == 1){ //EMOZIONI (Fear, sad, anger, joy, disgust, surprise, none)
 
-$param = "?f=Affects";
-$json_data = queryMyrror($param);
-$result = null;
-$max = "";
-$emotion = "";
+      if ($parameters['date'] != "") { //La data inserita dall'utente è stata riconosciuta
+        
+        //DATA RICHIESTA DALL'UTENTE
+        $dataR = substr($parameters['date'], 0, 10);
+        $data = str_replace('-', '/', $dataR);
 
-foreach ($json_data['affects'] as $key1 => $value1) {
+        //OGGI
+        $oggi = date("Y/m/d");
 
-     	   
-		$date = substr($value1['date'], 10);
-	    if($date > $max){
-          
-           $result = $value1;
-           $max = $date;
+        //IERI
+        $date1 = str_replace('-', '/', date("Y/m/d"));
+        $ieri = date('Y/m/d',strtotime($date1 . "-1 days"));
 
-   	    }
-		
-	}
-if($flag == 1){
+        //Controllo se la data si riferisce a ieri/oggi
+        if ($data == $ieri) {
+          $answer = getPast($ieri);
+      
+        }elseif ($data == $oggi) {
+          $answer = getToday($oggi);
+        }
 
-
-    if(isset($result['emotion'] )){
-
-
-
-    	if (strpos($result['emotion'], 'joy') !== false) {
-    		$emotion = "gioia";
-    	}else if (strpos($result['emotion'], 'fear') !== false) {
-    		 $emotion = "paura";
-    	}else if (strpos($result['emotion'], 'anger') !== false) {
-    		$emotion = "rabbia";
-    	}else if (strpos($result['emotion'], 'disgust') !== false) {
-    		$emotion = "disgusto";
-    	}else if (strpos($result['emotion'], 'sad') !== false) {
-    		$emotion = "tristezza";
-    	}else if (strpos($result['emotion'], 'surprise') !== false) {
-    		$emotion = "sorpresa";
-    	}else{
-           return "non stai provando emozioni";
-    	}
     
+      }else{//DATA NON RICONOSCIUTA --> imposto "oggi" come default
+        
+        //OGGI
+        $oggi = date("Y/m/d");
+        $answer = getToday($oggi);
+      }
 
-       switch (rand(1,2)) {
-       	case 1:
-       		$answer = "Stai provando: ".$emotion ;
-       		break;
+  
+    }else{ //UMORE (negative, neuter, positive)
 
-       	case 2:
-       		$answer = "Provi ".$emotion ;
-       		break;
-       	
-       }
+       if ($parameters['date'] != "") { //La data inserita dall'utente è stata riconosciuta
+        
+        //DATA RICHIESTA DALL'UTENTE
+        $dataR = substr($parameters['date'], 0, 10);
+        $data = str_replace('-', '/', $dataR);
 
-    }else{
-    	
-	$answer = "informazione non trovata";
+        //OGGI
+        $oggi = date("Y/m/d");
+
+        //IERI
+        $date1 = str_replace('-', '/', date("Y/m/d"));
+        $ieri = date('Y/m/d',strtotime($date1 . "-1 days"));
+
+        //Controllo se la data si riferisce a ieri/oggi
+        if ($data == $ieri) {
+          $answer = getPastUmore($ieri);
+      
+        }elseif ($data == $oggi) {
+          $answer = getTodayUmore($oggi);
+        }
+
+    
+      }else{//DATA NON RICONOSCIUTA --> imposto "oggi" come default
+        
+        //OGGI
+        $oggi = date("Y/m/d");
+        $answer = getTodayUmore($oggi);
+      }
     }
 
-}else{
+    return $answer;
 
-     if($result['sentiment'] != null){
+}
 
-       $mood = $result['sentiment'];
 
-     if($mood == 1){
-           $answer = "sei di buon umore";
-     }else if($mood == -1){
-            $answer = "sei di cattivo umore";
-     }else{
-            $answer = "il tuo umore è neutro";
+//OGGI
+function getTodayUmore($oggi){
+  $param = "past";
+  $json_data = queryMyrror($param);
+  $result = null;
+  $max = "";
+  $emotion = "";
+
+  foreach ($json_data['affects'] as $key1 => $value1) {
+      
+    $dataR = substr($value1['date'],0, 10);
+    $data = str_replace('-', '/', $dataR);
+
+
+    if($data == $oggi){
+      $result = $value1;
+    }
+  }
+
+  if(isset($result['sentiment'])){
+
+    $mood = $result['sentiment'];
+
+    if($mood == 1){
+      $answer = "Sei di buon umore";
+    }else if($mood == -1){
+      $answer = "Sei di cattivo umore";
+    }else{
+      $answer = "Il tuo umore è neutro";
+    }
+
+  }else{ //Se non sono presenti dati relativi ad oggi
+
+      $param = "past";
+      $json_data = queryMyrror($param);
+      $result = null;
+      $max = "";
+      $emotion = "";
+
+    //Prendo l'ultima data disponibile
+    foreach ($json_data['affects'] as $key1 => $value1) {
+      $date = substr($value1['date'],0, 10);
+
+      if($date > $max){
+        $result = $value1;
+        $max = $date;
+      }
+    }
+
+    $mood = $result['sentiment'];
+
+    if($mood == 1){
+      $response = "eri di buon umore";
+    }else if($mood == -1){
+      $response = "eri di cattivo umore";
+    }else{
+      $response = "il tuo umore era neutro";
+    }
+    
+    $answer = "Non sono presenti dati relativi al periodo specificato." . "<br>" . "Ecco gli ultimi dati rilevati" . "<br>" . "Umore: " . $response;
+  }
+
+  return $answer;
+
+}
+
+
+
+
+//IERI
+function getPastUmore($ieri){
+  $param = "past";
+  $json_data = queryMyrror($param);
+  $result = null;
+  $max = "";
+  $emotion = "";
+
+  foreach ($json_data['affects'] as $key1 => $value1) {
+      
+    $dataR = substr($value1['date'],0, 10);
+    $data = str_replace('-', '/', $dataR);
+
+
+    if($data == $ieri){
+      $result = $value1;
+    }
+  }
+
+  if(isset($result['sentiment'])){
+
+    $mood = $result['sentiment'];
+
+    if($mood == 1){
+      $answer = "Eri di buon umore";
+    }else if($mood == -1){
+      $answer = "Eri di cattivo umore";
+    }else{
+      $answer = "Il tuo umore era neutro";
+    }
+
+  }else{ //Se non sono presenti dati relativi a ieri
+
+      $param = "past";
+      $json_data = queryMyrror($param);
+      $result = null;
+      $max = "";
+      $emotion = "";
+
+    //Prendo l'ultima data disponibile
+    foreach ($json_data['affects'] as $key1 => $value1) {
+      $date = substr($value1['date'],0, 10);
+
+      if($date > $max){
+        $result = $value1;
+        $max = $date;
+      }
+    }
+
+    $mood = $result['sentiment'];
+
+    if($mood == 1){
+      $response = "eri di buon umore";
+    }else if($mood == -1){
+      $response = "eri di cattivo umore";
+    }else{
+      $response = "il tuo umore era neutro";
+    }
+    
+    $answer = "Non sono presenti dati relativi al periodo specificato." . "<br>" . "Ecco gli ultimi dati rilevati" . "<br>" . "Umore: " . $response;
+  }
+
+  return $answer;
+
+}
+
+
+//IERI
+function getPast($ieri){
+  $param = "past";
+  $json_data = queryMyrror($param);
+  $result = null;
+  $max = "";
+  $emotion = "";
+
+  foreach ($json_data['affects'] as $key1 => $value1) {
+      
+    $dataR = substr($value1['date'],0, 10);
+    $data = str_replace('-', '/', $dataR);
+
+    if($data == $ieri){
+      $result = $value1;
+    }
+  }
+
+  if(isset($result['emotion'] )){
+
+    $emotion = getEmotion($result);
+    $answer =  "Stavi provando " . $emotion ;
+
+  }else{ //Se non sono presenti dati relativi a ieri
+    
+    //Prendo l'ultima data disponibile
+    foreach ($json_data['affects'] as $key1 => $value1) {
+      $date = substr($value1['date'],0, 10);
+
+      if($date > $max){
+        $result = $value1;
+        $max = $date;
+      }
+    }
+
+    $emotion = getEmotion($result);
+    $answer = "Non sono presenti dati relativi al periodo specificato." . "<br>" . "Ecco gli ultimi dati rilevati" . "<br>" . "Emozione: " . $emotion;
+
+  }
+
+  return $answer;
+
+}
+
+//OGGI
+function getToday($oggi){
+  $param = "past";
+  $json_data = queryMyrror($param);
+  $result = null;
+  $max = "";
+  $emotion = "";
+
+  foreach ($json_data['affects'] as $key1 => $value1) {
+      
+    $dataR = substr($value1['date'],0, 10);
+    $data = str_replace('-', '/', $dataR);
+
+    if($data == $oggi){
+      $result = $value1;
+    }
+  }
+
+  if(isset($result['emotion'] )){
+
+    $emotion = getEmotion($result);
+
+      switch (rand(1,2)) {
+      case '1':
+        $answer = "Stai provando " . $result;
+        break;
+      case '2':
+        $answer = "In questo momento provi " . $result;
+        break;
+    }
+
+  }else{ //Se non sono presenti dati relativi ad oggi
+
+      $param = "past";
+      $json_data = queryMyrror($param);
+      $result = null;
+      $max = "";
+      $emotion = "";
+
+    //Prendo l'ultima data disponibile
+    foreach ($json_data['affects'] as $key1 => $value1) {
+      $date = substr($value1['date'],0, 10);
+
+      if($date > $max){
+        $result = $value1;
+        $max = $date;
+      }
+    }
+
+    $emotion = getEmotion($result);
+    $answer = "Non sono presenti dati relativi al periodo specificato." . "<br>" . "Ecco gli ultimi dati rilevati" . "<br>" . "Emozione: " . $emotion;
+  }
+
+  return $answer;
+
+}
+
+//EMOZIONE: ritorna l'emozione
+function getEmotion($result){
+
+    if (strpos($result['emotion'], 'joy') !== false) {
+      $emotion = "gioia";
+    }else if (strpos($result['emotion'], 'fear') !== false) {
+       $emotion = "paura";
+    }else if (strpos($result['emotion'], 'anger') !== false) {
+      $emotion = "rabbia";
+    }else if (strpos($result['emotion'], 'disgust') !== false) {
+      $emotion = "disgusto";
+    }else if (strpos($result['emotion'], 'sad') !== false) {
+      $emotion = "tristezza";
+    }else if (strpos($result['emotion'], 'surprise') !== false) {
+      $emotion = "sorpresa";
+    }else{
+         return "non stai provando alcuna emozione";
+    }
+
+  return $emotion;
+
+}
+
+
+//Per gestire le risposte binarie
+function getSentimentBinario($flag, $resp, $parameters){
+
+    //flag 1 --> emozioni
+    //flag 0 --> l'umore
+
+    if($flag == 1){ //EMOZIONI (Fear, sad, anger, joy, disgust, surprise, none)
+
+      if ($parameters['date'] != "") { //La data inserita dall'utente è stata riconosciuta
+        
+        //DATA RICHIESTA DALL'UTENTE
+        $dataR = substr($parameters['date'], 0, 10);
+        $data = str_replace('-', '/', $dataR);
+
+        //OGGI
+        $oggi = date("Y/m/d");
+
+        //IERI
+        $date1 = str_replace('-', '/', date("Y/m/d"));
+        $ieri = date('Y/m/d',strtotime($date1 . "-1 days"));
+
+        //Controllo se la data si riferisce a ieri/oggi
+        if ($data == $ieri) {
+          $answer = getPastBinario($ieri, $parameters);
+      
+        }elseif ($data == $oggi) {
+          $answer = getTodayBinario($oggi, $parameters);
+        }
+
+    
+      }else{//DATA NON RICONOSCIUTA --> imposto "oggi" come default
+        
+        //OGGI
+        $oggi = date("Y/m/d");
+
+        $answer = getTodayBinario($oggi, $parameters);
+      }
+
+  
+    }else{ //UMORE (negative, neuter, positive)
+
+      if ($parameters['date'] != "") { //La data inserita dall'utente è stata riconosciuta
+        
+        //DATA RICHIESTA DALL'UTENTE
+        $dataR = substr($parameters['date'], 0, 10);
+        $data = str_replace('-', '/', $dataR);
+
+        //OGGI
+        $oggi = date("Y/m/d");
+
+        //IERI
+        $date1 = str_replace('-', '/', date("Y/m/d"));
+        $ieri = date('Y/m/d',strtotime($date1 . "-1 days"));
+
+        //Controllo se la data si riferisce a ieri/oggi
+        if ($data == $ieri) {
+          $answer = getPastUmoreBinario($ieri, $parameters);
+      
+        }elseif ($data == $oggi) {
+          $answer = getTodayUmoreBinario($oggi, $parameters);
+        }
+
+    
+      }else{//DATA NON RICONOSCIUTA --> imposto "oggi" come default
+        
+        //OGGI
+        $oggi = date("Y/m/d");
+
+        $answer = getTodayUmoreBinario($oggi, $parameters);
+      }
+    }
+
+    return $answer;
+
+}
+
+
+//IERI
+function getPastUmoreBinario($ieri, $parameters){
+  $param = "past";
+  $json_data = queryMyrror($param);
+  $result = null;
+  $max = "";
+  $emotion = "";
+
+  foreach ($json_data['affects'] as $key1 => $value1) {
+      
+    $dataR = substr($value1['date'],0, 10);
+    $data = str_replace('-', '/', $dataR);
+
+    if($data == $ieri){
+      $result = $value1;
+    }
+  }
+
+  if(isset($result['sentiment'] )){
+
+     $mood = $result['sentiment'];
+
+     if ($mood == 1 && $parameters['UmoreBuono'] != "") {
+        $answer = "Si, eri di buon umore";
+     }else if ($mood == -1 && $parameters['UmoreBuono'] != ""){
+        $answer = "No, il tuo umore era pessimo";
+     }else if ($mood == 0 && $parameters['UmoreBuono'] != ""){
+        $answer = "No, il tuo umore era neutro";
      }
 
-    }else{
-    	
-	$answer = "informazione non trovata";
+    if ($mood == -1 && $parameters['UmoreCattivo'] != "") {
+        $answer = "Si, eri di pessimo umore";
+     }else if ($mood == 1 && $parameters['UmoreCattivo'] != ""){
+        $answer = "No, il tuo umore era positivo";
+     }else if ($mood == 0 && $parameters['UmoreCattivo'] != ""){
+        $answer = "No, il tuo umore era neutro";
+     }
+
+      if ($mood == 0 && $parameters['UmoreNeutro'] != "") {
+        $answer = "Si, avevi un umore neutro";
+     }else if ($mood == 1 && $parameters['UmoreNeutro'] != ""){
+        $answer = "No, il tuo umore era positivo";
+     }else if ($mood == -1 && $parameters['UmoreNeutro'] != ""){
+        $answer = "No, il tuo umore era negativo";
+     }
+
+  }else{ //Se non sono presenti dati relativi a ieri
+    
+    //Prendo l'ultima data disponibile
+    foreach ($json_data['affects'] as $key1 => $value1) {
+      $date = substr($value1['date'],0, 10);
+
+      if($date > $max){
+        $result = $value1;
+        $max = $date;
+      }
     }
 
+    $mood = $result['sentiment'];
+
+     if ($mood == 1 && $parameters['UmoreBuono'] != "") {
+        $risposta = "eri di buon umore";
+     }else if ($mood == -1 && $parameters['UmoreBuono'] != ""){
+        $risposta = "il tuo umore era pessimo";
+     }else if ($mood == 0 && $parameters['UmoreBuono'] != ""){
+        $risposta = "il tuo umore era neutro";
+     }
+
+    if ($mood == -1 && $parameters['UmoreCattivo'] != "") {
+        $risposta = "eri di pessimo umore";
+     }else if ($mood == 1 && $parameters['UmoreCattivo'] != ""){
+        $risposta = "il tuo umore era positivo";
+     }else if ($mood == 0 && $parameters['UmoreCattivo'] != ""){
+        $risposta = "il tuo umore era neutro";
+     }
+
+      if ($mood == 0 && $parameters['UmoreNeutro'] != "") {
+        $risposta = "avevi un umore neutro";
+     }else if ($mood == 1 && $parameters['UmoreNeutro'] != ""){
+        $risposta = "il tuo umore era positivo";
+     }else if ($mood == -1 && $parameters['UmoreNeutro'] != ""){
+        $risposta = "il tuo umore era negativo";
+     }
+
+    $answer = "Non sono presenti dati relativi al periodo specificato." . "<br>" . "Ecco gli ultimi dati rilevati" . "<br>" . $risposta;
+
+  }
+
+  return $answer;
+
 }
 
 
-	return $answer;
+//OGGI
+function getTodayUmoreBinario($oggi, $parameters){
+  $param = "past";
+  $json_data = queryMyrror($param);
+  $result = null;
+  $max = "";
+  $emotion = "";
+
+  foreach ($json_data['affects'] as $key1 => $value1) {
+    $dataR = substr($value1['date'], 0, 10);
+    $data = str_replace('-', '/', $dataR);
+
+    if($data == $oggi){
+      $result = $value1;
+    }
+  }
+
+
+  if(isset($result['sentiment'] )){
+    $mood = $result['sentiment'];
+
+     if ($mood == 1 && $parameters['UmoreBuono'] != "") {
+        $answer = "Si, sei di buon umore";
+     }else if ($mood == -1 && $parameters['UmoreBuono'] != ""){
+        $answer = "No, il tuo umore è pessimo";
+     }else if ($mood == 0 && $parameters['UmoreBuono'] != ""){
+        $answer = "No, il tuo umore è neutro";
+     }
+
+    if ($mood == -1 && $parameters['UmoreCattivo'] != "") {
+        $answer = "Si, sei di pessimo umore";
+     }else if ($mood == 1 && $parameters['UmoreCattivo'] != ""){
+        $answer = "No, il tuo umore è positivo";
+     }else if ($mood == 0 && $parameters['UmoreCattivo'] != ""){
+        $answer = "No, il tuo umore è neutro";
+     }
+
+      if ($mood == 0 && $parameters['UmoreNeutro'] != "") {
+        $answer = "Si, hai un umore neutro";
+     }else if ($mood == 1 && $parameters['UmoreNeutro'] != ""){
+        $answer = "No, il tuo umore è positivo";
+     }else if ($mood == -1 && $parameters['UmoreNeutro'] != ""){
+        $answer = "No, il tuo umore è negativo";
+     }
+      
+  }else{ //Se non sono presenti dati relativi ad oggi
+
+      $param = "past";
+      $json_data = queryMyrror($param);
+      $result = null;
+      $max = "";
+      $emotion = "";
+
+    //Prendo l'ultima data disponibile
+    foreach ($json_data['affects'] as $key1 => $value1) {
+      $date = substr($value1['date'],0, 10);
+
+      if($date > $max){
+        $result = $value1;
+        $max = $date;
+      }
+    }
+
+    $mood = $result['sentiment'];
+
+     if ($mood == 1 && $parameters['UmoreBuono'] != "") {
+        $risposta = "eri di buon umore";
+     }else if ($mood == -1 && $parameters['UmoreBuono'] != ""){
+        $risposta = "il tuo umore era pessimo";
+     }else if ($mood == 0 && $parameters['UmoreBuono'] != ""){
+        $risposta = "il tuo umore era neutro";
+     }
+
+    if ($mood == -1 && $parameters['UmoreCattivo'] != "") {
+        $risposta = "eri di pessimo umore";
+     }else if ($mood == 1 && $parameters['UmoreCattivo'] != ""){
+        $risposta = "il tuo umore era positivo";
+     }else if ($mood == 0 && $parameters['UmoreCattivo'] != ""){
+        $risposta = "il tuo umore era neutro";
+     }
+
+      if ($mood == 0 && $parameters['UmoreNeutro'] != "") {
+        $risposta = "avevi un umore neutro";
+     }else if ($mood == 1 && $parameters['UmoreNeutro'] != ""){
+        $risposta = "il tuo umore era positivo";
+     }else if ($mood == -1 && $parameters['UmoreNeutro'] != ""){
+        $risposta = "il tuo umore era negativo";
+     }
+
+
+    $answer = "Non sono presenti dati relativi al periodo specificato." . "<br>" . "Ecco gli ultimi dati rilevati" . "<br>" . $risposta;
+  }
+
+  return $answer;
 
 }
-
-
-
-
-
 
    
+//IERI
+function getPastBinario($ieri, $parameters){
+  $param = "past";
+  $json_data = queryMyrror($param);
+  $result = null;
+  $max = "";
+  $emotion = "";
+
+  foreach ($json_data['affects'] as $key1 => $value1) {
+      
+    $dataR = substr($value1['date'],0, 10);
+    $data = str_replace('-', '/', $dataR);
+
+    if($data == $ieri){
+      $result = $value1;
+    }
+  }
+
+  if(isset($result['emotion'] )){
+
+    $emotion = getEmotion($result);
+
+    switch ($emotion) {
+      case 'gioia':
+        if ($parameters['EmotionJoy'] != "") {
+          $entity = $parameters['EmotionJoy'];
+          $answer = "Si, eri " . $entity;
+        }else{
+          $answer = "No, eri felice";
+        }
+        break;
+      case 'paura':
+        if ($parameters['EmotionFear'] != "") {
+          $entity = $parameters['EmotionFear'];
+          $answer = "Si, eri " . $entity;
+        }else{
+          $answer = "No, eri spaventato";
+        }
+        break;
+      case 'rabbia':
+        if ($parameters['EmotionAnger'] != "") {
+          $entity = $parameters['EmotionAnger'];
+          $answer = "Si, eri " . $entity;
+        }else{
+          $answer = "No, eri arrabbiato";
+        }
+        break;
+      case 'disgusto':
+        if ($parameters['EmotionDisgust'] != "") {
+          $entity = $parameters['EmotionDisgust'];
+          $answer = "Si, eri " . $entity;
+        }else{
+          $answer = "No, eri disgustato";
+        }
+        break;
+      case 'tristezza':
+        if ($parameters['EmotionSad'] != "") {
+          $entity = $parameters['EmotionSad'];
+          $answer = "Si, eri " . $entity;
+        }else{
+          $answer = "No, eri triste";
+        }
+        break;
+      case 'sorpresa':
+        if ($parameters['EmotionSurprise'] != "") {
+          $entity = $parameters['EmotionSurprise'];
+          $answer = "Si, eri " . $entity;
+        }else{
+          $answer = "No, eri sorpreso";
+        }
+        break;
+      default:
+          $answer = "No, non stavi provando alcuna emozione";
+        break;
+    }
+
+  }else{ //Se non sono presenti dati relativi a ieri
+    
+    //Prendo l'ultima data disponibile
+    foreach ($json_data['affects'] as $key1 => $value1) {
+      $date = substr($value1['date'],0, 10);
+
+      if($date > $max){
+        $result = $value1;
+        $max = $date;
+      }
+    }
+
+    $emotion = getEmotion($result);
+
+
+    switch ($emotion) {
+      case 'gioia':
+        if ($parameters['EmotionJoy'] != "") {
+          $entity = $parameters['EmotionJoy'];
+          $risposta = "Si, eri " . $entity;
+        }else{
+          $risposta = "No, eri felice";
+        }
+        break;
+      case 'paura':
+        if ($parameters['EmotionFear'] != "") {
+          $entity = $parameters['EmotionFear'];
+          $risposta = "Si, eri " . $entity;
+        }else{
+          $risposta = "No, eri spaventato";
+        }
+        break;
+      case 'rabbia':
+        if ($parameters['EmotionAnger'] != "") {
+          $entity = $parameters['EmotionAnger'];
+          $risposta = "Si, eri " . $entity;
+        }else{
+          $risposta = "No, eri arrabbiato";
+        }
+        break;
+      case 'disgusto':
+        if ($parameters['EmotionDisgust'] != "") {
+          $entity = $parameters['EmotionDisgust'];
+          $risposta = "Si, eri " . $entity;
+        }else{
+          $risposta = "No, eri disgustato";
+        }
+        break;
+      case 'tristezza':
+        if ($parameters['EmotionSad'] != "") {
+          $entity = $parameters['EmotionSad'];
+          $risposta = "Si, eri " . $entity;
+        }else{
+          $risposta = "No, eri triste";
+        }
+        break;
+      case 'sorpresa':
+        if ($parameters['EmotionSurprise'] != "") {
+          $entity = $parameters['EmotionSurprise'];
+          $risposta = "Si, eri " . $entity;
+        }else{
+          $risposta = "No, eri sorpreso";
+        }
+        break;
+      default:
+          $risposta = "No, non stavi provando alcuna emozione";
+        break;
+    }
+
+    $answer = "Non sono presenti dati relativi al periodo specificato." . "<br>" . "Ecco gli ultimi dati rilevati" . "<br>" . $risposta;
+
+  }
+
+  return $answer;
+
+}
+
+//OGGI
+function getTodayBinario($oggi, $parameters){
+  $param = "past";
+  $json_data = queryMyrror($param);
+  $result = null;
+  $max = "";
+  $emotion = "";
+
+  foreach ($json_data['affects'] as $key1 => $value1) {
+    $dataR = substr($value1['date'], 0, 10);
+    $data = str_replace('-', '/', $dataR);
+
+    if($data == $oggi){
+      $result = $value1;
+    }
+  }
+
+
+  if(isset($result['emotion'] )){
+    $emotion = getEmotion($result);
+
+    switch ($emotion) {
+      case 'gioia':
+        if ($parameters['EmotionJoy'] != "") {
+          $entity = $parameters['EmotionJoy'];
+          $answer = "Si, sei " . $entity;
+        }else{
+          $answer = "No, sei felice";
+        }
+        break;
+      case 'paura':
+        if ($parameters['EmotionFear'] != "") {
+          $entity = $parameters['EmotionFear'];
+          $answer = "Si, sei " . $entity;
+        }else{
+          $answer = "No, sei spaventato";
+        }
+        break;
+      case 'rabbia':
+        if ($parameters['EmotionAnger'] != "") {
+          $entity = $parameters['EmotionAnger'];
+          $answer = "Si, sei " . $entity;
+        }else{
+          $answer = "No, sei arrabbiato";
+        }
+        break;
+      case 'disgusto':
+        if ($parameters['EmotionDisgust'] != "") {
+          $entity = $parameters['EmotionDisgust'];
+          $answer = "Si, sei " . $entity;
+        }else{
+          $answer = "No, sei disgustato";
+        }
+        break;
+      case 'tristezza':
+        if ($parameters['EmotionSad'] != "") {
+          $entity = $parameters['EmotionSad'];
+          $answer = "Si, sei " . $entity;
+        }else{
+          $answer = "No, sei triste";
+        }
+        break;
+      case 'sorpresa':
+        if ($parameters['EmotionSurprise'] != "") {
+          $entity = $parameters['EmotionSurprise'];
+          $answer = "Si, sei " . $entity;
+        }else{
+          $answer = "No, sei sorpreso";
+        }
+        break;
+      default:
+          $answer = "No, non stai provando alcuna emozione";
+        break;
+    }
+      
+  }else{ //Se non sono presenti dati relativi ad oggi
+
+      $param = "past";
+      $json_data = queryMyrror($param);
+      $result = null;
+      $max = "";
+      $emotion = "";
+
+    //Prendo l'ultima data disponibile
+    foreach ($json_data['affects'] as $key1 => $value1) {
+      $date = substr($value1['date'],0, 10);
+
+      if($date > $max){
+        $result = $value1;
+        $max = $date;
+      }
+    }
+
+    $emotion = getEmotion($result);
+
+     switch ($emotion) {
+      case 'gioia':
+        if ($parameters['EmotionJoy'] != "") {
+          $entity = $parameters['EmotionJoy'];
+          $risposta = "Si, eri " . $entity;
+        }else{
+          $risposta = "No, eri felice";
+        }
+        break;
+      case 'paura':
+        if ($parameters['EmotionFear'] != "") {
+          $entity = $parameters['EmotionFear'];
+          $risposta = "Si, eri " . $entity;
+        }else{
+          $risposta = "No, eri spaventato";
+        }
+        break;
+      case 'rabbia':
+        if ($parameters['EmotionAnger'] != "") {
+          $entity = $parameters['EmotionAnger'];
+          $risposta = "Si, eri " . $entity;
+        }else{
+          $risposta = "No, eri arrabbiato";
+        }
+        break;
+      case 'disgusto':
+        if ($parameters['EmotionDisgust'] != "") {
+          $entity = $parameters['EmotionDisgust'];
+          $risposta = "Si, eri " . $entity;
+        }else{
+          $risposta = "No, eri disgustato";
+        }
+        break;
+      case 'tristezza':
+        if ($parameters['EmotionSad'] != "") {
+          $entity = $parameters['EmotionSad'];
+          $risposta = "Si, eri " . $entity;
+        }else{
+          $risposta = "No, eri triste";
+        }
+        break;
+      case 'sorpresa':
+        if ($parameters['EmotionSurprise'] != "") {
+          $entity = $parameters['EmotionSurprise'];
+          $risposta = "Si, eri " . $entity;
+        }else{
+          $risposta = "No, eri sorpreso";
+        }
+        break;
+      default:
+          $risposta = "Non stavi provando alcuna emozione";
+        break;
+    }
+
+    $answer = "Non sono presenti dati relativi al periodo specificato." . "<br>" . "Ecco gli ultimi dati rilevati" . "<br>" . $risposta;
+  }
+
+  return $answer;
+
+}

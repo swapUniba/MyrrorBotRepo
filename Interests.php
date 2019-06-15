@@ -1,9 +1,9 @@
 <?php
 
 //INTERESSI
-function interessi($text,$confidence){
+function interessi($resp,$parameters){
 
-	$param = "today";
+	$param = "";
 	$json_data = queryMyrror($param);
 
 	$categorieArray = array();
@@ -34,39 +34,14 @@ function interessi($text,$confidence){
 
 
 	if (isset($top5)) {
-		switch (rand(1,3)) {
-			case '1':
-				$answer = "<br>I tuoi interessi sono: ";
+		$answer = "<br>" . $resp;
 
-				if (count($top5) != 0) {
-					foreach ($top5 as $key => $value){
-   						$answer = $answer . "<br>" . $key . ": " . $value;;
-        			}
-				}else {
-					$answer = "Errore nel caricamento degli interessi. Riprova!";
-				}
-	
-				break;
-			case '2':
-				$answer = "<br>Sei interessato a: ";
-				if (count($top5) != 0) {
-					foreach ($top5 as $key => $value){
-   						$answer = $answer . "<br>" . $key . ": " . $value;;
-        			}
-				}else {
-					$answer = "Errore nel caricamento degli interessi. Riprova!";
-				}
-				break;
-			default:
-				$answer = "Ecco qui i tuoi interessi: ";
-				if (count($top5) != 0) {
-					foreach ($top5 as $key => $value){
-   						$answer = $answer . "<br>" . $key . ": " . $value;;
-        			}
-				}else {
-					$answer = "Errore nel caricamento degli interessi. Riprova!";
-				}
-        		break;
+		if (count($top5) != 0) {
+			foreach ($top5 as $key => $value){
+   				$answer = $answer . "<br>" . $key . ": " . $value;;
+        	}
+		}else {
+			$answer = "Errore nel caricamento degli interessi. Riprova!";
 		}
 
 	}else{
@@ -77,8 +52,6 @@ function interessi($text,$confidence){
 	if ($answer == null) {
 		$answer = "Errore nel caricamento degli interessi. Riprova.";
 	}
-
-	//printf($answer);
 
 	return $answer;
 

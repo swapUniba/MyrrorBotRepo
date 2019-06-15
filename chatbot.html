@@ -46,7 +46,7 @@
 			/*$(".chatBox").append('<span class="responseData">'+ 'Bot:   ' + val["intentName"] + '<br> Confidence:' + val["confidence"] + '<br> Answer: '+val["answer"]+'</span><br><br>');*/
 
 			//Stampa risposte
-			if (val["intentName"] == "Interessi" || val["intentName"] == "Contatti" || val["intentName"] == "Esercizio fisico") {
+			if (val["intentName"] == "Interessi" || val["intentName"] == "Contatti" || val["intentName"] == "Esercizio fisico" || val["intentName"] == "Personalita") {
 				$(".chatBox").append('<span class="responseData">'+'Answer: '+val["answer"]+'</span><br><br><br><br><br><br><br>');
 			}else {
 				$(".chatBox").append('<span class="responseData">'+'Answer: '+val["answer"]+'</span><br><br>');

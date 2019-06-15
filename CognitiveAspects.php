@@ -2,9 +2,9 @@
 
 //PERSONALITA': viene ricavata in base al valore più grande tra le “personalities” in relazione al più recente timestamp.
 
-function personalita($text,$confidence){
+function personalita($resp,$parameters){
 
-	$param = "today";
+	$param = "";
 	$json_data = queryMyrror($param);
 	$result = null;
 
@@ -48,30 +48,185 @@ function personalita($text,$confidence){
 		}
 	}
 
-	$personalita = "";
 
-	if ($openness > $conscientiousness && $openness > $extroversion && $openness > $agreeableness && $openness > $neuroticism && $openness > $confidence) {
-		$personalita = "aperto";
-	}elseif ($conscientiousness > $openness && $conscientiousness > $extroversion && $conscientiousness > $agreeableness && $conscientiousness > $neuroticism	 && $conscientiousness > $confidence) {
-		$personalita = "coscienzioso";
-	}elseif ($extroversion > $openness && $extroversion > $conscientiousness && $extroversion > $agreeableness && $extroversion > $neuroticism	 && $extroversion > $confidence) {
-		$personalita = "estroverso";
-	}elseif ($agreeableness > $openness && $agreeableness > $conscientiousness && $agreeableness > $extroversion && $agreeableness > $neuroticism	 && $agreeableness > $confidence) {
-		$personalita = "piacevole";
-	}elseif ($neuroticism > $openness && $neuroticism > $conscientiousness && $neuroticism > $extroversion && $neuroticism > $agreeableness	 && $neuroticism > $confidence) {
-		$personalita = "nevrotico";
-	}elseif ($confidence > $openness && $confidence > $conscientiousness && $confidence > $extroversion && $confidence > $agreeableness	 && $confidence > $neuroticism) {
-		$personalita = "fiducioso";
+	//openness
+	if ($openness > 0.5){
+		$personalita1 = "1)inventivo e curioso";
+	} else{
+		$personalita1 = "1)concreto e cauto";
 	}
 
-	switch (rand(1,2)) {
-		case '1':
-    		$answer = "Sei un tipo ". $personalita;
-			break;
-		case '2':
-			$answer = "Sei " . $personalita;
-			break;
+	//conscientiousness
+	if ($conscientiousness > 0.5){
+		$personalita2 = "2)efficiente ed organizzato";
+	} else{
+		$personalita2 = "2)rilassato e negligente";
 	}
+
+	//extroversion
+	if ($extroversion > 0.5){
+		$personalita3 = "3)estroverso ed energico";
+	} else{
+		$personalita3 = "3)solitario e riservato";
+	}
+
+	//agreeableness 
+	if ($agreeableness  > 0.5){
+		$personalita4 = "4)amichevole e compassionevole";
+	} else{
+		$personalita4 = "4)distaccato";
+	}
+	
+	//neuroticism
+	if ($neuroticism > 0.5){
+		$personalita5 = "5)sensibile e nervoso";
+	} else{
+		$personalita5 = "5)fiducioso";
+	}
+
+	$answer = "<br>" . $resp . "<br>" . $personalita1 . "<br>" . $personalita2 . "<br>" . $personalita3 . "<br>" . $personalita4 . "<br>" . $personalita5;
+
+	return $answer;
+
+}
+
+
+//Personalità binario
+function personalitaBinario($resp,$parameters){
+
+	$param = "";
+	$json_data = queryMyrror($param);
+	$result = null;
+
+	$openness = "";
+	$conscientiousness = "";
+	$extroversion = "";
+	$agreeableness = "";
+	$neuroticism = "";
+	$confidence = "";
+
+	foreach ($json_data as $key1 => $value1) {
+
+		if(isset($value1['personalities'])){
+
+			$max = 0;
+
+			foreach ($value1['personalities'] as $key2 => $value2) {
+
+				$timestamp = $value2['timestamp'];
+
+				$openness = $value2['openness'];
+				$conscientiousness = $value2['conscientiousness'];
+				$extroversion = $value2['extroversion'];
+				$agreeableness = $value2['agreeableness'];
+				$neuroticism = $value2['neuroticism'];
+				$confidence = $value2['confidence'];
+
+				//print_r($timestamp + "<br>");
+		 
+         		if($timestamp > $max ){
+         
+           			$max = $timestamp;
+           			$openness = $value2['openness'];
+					$conscientiousness = $value2['conscientiousness'];
+					$extroversion = $value2['extroversion'];
+					$agreeableness = $value2['agreeableness'];
+					$neuroticism = $value2['neuroticism'];
+					$confidence = $value2['confidence'];
+         		}	
+        	}	
+		}
+	}
+
+	//Prendo la entity dai parameters per capire a quale personalità mi riferisco ed effettuo i controlli
+	if ($parameters['OpennessSi'] != "") {
+		$entity = $parameters['OpennessSi'];
+		
+		if ($openness > 0.5) {
+			$answer = "Si, sei " . $entity;
+		}else{
+			$answer = "No, sei concreto e cauto";
+		}
+		
+	}else if ($parameters['OpennessNo'] != ""){
+		$entity = $parameters['OpennessNo'];
+
+		if ($openness <= 0.5) {
+			$answer = "Si, sei " . $entity;
+		}else{
+			$answer = "No, sei creativo e curioso";
+		}
+
+	}else if ($parameters['ConscientiousnessSi'] != ""){
+		$entity = $parameters['ConscientiousnessSi'];
+
+		if ($conscientiousness > 0.5) {
+			$answer = "Si, sei " . $entity;
+		}else{
+			$answer = "No, sei rilassato e negligente";
+		}
+
+	}else if ($parameters['ConscientiousnessNo'] != ""){
+		$entity = $parameters['ConscientiousnessNo'];
+
+		if ($conscientiousness <= 0.5) {
+			$answer = "Si, sei " . $entity;
+		}else{
+			$answer = "No, sei efficiente ed organizzato";
+		}
+	}else if ($parameters['ExtroversionSi'] != ""){
+		$entity = $parameters['ExtroversionSi'];
+
+		if ($extroversion > 0.5) {
+			$answer = "Si, sei " . $entity;
+		}else{
+			$answer = "No, sei solitario e riservato";
+		}
+
+	}else if ($parameters['ExtroversionNo'] != ""){
+		$entity = $parameters['ExtroversionNo'];
+
+		if ($extroversion <= 0.5) {
+			$answer = "Si, sei " . $entity;
+		}else{
+			$answer = "No, sei estroverso ed energico";
+		}
+	}else if ($parameters['AgreeablenessSi'] != ""){
+		$entity = $parameters['AgreeablenessSi'];
+
+		if ($agreeableness > 0.5) {
+			$answer = "Si, sei " . $entity;
+		}else{
+			$answer = "No, sei distaccato";
+		}
+
+	}else if ($parameters['AgreeablenessNo'] != ""){
+		$entity = $parameters['AgreeablenessNo'];
+
+		if ($agreeableness <= 0.5) {
+			$answer = "Si, sei " . $entity;
+		}else{
+			$answer = "No, sei amichevole e compassionevole";
+		}
+	}else if ($parameters['NeuroticismSi'] != ""){
+		$entity = $parameters['NeuroticismSi'];
+
+		if ($neuroticism > 0.5) {
+			$answer = "Si, sei " . $entity;
+		}else{
+			$answer = "No, sei fiducioso";
+		}
+
+	}else if ($parameters['NeuroticismNo'] != ""){
+		$entity = $parameters['NeuroticismNo'];
+
+		if ($neuroticism <= 0.5) {
+			$answer = "Si, sei " . $entity;
+		}else{
+			$answer = "No, sei sensibile e nervoso";
+		}
+	}
+
 
 	return $answer;
 
