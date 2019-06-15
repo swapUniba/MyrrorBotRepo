@@ -1,9 +1,9 @@
 <?php
 
 //IDENTITA' UTENTE
-function identitaUtente($text,$confidence){
+function identitaUtente($resp,$parameters,$text){
 
-	$param = "today";
+	$param = "";
 	$json_data = queryMyrror($param);
 	$result = null;
 
@@ -20,18 +20,12 @@ function identitaUtente($text,$confidence){
 		}
 	}
 
+	
+     
 	if (isset($result)) {
-		switch (rand(1,3)) {
-			case '1':
-				$answer = $result;
-				break;
-			case '2':
-				$answer = "Ti chiami " . $result;
-				break;
-			default:
-				$answer = "Il tuo nome è " . $result;
-				break;
-		}
+
+		$answer = str_replace("X",$result,$resp);
+
 
 	}else{
 		$answer = "Nome non presente";
@@ -43,9 +37,9 @@ function identitaUtente($text,$confidence){
 
 
 //ETA'
-function getEta(){
+function getEta($resp,$parameters,$text){
 
-	$param = "today";
+	$param = "";
 	$json_data = queryMyrror($param);
 	$result = null;
 	$answer = "";
@@ -70,16 +64,8 @@ function getEta(){
 		$diff = abs(strtotime($today) - strtotime($result));
     	$years = floor($diff / (365*60*60*24));
 
-    	switch (rand(1,2)) {
-			case '1':
-    			$answer = "Hai ". $years . " anni";
-				break;
-			case '2':
-				$answer = "La tua età è " . $years . " anni";
-				break;
-			default:
-				break;
-		}
+
+		$answer = str_replace("X",$years,$resp);
 	}
 
 	return $answer;
@@ -88,9 +74,9 @@ function getEta(){
 
 
 //LUOGO DI NASCITA
-function getCountry(){
+function getCountry($resp,$parameters,$text){
 
-	$param = "today";
+	$param = "";
 	$json_data = queryMyrror($param);
 	$result = null;
 
@@ -106,16 +92,8 @@ function getCountry(){
 	}
 
 	if (isset($result)) {
-		switch (rand(1,2)) {
-			case '1':
-				$answer = "Il tuo paese è " . $result;
-				break;
-			case '2':
-				$answer = "Il tuo luogo di nascita è " . $result;
-				break;
-			default:
-				break;
-		}
+
+		$answer = str_replace("X",$result,$resp);
 
 	}else{
 		$answer = "Luogo di nascita non presente";
@@ -127,9 +105,9 @@ function getCountry(){
 
 
 //ALTEZZA
-function getHeight(){
+function getHeight($resp,$parameters,$text){
 
-	$param = "today";
+	$param = "";
 	$json_data = queryMyrror($param);
 	$result = null;
 
@@ -145,16 +123,10 @@ function getHeight(){
 	}
 
 	if (isset($result)) {
-		switch (rand(1,2)) {
-			case '1':
-				$answer = "Sei alto " . $result . " cm";
-				break;
-			case '2':
-				$answer = "La tua altezza è " . $result . " cm";
-				break;
-			default:
-				break;
-		}
+
+
+		$answer = str_replace("X",$result,$resp);
+
 
 	}else{
 		$answer = "Altezza non presente";
@@ -165,9 +137,9 @@ function getHeight(){
 
 
 //PESO
-function getWeight(){
+function getWeight($resp,$parameters,$text){ 
 
-	$param = "today";
+	$param = "";
 	$json_data = queryMyrror($param);
 	$result = null;
 
@@ -183,16 +155,8 @@ function getWeight(){
 	}
 
 	if (isset($result)) {
-		switch (rand(1,2)) {
-			case '1':
-				$answer = "Pesi " . $result . " kg";
-				break;
-			case '2':
-				$answer = "Il tuo peso è " . $result . " kg";
-				break;
-			default:
-				break;
-		}
+
+		$answer = str_replace("X",$result,$resp);
 
 	}else{
 		$answer = "Peso non presente";
@@ -204,9 +168,9 @@ function getWeight(){
 
 
 //LAVORO
-function lavoro($text,$confidence){
+function lavoro($resp,$parameters,$text){
 
-	$param = "today";
+	$param = "";
 	$json_data = queryMyrror($param);
 	$result = null;
 
@@ -231,17 +195,9 @@ function lavoro($text,$confidence){
 	}
 
 	if (isset($industry)) {
-		switch (rand(1,3)) {
-			case '1':
-				$answer = "Il tuo lavoro è " . $industry;
-				break;
-			case '2':
-				$answer = "Lavoro: " . $industry;
-				break;
-			default:
-				$answer = "Lavori come " . $industry;
-				break;
-		}
+
+		$answer = str_replace("X",$industry,$resp);
+
 
 	}else{
 		$answer = "Lavoro non presente";
@@ -253,16 +209,17 @@ function lavoro($text,$confidence){
 
 
 //EMAIL
-function email($text,$confidence){
+function email($resp,$parameters,$text){
 
-	$param = "today";
+	$param = "";
 	$json_data = queryMyrror($param);
 	$result = null;
+    
 
 	foreach ($json_data as $key1 => $value1) {
 
 		if(isset($value1['email'])){
-
+           
 			$max = 0;
 
 			foreach ($value1['email'] as $key2 => $value2) {
@@ -280,17 +237,8 @@ function email($text,$confidence){
 	}
 
 	if (isset($email)) {
-		switch (rand(1,3)) {
-			case '1':
-				$answer = "Il tuo indirizzo email è " . $email;
-				break;
-			case '2':
-				$answer = "Email " . $email;
-				break;
-			default:
-				$answer = "La tua email è " . $email;
-				break;
-		}
+	
+		$answer = str_replace("X",$email,$resp);
 
 	}else{
 		$answer = "Email non presente";
