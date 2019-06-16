@@ -277,7 +277,7 @@ if(isset($parameters['date-period']['startDate'])){
            $answer="No,non fai abbastanza attività fisica.In media ".$sum." minuti.";
         }
         
-  }elseif(strpos($text,'dovrei fare')  && strpos($text,'fare di più') && strpos($text,'fare più')) {
+  }elseif(strpos($text,'dovrei fare')  || strpos($text,'fare di più') || strpos($text,'fare più')) {
   	
   	    if($sum >= 30 ){
            $answer ="No,fai abbastanza attività fisica.In media ".$sum." minuti.";
@@ -301,7 +301,7 @@ if(isset($parameters['date-period']['startDate'])){
            $answer="No,non hai fatto abbastanza attività fisica. ".$sum." minuti.";
         }
         
-  }elseif(strpos($text,'dovrei fare')  && strpos($text,'fare di più') && strpos($text,'fare più')) {
+  }elseif(strpos($text,'dovrei fare')  || strpos($text,'fare di più') || strpos($text,'fare più')) {
   	
   	    if($sum >= 30 ){
            $answer ="No,hai fatto abbastanza attività fisica. ".$sum." minuti.";
@@ -536,66 +536,363 @@ if(strpos($text, 'abbastanza')){
 return $answer;
 }
 
-function getSteps(){
+function stepsDay($day){
 
+$result = null;
 $param = "";
 $json_data = queryMyrror($param);
-$result = null;
-$max = -1;
 
 foreach ($json_data as $key1 => $value1) {
 	
 	if(isset($value1['fromActivity'])){
-		
-		
+			
 	foreach ($value1['fromActivity'] as $key2 => $value2) {
      
          $timestamp = $value2['timestamp'];
-         if($timestamp > $max && $value2['nameActivity'] == "steps"){
-         
-           $result = $value2;
-           $max = $timestamp;
-
+         $date2 = date('Y-m-d',$timestamp/1000);
+         if($day == $date2 && $value2['nameActivity'] == "steps"){     
+           $result = $value2;   
          }
-
 	}
-	
 		
 	}
 }
 
- if(isset($result['steps'])){
- 	 $activityValue = $result['steps'];
+if(isset($result['steps'])){
 
- 	switch ($result['steps']) {
- 		case 1:
- 			 $answer = "hai fatto un totale di ".$activityValue." passi"; 
- 			break;
+return  array($day,$result['steps']);
 
- 		case 2:
- 			$answer = "Ecco il tuo numero di passi giornalieri ".$activityValue;
- 			break;
 
- 		default:
- 			$answer = "	Hai totalizzato " .$activityValue. " passi";
- 			break;
- 	}
-    
 }else{
-	$answer = "informazione non trovata";
+
+$max = -1;
+foreach ($json_data as $key1 => $value1) {
+	
+	if(isset($value1['fromActivity'])){
+			
+	foreach ($value1['fromActivity'] as $key2 => $value2) {
+     
+         $timestamp = $value2['timestamp'];
+        
+         if($timestamp > $max && $value2['nameActivity'] == "steps"){
+         
+           $result = $value2;   
+           $max = $timestamp;
+              
+         }
+	}
+		
+	}
+}
+
+if(isset($result['steps'])){
+ $date2 = date('Y-m-d',$max/1000);
+return  array($date2,$result['steps']);
+
+}else{
+	return array("",0);
+}
+
+}
+
+
+
+
+}
+
+function stepsInterval($startDate,$endDate){
+
+$result = null;
+$param = "";
+$json_data = queryMyrror($param);
+$sum = 0;
+$count = 0;
+
+foreach ($json_data as $key1 => $value1) {
+	
+	if(isset($value1['fromActivity'])){
+			
+	foreach ($value1['fromActivity'] as $key2 => $value2) {
+     
+         $timestamp = $value2['timestamp'];
+         $date2 = date('Y-m-d',$timestamp/1000);
+         if($startDate <= $date2 && $date2 <= $endDate && $value2['nameActivity'] == "steps"){     
+           $sum += $value2['steps'];
+           $count++;
+
+         }
+	}
+		
+	}
+}
+
+if ($count != 0) {
+	return array($startDate,intval($sum/$count));
+}else{
+
+    $sum = 0;
+	foreach ($json_data as $key1 => $value1) {
+	
+	if(isset($value1['fromActivity'])){
+			
+	foreach ($value1['fromActivity'] as $key2 => $value2) {
+     
+         $timestamp = $value2['timestamp'];
+         $date2 = date('Y-m-d',$timestamp/1000);
+         if( $value2['nameActivity'] == "steps"){     
+           $sum += $value2['steps'];
+           $count++;
+
+         }
+	}
+		
+	}
+}
+	
+if ($count != 0) {
+	return array("",intval($sum/$count));
+}else{
+    return array("",0);
+}
+
+}
+
+}
+
+function getSteps($resp,$parameters,$text){
+
+if(isset($parameters['date-period']['startDate'])){
+
+$startDate = substr($parameters['date-period']['startDate'],0,10);
+$endDate = substr($parameters['date-period']['endDate'],0,10);
+
+$arr = stepsInterval($startDate,$endDate);
+
+if($arr[0] == $startDate){
+	//risposta corretta
+	$answer = "hai fatto una media di ".$arr[1]." passi giornalieri";
+
+}else{
+	//intervallo completo
+     $answer = "i dati presenti non risalgono al periodo indicato. <br>";
+     $answer .= "in media fai ".$arr[1]." passi giornalieri";
+}
+}else{
+
+if(isset($parameters['date'])){
+
+$date = substr($parameters['date'],0,10);
+$arr = stepsDay($date);
+
+if($arr[0] == $date){
+	$answer = str_replace('X', $arr[1], $resp);
+}else{
+	$answer = "gli ultimi dati disponibili risalgono al ".$arr[0]." <br>";
+	$answer .= str_replace('X', $arr[1], $resp);
+}
+
+}else{
+
+$today = date('Y-m-d');
+$arr = stepsDay($today);
+
+if($arr[0] == $date){
+	$answer = str_replace('X', $arr[1], $resp);
+}else{
+	$answer = "gli ultimi dati disponibili risalgono al ".$arr[0]." <br>";
+	$answer .= str_replace('X', $arr[1], $resp);
+}
+
+}
+}
+
+return $answer;
+
+}
+
+function getStepsBinary($resp,$parameters,$text){
+
+$answer = "";
+$average = stepsInterval("","");
+
+if(isset($parameters['date-period']['startDate'])){
+
+$startDate = substr($parameters['date-period']['startDate'],0,10);
+$endDate = substr($parameters['date-period']['endDate'],0,10);
+
+$intAv = stepsInterval($startDate,$endDate);
+
+if($intAv[0] == $startDate){
+
+  if($intAv[1] >= $average[1]){
+     $answer = "Si, hai fatto abbastanza passi. La tua media giornaliera è di ".$intAv[1]." passi";
+  }else{
+     $answer = "No,non hai fatto abbastanza passi. La tua media giornaliera è di ".$intAv[1]." passi";
+  }
+
+}else{
+
+$answer = "non ci sono dati risalenti al periodo specificato <br> ";
+  
+ $answer .= " La tua media giornaliera è di ".$intAv[1]." passi";
+  
+  
+  
+
+}
+
+
+}elseif(isset($parameters['date'])){
+
+$date = substr($parameters['date'], 0,10);
+$arr = stepsDay($date);
+
+if($arr[1] >= $average[1]){
+
+$answer = "Si,hai fatto abbastanza passi.Ne hai fatti ".$arr[1];	
+}else{
+$answer = "No,non hai fatto abbastanza passi.Ne hai fatti ".$arr[1];	
+}
+
+}else{
+
+$date = date('Y-m-d');
+$arr = stepsDay($date);
+$answer = "Gli ultimi dati disponibili risalgono al ".$arr[0]."<br>";	
+if($arr[1] >= $average[1]){
+$answer .= "hai effettuato abbastanza passi ".$arr[1];
+}else{
+$answer .= "non hai effettuato abbastanza passi ".$arr[1];	
+}
+
+}
+
+return $answer;
+
+}
+
+function getSedentary($resp,$parameters,$text){
+
+
+$answer = "";
+$date = null;
+if(isset($parameters['date'])){
+$date = substr($parameters['date'], 0,10);
+$arr = SedentaryDay($date);
+
+
+}else{
+	$date = date('Y-m-d');
+    $arr = SedentaryDay($date);
+}
+
+if($arr[0] == $date){
+//dati giorno scelto
+$answer = str_replace('X', $arr[1], $resp);
+
+}else{
+//ultimi dati
+$answer = "gli ultimi dati risalgono al ".$arr[0]. " <br> ";
+$answer .= str_replace('X', $arr[1], $resp);
+
 }
 
 
 return $answer;
 
 
+
 }
 
-function getSedentary(){
+function getSedentaryBinary($resp,$parameters,$text){
 
-$param = "today";
+$answer = "";
+$startWeek = date("Y-m-d",strtotime("-7 days"));
+$endWeek = date('Y-m-d');
+
+$result = sedentaryInterval($startWeek,$endWeek);
+
+if($result == null){
+ return "non ci sono dati nell'ultima settimana";	
+}
+
+if(strpos($text, 'seduto') || strpos($text, 'fermo') || strpos($text, 'sedentario')){
+ 
+ if($result >= 9930)
+ 	$answer = "Si, sei sedentario";
+ else
+ 	$answer = "No,sei attivo";
+   
+}else{
+
+ if($result >= 9930)
+ 	$answer = "No, sei sedentario";
+ else
+ 	$answer = "Si,sei attivo";
+
+}
+ 
+ return $answer;
+
+}
+
+function sedentaryInterval($startDate,$endDate){
+
+$param = "";
 $json_data = queryMyrror($param);
 $result = null;
+
+foreach ($json_data as $key1 => $value1) {
+	
+	if(isset($value1['fromActivity'])){
+	
+	foreach ($value1['fromActivity'] as $key2 => $value2) {
+     
+         $timestamp = $value2['timestamp'];
+         $date2 = date('Y-m-d',$timestamp/1000);
+         if($date2 >= $startDate && $date2 <= $endDate && $value2['nameActivity'] == "minutesSedentary"){
+           $result += $value2["minutesSedentary"];
+         }
+	}
+		
+	}
+}
+
+return $result;
+
+
+
+}
+
+function SedentaryDay($date){
+
+
+$param = "";
+$json_data = queryMyrror($param);
+$result = null;
+
+foreach ($json_data as $key1 => $value1) {
+	
+	if(isset($value1['fromActivity'])){
+	
+		
+	foreach ($value1['fromActivity'] as $key2 => $value2) {
+     
+         $timestamp = $value2['timestamp'];
+         $date2 = date('Y-m-d',$timestamp/1000);
+         if($date2 == $date && $value2['nameActivity'] == "minutesSedentary"){
+           $result = $value2;
+         }
+	}
+		
+	}
+}
+
+if(isset($result['minutesSedentary'])){
+
+ return array($date,$result['minutesSedentary']);
+
+}else{
 
 foreach ($json_data as $key1 => $value1) {
 	
@@ -617,21 +914,20 @@ foreach ($json_data as $key1 => $value1) {
 		
 	}
 }
-
 if(isset($result['minutesSedentary'])){
 
-	$activityValue = $result['minutesSedentary'];
-	if(rand(1,2) == 1){
-        $answer = "sei stato sedentario per ".$activityValue." minuti"; 
-	}else{
-        $answer = "I Minuti sedentari trascorsi durante la giornata sono: ".$activityValue;
-	}
-	
+ $date2 = date('Y-m-d',$timestamp/1000);
+return array($date2,$result['minutesSedentary']);
+
 }else{
-	$answer = "informazione non trovata";
+
+return array("",0);
+
 }
 
-return $answer;
+
+}
+
 
 
 
