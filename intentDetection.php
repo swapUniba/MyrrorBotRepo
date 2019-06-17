@@ -75,7 +75,7 @@ function detect_intent_texts($projectId, $text, $sessionId, $languageCode = 'it-
 
 function selectIntent($intent, $confidence,$text,$resp,$parameters){
 
-    if(($confidence > 0.86 ||  str_word_count($text) >= 2) && $confidence >= 0.67){              
+    if(($confidence > 0.86 ||  str_word_count($text) >= 2) && $confidence >= 0.6){              
 
         $answer = null;
 
