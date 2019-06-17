@@ -47,9 +47,6 @@ function detect_intent_texts($projectId, $text, $sessionId, $languageCode = 'it-
     //entities
     $parameters=json_decode($queryResult->getParameters()->serializeToJsonString(), true);
     
-
-
-
     $queryText = $queryResult->getQueryText();
     $intent = $queryResult->getIntent();
     //risposta intent
@@ -71,21 +68,12 @@ function detect_intent_texts($projectId, $text, $sessionId, $languageCode = 'it-
          //JSON_UNESCAPED_UNICODE utilizzato per il formato UTF8
     }
     
-    
-
-
-   
- 
-    
-   // print($fulfilmentText);
-   
-
     $sessionsClient->close();
 }
 
 
 
-function selectIntent($intent, $confidence, $text,$resp,$parameters){
+function selectIntent($intent, $confidence,$text,$resp,$parameters){
 
     if(($confidence > 0.86 ||  str_word_count($text) >= 2) && $confidence > 0.67){              
 
@@ -94,51 +82,75 @@ function selectIntent($intent, $confidence, $text,$resp,$parameters){
         switch ($intent) {
 
             case 'Attivita fisica':
-                $answer = attivitaFisica($resp,$parameters);
+                $answer = attivitaFisica($resp,$parameters,$text);
+                break;
+
+            case 'Attivita fisica binario':
+                $answer = attivitaFisicaBinary($resp,$parameters,$text);
                 break;
     
             case 'Battito cardiaco':
-                $answer= getCardio($resp,$parameters);
+                $answer= getCardio($resp,$parameters,$text);
+                break;
+
+            case 'Battito cardiaco binario':
+                $answer= getCardioBinary($resp,$parameters,$text);
                 break;
      
             case 'Calorie bruciate':
-                $answer = getCalories($resp,$parameters);
+                $answer = getCalories($resp,$parameters,$text);
+                break;
+
+            case 'Calorie bruciate binario':
+                $answer = getCaloriesBinary($resp,$parameters,$text);
                 break;
 
             case 'Contapassi':
-                $answer = getSteps($resp,$parameters);      
+                $answer = getSteps($resp,$parameters,$text);      
                 break;
 
+            case 'Contapassi binario':
+                $answer = getStepsBinary($resp,$parameters,$text);      
+                break;    
+
             case 'Contatti':
-                $answer = contatti($resp,$parameters);
+                $answer = contatti($resp,$parameters,$text);
                 break;
 
             case 'Email':
-                $answer = email($resp,$parameters);
+                $answer = email($resp,$parameters,$text);
                 break;
                 
             case 'Peso':
-                $answer = getWeight($resp,$parameters);
+                $answer = getWeight($resp,$parameters,$text);
                 break;
 
             case 'Altezza':
-                $answer = getHeight($resp,$parameters);
+                $answer = getHeight($resp,$parameters,$text);
                 break;
 
             case 'Emozioni':
                 $answer = getSentiment(1,$resp,$parameters);
                 break;
 
+            case 'Emozioni binario':
+                $answer = getSentimentBinario(1,$resp,$parameters);
+                break;
+
             case 'Umore':
                 $answer = getSentiment(0,$resp,$parameters);
                 break;
 
+            case 'Umore binario':
+                $answer = getSentimentBinario(0,$resp,$parameters);
+                break;
+
             case 'Eta':
-                $answer = getEta($resp,$parameters);
+                $answer = getEta($resp,$parameters,$text);
                 break;
 
             case 'Identita utente':
-                $answer = identitaUtente($resp,$parameters);
+                $answer = identitaUtente($resp,$parameters,$text);
                 break;
 
             case 'Interessi':
@@ -146,23 +158,35 @@ function selectIntent($intent, $confidence, $text,$resp,$parameters){
                 break;
 
             case 'Lavoro':
-                $answer = lavoro($resp,$parameters);
+                $answer = lavoro($resp,$parameters,$text);
                 break;
 
             case 'Luogo di nascita':
-                $answer = getCountry($resp,$parameters);
+                $answer = getCountry($resp,$parameters,$text);
                 break;
 
             case 'Personalita':
                 $answer = personalita($resp,$parameters);
                 break;
 
+            case 'Personalita binario':
+                $answer = personalitaBinario($resp,$parameters);
+                break;
+
             case 'Qualita del sonno':
-                $answer = getSleep($resp,$parameters);
+                $answer = getSleep($resp,$parameters,$text);
+                break;
+
+            case 'Qualita del sonno binario':
+                $answer = getSleepBinary($resp,$parameters,$text);
                 break;
 
             case 'Sedentarieta':
-                $answer = getSedentary($resp,$parameters);
+                $answer = getSedentary($resp,$parameters,$text);
+                break;
+
+            case 'Sedentarieta binario':
+                $answer = getSedentaryBinary($resp,$parameters,$text);
                 break;
 
             default:
@@ -178,6 +202,8 @@ function selectIntent($intent, $confidence, $text,$resp,$parameters){
     $arr = array('intentName' => $intent, 'confidence' => $confidence,'answer' => $answer);
     printf(json_encode($arr,JSON_UNESCAPED_UNICODE)); //JSON_UNESCAPED_UNICODE utilizzato per il formato UTF8
 }
+
+date_default_timezone_set('Europe/Madrid'); //Imposto la stessa timezone di Dialogflow (per gli orari)
 
 detect_intent_texts('myrrorbot-4f360',$testo,'123456');
 
