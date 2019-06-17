@@ -1,5 +1,8 @@
 <?php
 
+/*Permette di fornire dati in relazione alla domanda richiesta
+Viene fornito un flag per determinare se ci si riferisce alle emozioni oppure alla personalità
+*/ 
 function getSentiment($flag, $resp, $parameters){
 
     //flag 1 --> emozioni
@@ -74,7 +77,7 @@ function getSentiment($flag, $resp, $parameters){
 }
 
 
-//OGGI
+//OGGI: determina l'umore in relazione ad oggi
 function getTodayUmore($oggi){
   $param = "past";
   $json_data = queryMyrror($param);
@@ -133,17 +136,14 @@ function getTodayUmore($oggi){
       $response = "il tuo umore era neutro";
     }
     
-    $answer = "Non sono presenti dati relativi al periodo specificato." . "<br>" . "Ecco gli ultimi dati rilevati" . "<br>" . "Umore: " . $response;
+    $answer = "Non sono presenti dati." . "<br>" . "Ecco gli ultimi dati rilevati" . "<br>" . "Umore: " . $response;
   }
 
   return $answer;
-
 }
 
 
-
-
-//IERI
+//IERI: determina l'umore in relazione a ieri
 function getPastUmore($ieri){
   $param = "past";
   $json_data = queryMyrror($param);
@@ -210,7 +210,7 @@ function getPastUmore($ieri){
 }
 
 
-//IERI
+//IERI: determina l'emozione in relazione ad oggi
 function getPast($ieri){
   $param = "past";
   $json_data = queryMyrror($param);
@@ -254,7 +254,7 @@ function getPast($ieri){
 
 }
 
-//OGGI
+//OGGI: determina l'emozione in relazione ad oggi
 function getToday($oggi){
   $param = "past";
   $json_data = queryMyrror($param);
@@ -304,14 +304,14 @@ function getToday($oggi){
     }
 
     $emotion = getEmotion($result);
-    $answer = "Non sono presenti dati relativi al periodo specificato." . "<br>" . "Ecco gli ultimi dati rilevati" . "<br>" . "Emozione: " . $emotion;
+    $answer = "Non sono presenti dati." . "<br>" . "Ecco gli ultimi dati rilevati" . "<br>" . "Emozione: " . $emotion;
   }
 
   return $answer;
 
 }
 
-//EMOZIONE: ritorna l'emozione
+//EMOZIONE: ritorna l'emozione corrispondente
 function getEmotion($result){
 
     if (strpos($result['emotion'], 'joy') !== false) {
@@ -335,7 +335,7 @@ function getEmotion($result){
 }
 
 
-//Per gestire le risposte binarie
+//Funzione utilizzata per gestire le risposte binarie
 function getSentimentBinario($flag, $resp, $parameters){
 
     //flag 1 --> emozioni
@@ -412,7 +412,7 @@ function getSentimentBinario($flag, $resp, $parameters){
 }
 
 
-//IERI
+//IERI: determina l'umore in relazione a ieri per le domande con risposta binaria
 function getPastUmoreBinario($ieri, $parameters){
   $param = "past";
   $json_data = queryMyrror($param);
@@ -505,7 +505,7 @@ function getPastUmoreBinario($ieri, $parameters){
 }
 
 
-//OGGI
+//OGGI: determina l'umore in relazione ad oggi per le domande con risposta binaria
 function getTodayUmoreBinario($oggi, $parameters){
   $param = "past";
   $json_data = queryMyrror($param);
@@ -595,7 +595,7 @@ function getTodayUmoreBinario($oggi, $parameters){
      }
 
 
-    $answer = "Non sono presenti dati relativi al periodo specificato." . "<br>" . "Ecco gli ultimi dati rilevati" . "<br>" . $risposta;
+    $answer = "Non sono presenti dati." . "<br>" . "Ecco gli ultimi dati rilevati" . "<br>" . $risposta;
   }
 
   return $answer;
@@ -603,7 +603,7 @@ function getTodayUmoreBinario($oggi, $parameters){
 }
 
    
-//IERI
+//IERI: determina l'emozione in relazione a ieri per le domande con risposta binaria
 function getPastBinario($ieri, $parameters){
   $param = "past";
   $json_data = queryMyrror($param);
@@ -756,7 +756,7 @@ function getPastBinario($ieri, $parameters){
 
 }
 
-//OGGI
+//OGGI: determina l'emozione in relazione ad oggi per le domande con risposta binaria
 function getTodayBinario($oggi, $parameters){
   $param = "past";
   $json_data = queryMyrror($param);
@@ -905,7 +905,7 @@ function getTodayBinario($oggi, $parameters){
         break;
     }
 
-    $answer = "Non sono presenti dati relativi al periodo specificato." . "<br>" . "Ecco gli ultimi dati rilevati" . "<br>" . $risposta;
+    $answer = "Non sono presenti dati." . "<br>" . "Ecco gli ultimi dati rilevati" . "<br>" . $risposta;
   }
 
   return $answer;

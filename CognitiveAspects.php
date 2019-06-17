@@ -1,7 +1,6 @@
 <?php
 
-//PERSONALITA': viene ricavata in base al valore più grande tra le “personalities” in relazione al più recente timestamp.
-
+//Permette di determinare i 5 tipi di personalità retivi ad un individuo
 function personalita($resp,$parameters){
 
 	$param = "";
@@ -91,7 +90,7 @@ function personalita($resp,$parameters){
 }
 
 
-//Personalità binario
+//Funzione che permette di fornire risposte binarie relative a domande sulla personalità
 function personalitaBinario($resp,$parameters){
 
 	$param = "";
@@ -105,6 +104,7 @@ function personalitaBinario($resp,$parameters){
 	$neuroticism = "";
 	$confidence = "";
 
+	//Prendo le personalità più recenti 
 	foreach ($json_data as $key1 => $value1) {
 
 		if(isset($value1['personalities'])){
@@ -121,11 +121,8 @@ function personalitaBinario($resp,$parameters){
 				$agreeableness = $value2['agreeableness'];
 				$neuroticism = $value2['neuroticism'];
 				$confidence = $value2['confidence'];
-
-				//print_r($timestamp + "<br>");
 		 
          		if($timestamp > $max ){
-         
            			$max = $timestamp;
            			$openness = $value2['openness'];
 					$conscientiousness = $value2['conscientiousness'];
@@ -138,7 +135,9 @@ function personalitaBinario($resp,$parameters){
 		}
 	}
 
-	//Prendo la entity dai parameters per capire a quale personalità mi riferisco ed effettuo i controlli
+	/*Prendo la entity dai parameters per capire a quale personalità mi riferisco ed effettuo i controlli
+	Ad esempio se nella frase è presente la parola estroverso, verrà effettuato un controllo se effettivamente quella persona è estroversa
+	*/
 	if ($parameters['OpennessSi'] != "") {
 		$entity = $parameters['OpennessSi'];
 		
