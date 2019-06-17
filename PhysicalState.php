@@ -1,6 +1,15 @@
 <?php
-
-#include "myrrorlogin.php";
+/*
+il metodo serve a leggere il file json completo preso da
+myrror e cercare al suo interno una data specificata,se la 
+data viene trovata nel file verrà restituita insieme al valore
+corrispondente di restingHeartRate; se non viene trovata la
+data specificata verranno restituiti i dati dell'ultima data disponibile
+@Parameters sono i parametri sui periodi temporali 
+individuati da dialogflow
+@data è la data da cercare nel file
+return data e battito cardiaco
+*/
 function cardioToday($parameters,$data){
 
 $param = "";
@@ -64,7 +73,15 @@ if(isset($result['restingHeartRate'])){
 return  array('date' => $dateR, 'heart' => $heart);
 
 }
-
+/*
+@startDate data iniziale dell'intervallo
+@endDate data finale dell'intervallo
+Il seguente metodo ricerca all'interno del file json
+restituito da myrror il dato restingHeartRate di tutte le
+date presenti nell'intervallo specificato, viene fatta così
+una media dei valori del battito cardiaco. 
+return media battito cardiaco al minuto 
+*/
 function cardioInterval($startDate,$endDate){
 
 $param = "";
@@ -99,6 +116,20 @@ return $average;
 
 }
 
+/*
+@resp frase di risposta standard ricevuta da dialogflow
+@parameters parametri contenenti le info sui periodi di tempo
+nella frase rilevati da dialogflow
+@text frase scritta dall'utente
+Il metodo controlla la presenza in parameters di date o
+date-period e a seconda dei casi chiama il metodo corrispondente 
+per ottenere i dati del battito cardiaco di un singolo giorno o 
+di un intervallo di tempo. Nel caso nel file json non troviamo
+i dati del giorno o del periodo scelto la risposta verrà costruita
+utilizzando gli ultimi dati disponibli.
+@return risposta da stampare a schermo
+
+*/
 function getCardio($resp,$parameters,$text){
 
 
@@ -115,7 +146,11 @@ if(isset($parameters['date']) ){
     $arr = cardioToday($parameters,$today);
     
     if($arr['date'] == $today){
-      //risposta oggi
+      /*
+   la risposta di default ($resp) restituita da dialogflow è
+   costruita per la data di oggi, così sostituiamo alla X presente 
+   in $resp il valore del battito cardiaco da stampare
+      */
       $answer = str_replace('X',$arr['heart'],$resp);
     }else{
       //risposta standard
@@ -179,7 +214,22 @@ if(isset($parameters['date']) ){
 return $answer;
 
 }
-
+/*
+@resp frase di risposta standard ricevuta da dialogflow
+@parameters parametri contenenti le info sui periodi di tempo
+nella frase rilevati da dialogflow
+@text frase scritta dall'utente
+Il metodo serve a costruire delle risposte binarie (si,no) per rispondere
+a specifiche domande dell'utente.Le risposte saranno costruite tramite
+i token riconosciuti nel testo,in particolare vengono distinti
+buono/ottimo da pessimo/cattivo.
+Viene effettuato un controllo sui parametri per verificare se abbiamo dati 
+riguardanti una singola data o un intervallo. Nel caso non ci siano parametri 
+con riferimenti al tempo utilizzeremo la data odierna. Se non vengono trovati 
+dati nella data odierna verrà costruita una risposta utilizzando gli 
+ultimi dati presenti nel file.
+@return risposta da stampare a schermo
+*/
 function getCardioBinary($resp,$parameters,$text){
 
 $answer = "";
@@ -376,7 +426,19 @@ return $answer;
 
 }
 
-
+/*
+@resp frase di risposta standard ricevuta da dialogflow
+@parameters parametri contenenti le info sui periodi di tempo
+nella frase rilevati da dialogflow
+@text frase scritta dall'utente
+il metodo analizza i parameters se è presente la data di ieri
+o di oggi chiama il metodo yestSleepBinary per ottenere i minuti di 
+sonno dell'ultima notte,altrimenti viene fatta una distinzione in base al 
+verbo riconosciuto da dialogflow, se i verbi sono al passato prossimo
+viene chiamata la funzione yestSleepBinary altrimenti viene chiamata la 
+funzione pastSleepBinary che costruisce la risposta con i dati storici
+return risposta da stampare  
+*/
 function getSleepBinary($resp,$parameters,$text){
 
 
@@ -409,7 +471,18 @@ if($date1 >= $yesterday){
 return $answer;
 
 }
-
+/*
+@resp frase di risposta standard ricevuta da dialogflow
+@parameters parametri contenenti le info sui periodi di tempo
+nella frase rilevati da dialogflow
+@text frase scritta dall'utente
+la funzione effettua una media dei minuti trascorsi nel letto
+e dei minuti di sonno, successivamente viene costruita una risposta
+verificando le parole presenti all'interno della frase digitata 
+dall'utente e usando dei valori soglia (390 minuti di sonno) per
+rispondere in maniera positiva o negativa
+return risposta da stampare
+*/
 function pastSleepBinary($resp,$parameters,$text){
 
 $param = "";
@@ -489,11 +562,26 @@ if(strpos($text, 'abbastanza')){
  return $result;
 }
 
+/*
+@resp frase di risposta standard ricevuta da dialogflow
+@parameters parametri contenenti le info sui periodi di tempo
+nella frase rilevati da dialogflow
+@text frase scritta dall'utente
+@data da cercare
+la funzione ricerca all'interno del file json la data che viene passata
+come parametro , se non la trova verrà presa l'ultima data disponibile ,
+questa distinzione avviene tramite il flag.
+Viene costruita una risposta in base ai token rilevati nella frase
+ usando dei valori soglia (390 minuti di sonno) per
+rispondere in maniera positiva o negativa.
+return risposta da stampare
+*/
 function yestSleepBinary($resp,$parameters,$text,$data){
 
 $param = "";
 $json_data = queryMyrror($param);
 $result = null;
+//serve a capire se vengono presi i dati della data corretta oppure gli ultimi presenti nel file
 $flag = false;
 
 //cerco data di ieri
@@ -684,7 +772,15 @@ return $answer;
 
 }
 
-
+/*
+@resp frase di risposta standard ricevuta da dialogflow
+@data da cercare
+la funzione costruisce una risposta cercando la data passata come
+parametro nel file, se questa data non viene trovata verranno 
+presi i dati dell'ultima data disponibile. I dati verranno quindi inseriti
+nella risposta restituita da dialogflow tramite la funzione str_replace.
+return risposta da stampare
+*/
 function fetchYesterdaySleep($resp,$data){
 
 $param = "";
@@ -752,7 +848,18 @@ if($result['minutesAsleep'] != null){
 }
 
 }
-
+/*
+@resp frase di risposta standard ricevuta da dialogflow
+@parameters parametri contenenti le info sui periodi di tempo
+nella frase rilevati da dialogflow
+@text frase scritta dall'utente
+il metodo analizza i parameters se è presente la data di ieri,di oggi
+oppure è stato riconosciuto un verbo al passato prossimo nella frase,
+ chiama quindi il metodo fetchYesterdaySleep per ottenere i minuti di 
+sonno dell'ultima notte,altrimenti viene chiamata la 
+funzione fetchPastSleep che costruisce la risposta con i dati storici
+return risposta da stampare  
+*/
 function getSleep($resp,$parameters,$text){
 
 $yesterday = date("Y-m-d",strtotime("-1 days")); 
@@ -803,7 +910,16 @@ $answer = fetchYesterdaySleep($resp,$yesterday);
 return $answer;
 
 }
+/*
+@startDate data iniziale dell'intervallo
+@endDate data finale dell'intervallo
+questa funzione ricerca all'interno del file json i dati del
+sonno dell'utente filtrati per data, effettua quindi una media 
+dei dati sul sonno e costruisce la risposta da restituire all'utente
+Se non vengono trovati dati viene effettuata una media su tutto il file
 
+return risposta da stampare  
+*/
 function fetchPastSleep($endDate,$startDate){
 
 $param = "";

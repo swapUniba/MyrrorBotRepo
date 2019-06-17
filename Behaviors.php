@@ -1,5 +1,13 @@
 <?php
-
+/*
+@startDate data iniziale dell'intervallo in cui cercare
+@endDate data finale dell'intervallo in cui cercare
+la funzione ricerca all'interno del file json i dati i minuti
+di attività fisica svolti 'fairlyActive' 'lightlyActive' 'veryActive'.
+Viene effettuata una media di tutti e 3 i valori e viene restituito un array con 
+le medie dei 3 valori , in caso non vengano trovati viene restituito un array di 0
+return array di valori con l'attività fisica media
+*/
 function attivitaInterval($startDate,$endDate){
 
  $activity = array(0,0,0);
@@ -66,7 +74,17 @@ if($count[0] != 0 && $count[1] != 0 && $count[2] != 0 ){
     
 return $activity;
 }
-
+/*
+@data data da cercare nel file
+il metodo effettua una ricerca all'interno del file json
+della data specificata, se vengono trovati i dati dell'attività
+fisica corrispondenti a quella data saranno restitiuti 
+tramite un array i dati presenti alle voci minutesfairlyActive
+minutesVeryActive e minutesLightlyActive.Se non ci sono informazioni
+riguardanti la data scelta verranno presi i dati dell'ultima data disponibile
+return array con i 3 valori riguardanti i minuti di attività fisica
+e la data corrispondente 
+*/
 function attivitaData($data){
 
    $activity = array(0,0,0,"");
@@ -177,7 +195,19 @@ foreach ($json_data as $key1 => $value1) {
 return $activity;
 
 }
+/*
+@resp risposta standard da Dialogflow
+@parameters parametri con le info sulle date 
+@text domanda scritta dall'utente
+La funziona controlla parameters per verificare se c'è una sola
+data oppure un intervallo di tempo, in base a questo vengono
+chiamati metodi diversi attivitaInterval in caso di 
+intervalli di tempo e attivitaData in caso di una singola data 
+come i giorni di oggi e ieri. Tramite i dati ottenuti verrà
+costruita una risposta
+return risposta da stampare
 
+*/
 function attivitaFisica($resp,$parameters,$text){
 
 $answer = "";
@@ -259,7 +289,21 @@ return $answer;
 
 }
 
-
+/*
+@resp risposta standard da Dialogflow
+@parameters parametri con le info sulle date 
+@text domanda scritta dall'utente
+questa funzione se trova in parameters i dati su un periodo di 
+tempo avvia attivitaInterval per ottenere i dati medi sull'attività
+fisica, la risposta sarà costruita in base ai token
+riconosciuti nella frase e sarà affermativa se il valore è maggiore di 30.
+Se nei parametri c'è una sola data viene chiamata la funzione 
+attivitaData dopo un controllo lessicale viene effettuato un 
+controllo per verificare che l'attività fisica svolta sia maggiore di 30 
+minuti costruendo così una risposta affermativa o negativa a seconda 
+dei casi
+return risposta da stampare 
+*/
 function attivitaFisicaBinary($resp,$parameters,$text){
 
 if(isset($parameters['date-period']['startDate'])){
@@ -322,7 +366,16 @@ return $answer;
 
 }
 
-
+/*
+@startDate data iniziale dell'intervallo
+@endDate data finale dell'intervallo
+la funzione effettua una ricerca nel file json cercando le calorie 
+bruciate dall'utente nel periodo di tempo specificato,
+se non vengono trovate delle informazioni in quell'intervallo 
+vengono presi in considerzione tutti i dati presenti nel file.
+Viene effettuata così una media delle calorie bruciate
+return media calorie bruciate 
+*/
 function caloriesInterval($startDate,$endDate){
 
 $param = "";
@@ -436,6 +489,18 @@ if(isset($result['activityCalories'])){
 
 }
 
+/*
+@resp risposta standard ricevuta da dialogflow
+@parameters parametri con i dati sul tempo 
+@text domanda dell'utente
+la funzione analizza parameters e decide quale funzione 
+invocare per costruire la risposta.
+Se in parameters c'è un intervallo di date viene chiamata 
+la funzione caloriesInterval, se invece viene trovata 
+solo una singola data chiamiamo caloriesDay sostituendo in resp
+il valore corrispondente dei battiti.
+return risposta da stampare
+*/
 function getCalories($resp,$parameters,$text){
 
 $answer = "";
@@ -468,6 +533,21 @@ return $answer;
 
 }
 
+
+/*
+@resp risposta standard ricevuta da dialogflow
+@parameters parametri con i dati sul tempo 
+@text domanda dell'utente
+la funzione effettua il calcolo del fabbisogno giornaliero
+dell'uomo, a seconda dei parametri verrà chiamata la funzione
+per gli intervallli di tempo caloriesInterval oppure
+quella per i giorni singoli caloriesDay.
+Successivamente vengono analizzati i token presenti nella frase,
+se il valore delle calorie bruciate è maggiore del fabbisogno 
+energetico l'utente ha bruciato abbastanza calorie
+la risposta viene formulata di conseguenza.
+return risposta da stampare 
+*/
 function getCaloriesBinary($resp,$parameters,$text){
 
 $peso = 80;
@@ -536,6 +616,13 @@ if(strpos($text, 'abbastanza')){
 return $answer;
 }
 
+/*
+@day giorno da cercare
+la funzione cerca nel file il numero di passi in 
+un determinato giorno e li restituisce in output.
+Se non vengono trovati i dati allora viene preso in 
+considerazioe l'ultimo giorno disponibile.
+*/
 function stepsDay($day){
 
 $result = null;
@@ -599,7 +686,17 @@ return  array($date2,$result['steps']);
 
 
 }
+/*
+@startDate data iniziale dell'intervallo
+@endDate data finale dell'intervallo
+la funzione effettua una ricerca del numero di passi 
+effettuati dall'utente in un determinato intervallo di tempo
+se non vengono trovati dati in quell'intervallo vengono
+considerati i dati nell'intero file.
+Viene effettuata una media dei passi effettuati.
+return media passi
 
+*/
 function stepsInterval($startDate,$endDate){
 
 $result = null;
@@ -658,7 +755,18 @@ if ($count != 0) {
 }
 
 }
-
+/*
+@resp risposta standard ricevuta da dialogflow
+@parameters parametri con i dati sul tempo 
+@text domanda dell'utente
+La funzione se in parameters è presente un intervallo di tempo
+chiama il metodo stepsInterval per ottnere una media dei passi 
+effettuati e costruisce la risposta di conseguenza;
+ se è presente una singola data viene chiamata stepsDay
+che restituisce i passi nel giorno selezionato in questo caso verrà
+utilizzata la risposta resp a cui verranno aggiunti i dati otteuti,
+return risposta da stampare
+*/
 function getSteps($resp,$parameters,$text){
 
 if(isset($parameters['date-period']['startDate'])){
@@ -709,10 +817,26 @@ if($arr[0] == $date){
 return $answer;
 
 }
-
+/*
+@resp risposta standard ricevuta da dialogflow
+@parameters parametri con i dati sul tempo 
+@text domanda dell'utente
+La funzione prende inizialmetnte una media dei passi presenti nel file
+Se in parameters è presente un intervallo di tempo
+chiama il metodo stepsInterval per ottnere una media dei passi 
+effettuati nella costruzione della risposta verifica che la media dei passi
+nel periodo selezionato sia maggiore della media generale, in tal caso la 
+risposta sarà affermativa.
+Se è presente una singola data viene chiamata stepsDay
+che restituisce i passi nel giorno selezionato in questo caso verrà
+confrontato il numero di passi ottenuti con la media ricavata in precedenza,
+se questo valore è maggiore la risposta sarà affermativa.
+return risposta da stampare
+*/
 function getStepsBinary($resp,$parameters,$text){
 
 $answer = "";
+//media generale passi
 $average = stepsInterval("","");
 
 if(isset($parameters['date-period']['startDate'])){
@@ -771,6 +895,17 @@ return $answer;
 
 }
 
+/*
+@resp risposta standard ricevuta da dialogflow
+@parameters parametri con i dati sul tempo 
+@text domanda dell'utente
+La funzione in base ai valori presenti in parameters decide se
+invocare sedentaryDay per i dati di un singolo giorno, altrimenti
+se non ci sono informazioni sulla data viene invocata sendetaryDay 
+con la data di oggi, infine costruisce la risposta 
+sostituendo i valori di sedentarietà ottenuti a resp, 
+return risposta
+*/
 function getSedentary($resp,$parameters,$text){
 
 
@@ -804,6 +939,19 @@ return $answer;
 
 }
 
+/*
+@resp risposta standard ricevuta da dialogflow
+@parameters parametri con i dati sul tempo 
+@text domanda dell'utente
+La funzione prende i dati dell'ultima settimana
+presenti nel file json chiamando sedentaryInterval
+La risposta viene costruita analizzando i token presenti
+nella frase, se i minuti di sedentarietà in una settimana saranno
+9930 l'utente sarà definito sedentario
+return risposta da stampare
+
+*/
+
 function getSedentaryBinary($resp,$parameters,$text){
 
 $answer = "";
@@ -835,7 +983,13 @@ if(strpos($text, 'seduto') || strpos($text, 'fermo') || strpos($text, 'sedentari
  return $answer;
 
 }
-
+/*
+@startDate data iniziale intervallo
+@endDate data finale intervallo
+la funziona cerca tutti i dati sui minuti di sedentarietà
+nell' intervallo di tempo specificato, i minuti vengono
+sommati in result e vengono restituiti 
+*/
 function sedentaryInterval($startDate,$endDate){
 
 $param = "";
@@ -863,7 +1017,13 @@ return $result;
 
 
 }
-
+/*
+@date data da cerare nel file
+la funzione cerca i minuti di sedentarietà nel file
+corrispondenti alla data passata come parametro se li
+trova li restituisce altrimenti restituisce i dati dell'ultima data
+disponibile
+*/
 function SedentaryDay($date){
 
 
