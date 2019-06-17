@@ -1,6 +1,6 @@
 <?php
 
-//CONTATTI (Per adesso restituisce solamente l'elenco dei contatti)
+//La funzione permette di fornire i contatti con i quali si interagisce maggiormente su un determinato social network
 function contatti($resp,$parameters,$text){
 
 	$param = "";

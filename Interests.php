@@ -1,6 +1,6 @@
 <?php
 
-//INTERESSI
+//Restuisce l'elenco dei maggiori interessi dell'utente. N.B. Non vengono presi in considerazione quelli che hanno la dicitura "Category:"
 function interessi($resp,$parameters){
 
 	$param = "";
@@ -12,7 +12,7 @@ function interessi($resp,$parameters){
 
 		if($key1 == "interests"){
 			foreach ($value1 as $key => $value) {
-				if (isset($value['value'])) {//Se è valorizzata la variabile 'value'
+				if (isset($value['value'])) {//Verifico se è valorizzata la variabile 'value'
 
 					$categoria = $value['value']; //Prendo la categoria
 
@@ -32,7 +32,7 @@ function interessi($resp,$parameters){
         }	
     }
 
-
+    //Se è valorizzato l'array, stampo gli interessi
 	if (isset($top5)) {
 		$answer = "<br>" . $resp;
 
