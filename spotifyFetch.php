@@ -1,18 +1,25 @@
 <?php
+
 require 'vendor/autoload.php';
 
-// Fetch the saved access token from somewhere. A cookie for example.
-if(!isset($_COOKIE["Spotifytoken"])) {
-    echo "access Token is not set!";
-} else {
-    $accessToken = $_COOKIE["Spotifytoken"];
+function getApi(){
+
+	// Fetch the saved access token from somewhere. A cookie for example.
+	if(!isset($_COOKIE["Spotifytoken"])) {
+	    echo "Access Token is not set!";
+	} else {
+	    $accessToken = $_COOKIE["Spotifytoken"];
+	}
+
+	$api = new SpotifyWebAPI\SpotifyWebAPI();
+	$api->setAccessToken($accessToken);
+
+	return $api;
 }
 
 
-$api = new SpotifyWebAPI\SpotifyWebAPI();
-$api->setAccessToken($accessToken);
 
-echo $accessToken;
+//echo $accessToken;
 
 /*It's now possible to request data from the Spotify catalog
 print_r(
@@ -32,9 +39,12 @@ foreach ($results->artists->items as $artist) {
     echo $artist->name, '<br>';
 }
 */
+
+/*
 $playlists = $api->getCategoryPlaylists('dinner', [
     'country' => 'se',
 ]);
 
-print_r($playlists);
 
+print_r($playlists);
+*/

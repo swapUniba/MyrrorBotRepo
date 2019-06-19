@@ -911,3 +911,26 @@ function getTodayBinario($oggi, $parameters){
   return $answer;
 
 }
+
+
+function getLastEmotion(){
+  $param = "past";
+  $json_data = queryMyrror($param);
+  $result = null;
+  $max = "";
+  $emotion = "";
+
+  //Prendo l'ultima data disponibile
+  foreach ($json_data['affects'] as $key1 => $value1) {
+    $date = substr($value1['date'],0, 10);
+
+    if($date > $max){
+      $result = $value1;
+      $max = $date;
+    }
+  }
+
+  $emotion = getEmotion($result);
+
+  return $emotion;
+}

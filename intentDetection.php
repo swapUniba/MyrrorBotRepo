@@ -15,6 +15,7 @@ include 'Demographics.php';
 include 'Interests.php';
 include 'SocialRelations.php';
 include 'CognitiveAspects.php';
+include 'SpotifyIntent.php';
 
 
 header('Content-type: text/plain; charset=utf-8');
@@ -75,7 +76,7 @@ function detect_intent_texts($projectId, $text, $sessionId, $languageCode = 'it-
 
 function selectIntent($intent, $confidence,$text,$resp,$parameters){
 
-    if(($confidence > 0.86 ||  str_word_count($text) >= 2) && $confidence >= 0.6){              
+    if(($confidence > 0.86 ||  str_word_count($text) >= 2) && $confidence >= 0.60){              
 
         $answer = null;
 
@@ -198,9 +199,48 @@ function selectIntent($intent, $confidence,$text,$resp,$parameters){
         $answer = "Intent non riconosciuto. Riprova con altre parole!";
     }
 
+
+    //SPOTIFY --> Valori soglia diversi
+    if(($confidence > 0.86 ||  str_word_count($text) >= 2) && $confidence >= 0.50 && ($intent == 'Canzone per nome' || $intent == 'Canzone per artista' || $intent == 'Canzoni in base al genere' || $intent == 'Playlist di canzoni in base alle emozioni' || $intent == 'Canzoni in base alle emozioni' || $intent == 'Canzoni personalizzate')){
+        switch ($intent) {
+            case 'Canzone per nome':
+                $answer = getMusicByTrack($resp,$parameters,$text);
+                break;
+
+            case 'Canzone per artista':
+                $answer = getMusicByArtist($resp,$parameters,$text);
+                break;
+            
+            case 'Canzoni in base al genere':
+                $answer = getMusicByGenre($resp,$parameters,$text);
+                break;
+
+            case 'Playlist di canzoni in base alle emozioni':
+                $answer = getPlaylistByEmotion($resp,$parameters,$text);
+                break;
+
+            case 'Canzoni in base alle emozioni':
+                $answer = getMusicByEmotion($resp,$parameters,$text);
+                break;
+
+            case 'Canzoni personalizzate':
+                $answer = getMusicCustom($resp,$parameters,$text);
+                break;
+
+            default:
+                $answer = "Intent non riconosciuto";
+                break;;
+        }
+    }
+
     //Stampo la risposta
     $arr = array('intentName' => $intent, 'confidence' => $confidence,'answer' => $answer);
-    printf(json_encode($arr,JSON_UNESCAPED_UNICODE)); //JSON_UNESCAPED_UNICODE utilizzato per il formato UTF8
+
+    if ($arr['intentName'] == 'Canzone per nome') {
+        printf(json_encode($arr)); //JSON_UNESCAPED_UNICODE utilizzato per il formato UTF8
+    }else{
+        printf(json_encode($arr,JSON_UNESCAPED_UNICODE)); //JSON_UNESCAPED_UNICODE utilizzato per il formato UTF8
+    }
 }
 
 date_default_timezone_set('Europe/Madrid'); //Imposto la stessa timezone di Dialogflow (per gli orari)

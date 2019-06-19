@@ -99,7 +99,7 @@ foreach ($json_data as $key1 => $value1) {
      	
 	foreach ($value1['fromActivity'] as $key2 => $value2) {
         
-             $timestamp = $value2['timestamp'];
+          $timestamp = $value2['timestamp'];
           $date = date('Y-m-d',$timestamp/1000);
        
        if($date == $data && $value2['nameActivity'] != "calories"  && $value2['nameActivity'] != "steps" && 
@@ -1088,7 +1088,24 @@ return array("",0);
 
 }
 
+}
 
 
+
+//Prendo gli ultimi dati sull'attività fisica
+function getLastAttivitaFisica($resp,$parameters,$text){
+
+  $valori = array(); //Array che contiene i valori sull'attività fisica
+
+  //Ultimi dati trovati
+  $activity = attivitaData("2019-06-19");
+
+  $valori = [
+    'abbastanzaAttiva' => $activity[0],
+    'pocoAttiva' => $activity[1],
+    'moltoAttiva' => $activity[2],
+  ];
+
+  return $valori;
 
 }
