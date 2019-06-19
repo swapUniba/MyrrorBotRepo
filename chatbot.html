@@ -51,7 +51,7 @@
 
 				$(".chatBox").append('<span class="responseData">'+ '<iframe src="' + val['answer'] + '" width="300" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe></span><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>');
 
-			}else if(val["intentName"] == "Notizie in base ad un argomento" || val["intentName"] == "Notizie in base agli interessi" || val["intentName"] == "Notizie odierne"){
+			}else if(val["intentName"] == "Notizie in base ad un argomento" || val["intentName"] == "Notizie in base agli interessi" || val["intentName"] == "Notizie odierne"  || val["intentName"] == "Ricerca articolo"){
 	           $(".chatBox").append('<a href="'+val["answer"]+'">'+'Answer: '+val["answer"]+
 	             '</a><br><br><br><br><br><br>');
 	  		}else {
