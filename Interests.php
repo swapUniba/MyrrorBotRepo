@@ -71,3 +71,41 @@ function interessiFrequenti($categorieArray){
 	return $top5;
 }
 
+function getInterestsList(){
+
+	$param = "";
+	$json_data = queryMyrror($param);
+
+	$categorieArray = array();
+
+	foreach ($json_data as $key1 => $value1) {
+
+		if($key1 == "interests"){
+			foreach ($value1 as $key => $value) {
+				if (isset($value['value'])) {//Verifico se è valorizzata la variabile 'value'
+
+					$categoria = $value['value']; //Prendo la categoria
+
+   	 				//Controllo ed elimino la dicitura "Category:" da alcuni item
+					if (strpos($categoria, 'Category:') !== false) {
+    					$categoria = substr($categoria,9); //Elimino le prime 9 lettere
+					}
+
+					$categorieArray[] = $categoria; //Inserisco la categoria nell'array
+
+					//Se l'array delle categorie non è vuoto, trovo gli interessi più frequenti
+					if (count($categorieArray) != 0) {
+						$interessiFrequenti = array();
+
+	                    $interessiFrequenti = array_count_values($categorieArray); //Genera un array associativo: nome->(occorrenze di nome)
+	                    arsort($interessiFrequenti);//Ordino l'array in relazione al maggior numero di interazioni
+                          //prendo i primi 30 elementi
+	                    $top30 = array_slice($interessiFrequenti, 0, 30);
+						
+					}
+				}
+			}
+        }	
+    }
+	return $top30;
+}
