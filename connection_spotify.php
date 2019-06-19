@@ -19,5 +19,5 @@ $cookie_name = "Spotifytoken";
 setcookie($cookie_name, $accessToken, time() + (86400 * 30), "/");//1 giorno
 
 // Send the user along and fetch some data!
-header('Location: spotifyFetch.php');
-die();
+//header('Location: spotifyFetch.php');
+//die();

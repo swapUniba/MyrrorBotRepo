@@ -2,6 +2,7 @@
 <head>
 	<title>Chatbot</title>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 	<script type="text/javascript">		
 		$(document).ready(function() {
@@ -43,12 +44,17 @@
 			console.log(val);
 			val = JSON.parse(val);
 
-			/*$(".chatBox").append('<span class="responseData">'+ 'Bot:   ' + val["intentName"] + '<br> Confidence:' + val["confidence"] + '<br> Answer: '+val["answer"]+'</span><br><br>');*/
-
 			//Stampa risposte
 			if (val["intentName"] == "Interessi" || val["intentName"] == "Contatti" || val["intentName"] == "Esercizio fisico" || val["intentName"] == "Personalita") {
 				$(".chatBox").append('<span class="responseData">'+'Answer: '+val["answer"]+'</span><br><br><br><br><br><br><br>');
-			}else {
+			}else if(val['intentName'] == "Canzone per nome" || val['intentName'] == "Canzone per artista" || val["intentName"] == "Canzoni in base al genere" || val['intentName'] == "Playlist di canzoni in base alle emozioni" || val['intentName'] == "Canzoni in base alle emozioni" || val['intentName'] == "Canzoni personalizzate"){
+
+				$(".chatBox").append('<span class="responseData">'+ '<iframe src="' + val['answer'] + '" width="300" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe></span><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>');
+
+			}else if(val["intentName"] == "Notizie in base ad un argomento" || val["intentName"] == "Notizie in base agli interessi" || val["intentName"] == "Notizie odierne"){
+	           $(".chatBox").append('<a href="'+val["answer"]+'">'+'Answer: '+val["answer"]+
+	             '</a><br><br><br><br><br><br>');
+	  		}else {
 				$(".chatBox").append('<span class="responseData">'+'Answer: '+val["answer"]+'</span><br><br>');
 			}
 
