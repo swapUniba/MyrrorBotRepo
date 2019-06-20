@@ -1,5 +1,5 @@
 <?php
-if ($_GET['q'] && $_GET['maxResults']) {
+//if ($_GET['q'] && $_GET['maxResults']) {
   // Call set_include_path() as needed to point to your client library.
   require_once ('google-api-php-client/src/Google_Client.php');
   require_once ('google-api-php-client/src/contrib/Google_YouTubeService.php');
@@ -7,7 +7,8 @@ if ($_GET['q'] && $_GET['maxResults']) {
   /* Set $DEVELOPER_KEY to the "API key" value from the "Access" tab of the
   Google APIs Console <http://code.google.com/apis/console#access>
   Please ensure that you have enabled the YouTube Data API for your project. */
-  $DEVELOPER_KEY = 'AIzaSyDOkg-u9jnhP-WnzX5WPJyV1sc5QQrtuyc';
+  //$DEVELOPER_KEY = 'AIzaSyDOkg-u9jnhP-WnzX5WPJyV1sc5QQrtuyc';
+  $DEVELOPER_KEY = "AIzaSyADh47AR3xdQPMT0oXTPJatZQ_Cbhw9YhM";
 
   $client = new Google_Client();
   $client->setDeveloperKey($DEVELOPER_KEY);
@@ -16,13 +17,14 @@ if ($_GET['q'] && $_GET['maxResults']) {
 
   try {
     $searchResponse = $youtube->search->listSearch('id,snippet', array(
-      'q' => $_GET['q'],
-      'maxResults' => $_GET['maxResults'],
+      'q' => 'valentino rossi 2008',
+      'maxResults' => 10
     ));
 
     $videos = '';
     $channels = '';
 
+//print_r($searchResponse);
 
     foreach ($searchResponse['items'] as $searchResult) {
       switch ($searchResult['id']['kind']) {
@@ -37,6 +39,8 @@ if ($_GET['q'] && $_GET['maxResults']) {
        }
     }
 
+    echo $videos;
+
    } catch (Google_ServiceException $e) {
     $htmlBody .= sprintf('<p>A service error occurred: <code>%s</code></p>',
       htmlspecialchars($e->getMessage()));
@@ -45,5 +49,5 @@ if ($_GET['q'] && $_GET['maxResults']) {
       htmlspecialchars($e->getMessage()));
   }
   echo $htmlBody;
-}
+//}
 ?>
