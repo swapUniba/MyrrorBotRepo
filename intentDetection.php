@@ -16,6 +16,7 @@ include 'Interests.php';
 include 'SocialRelations.php';
 include 'CognitiveAspects.php';
 include 'SpotifyIntent.php';
+include 'Video.php';
 
 
 header('Content-type: text/plain; charset=utf-8');
@@ -225,6 +226,23 @@ function selectIntent($intent, $confidence,$text,$resp,$parameters){
 
             case 'Canzoni personalizzate':
                 $answer = getMusicCustom($resp,$parameters,$text);
+                break;
+
+            default:
+                $answer = "Intent non riconosciuto";
+                break;;
+        }
+    }
+
+
+    //YOUTUBE --> Valori soglia diversi
+    if(($confidence > 0.86 ||  str_word_count($text) >= 2) && $confidence >= 0.50 && ($intent == 'Video in base alle emozioni' || $intent == 'Ricerca Video')){
+        switch ($intent) {
+            case 'Video in base alle emozioni':
+                $answer = getVideoByEmotion($resp,$parameters,$text);
+                break;
+            case 'Ricerca Video':
+                $answer = getVideoBySearch($resp,$parameters,$text);
                 break;
 
             default:
