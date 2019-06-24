@@ -489,7 +489,7 @@ function getMusicCustom($resp,$parameters,$text){
 			
 		}
   	}else{
-  		return "Non è posibile effettuare raccomandazioni in quanto non sono presenti dati relativi ad età oppure attività fisica";
+  		return getMusicByEmotion($resp,$parameters,$text);
   	}
 
 	

@@ -17,6 +17,7 @@ include 'SocialRelations.php';
 include 'CognitiveAspects.php';
 include 'SpotifyIntent.php';
 include 'Video.php';
+include 'News.php';
 
 
 header('Content-type: text/plain; charset=utf-8');
@@ -249,6 +250,33 @@ function selectIntent($intent, $confidence,$text,$resp,$parameters){
                 $answer = "Intent non riconosciuto";
                 break;;
         }
+    }
+    
+        //GOOGLE-NEWS--> Valori soglia diversi
+    if($confidence >= 0.50  && ($intent == 'Notizie in base ad un argomento' || $intent == 'Notizie in base agli interessi' || $intent == 'Notizie odierne' || $intent == 'Ricerca articolo' )){
+
+        switch ($intent) {
+             case 'Notizie in base ad un argomento':
+                $answer = getNewsTopic($parameters);
+                break;
+
+            case 'Notizie in base agli interessi':
+                $answer = getInterestsNews();
+                break;
+
+            case 'Notizie odierne':
+                $answer = getTodayNews();   
+                break;
+
+            case 'Ricerca articolo':
+                $answer = cercaNews($parameters);   
+                break;  
+
+            default:
+                $answer = "Intent non riconosciuto";
+                break;
+        }
+
     }
 
     //Stampo la risposta
