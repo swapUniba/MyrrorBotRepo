@@ -1,5 +1,9 @@
 <?php
-
+/*
+questa funzione prende in ingresso il nome di una città
+ed effettua una query in curl tramite la quale ottiene un file
+json con le previsioni meteo dei prossimi 5 giorni per fascia oraria
+*/
 function queryWeather($city){
 
 $ch = curl_init();
@@ -17,7 +21,13 @@ curl_close ($ch);
 return $json_data;
 
 }
-
+/*
+@city città da cercare
+@parameters parametri sulle date
+@text testo digitato dall'utente
+questa funzione prende tutti i dati meteo odierni
+e li restituisce come risposta
+*/
 function getTodayWeather($city,$parameters,$text){
 
 $json_data = queryWeather($city);
@@ -82,12 +92,23 @@ return $result;
 
 }
 
+/*
+@city città da cercare
+@parameters parametri sulle date
+@text testo digitato dall'utente
+questa funzione analizza la data presente in parameters 
+ottenuta tramite dialogflow ed effettua una ricerca tramite queryWeather
+della citta selezionata. Prende quindi tutti i dati sul meteo relativi alla
+data presente in parameters e restituisce il meteo e la temperatura per 
+fascia oraria
 
+*/
 function getWeather($city,$parameters,$text){
 
 if(isset($parameters['date'])){
 $date = substr($parameters['date'],0,10);
 }else{
+  //prendiamo la data di domani di default se non ci sono dati
 $date = date('Y-m-d',strtotime("+1days")); 
 }
 
@@ -154,7 +175,18 @@ return $result;
 
 
 }
+/*
+@city città da cercare
+@parameters parametri sulle date
+@text testo digitato dall'utente
+questa funzione analizza la data presente in parameters 
+ottenuta tramite dialogflow ed effettua una ricerca tramite queryWeather
+della citta selezionata. Prende quindi tutti i dati sul meteo relativi alla
+data presente in parameters. Analizza in seguito i token presenti nella
+variabile text, in base a questi e ai dati sul meteo costruisce
+una risposta binaria da fornire all'utente.
 
+*/
 
 function binaryWeather($city,$parameters,$text){
 
