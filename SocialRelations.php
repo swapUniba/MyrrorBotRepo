@@ -158,8 +158,9 @@ function printAnswer($top3, $resp){
 		$answer = "<br>". $resp;
 
         foreach ($top3 as $key => $value) {
-   			$answer = $answer . "<br>" . $key ;
+   			$answer = " ".$answer . " " . $key."," ;
 		}
+		$answer = substr($answer,0,strlen($answer)-1);
 
 	}else{
 		$answer = "Sfortunatamente sembra che non ci siano contatti nel tuo profilo";

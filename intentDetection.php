@@ -18,6 +18,7 @@ include 'CognitiveAspects.php';
 include 'SpotifyIntent.php';
 include 'Video.php';
 include 'News.php';
+include 'Meteo.php';
 
 
 header('Content-type: text/plain; charset=utf-8');
@@ -120,6 +121,10 @@ function selectIntent($intent, $confidence,$text,$resp,$parameters){
                 $answer = contatti($resp,$parameters,$text);
                 break;
 
+            case 'Contatti_subintent':
+                $answer = contatti($resp,$parameters,$text);
+                break;
+
             case 'Email':
                 $answer = email($resp,$parameters,$text);
                 break;
@@ -190,6 +195,21 @@ function selectIntent($intent, $confidence,$text,$resp,$parameters){
 
             case 'Sedentarieta binario':
                 $answer = getSedentaryBinary($resp,$parameters,$text);
+                break;
+                
+             case 'meteo binario':
+             $city = "Bari";
+                $answer = binaryWeather($city,$parameters,$text);
+                break; 
+
+             case 'Meteo odierno':
+             $city = "Bari";
+                $answer = getTodayWeather($city,$parameters,$text);
+                break; 
+
+             case 'Previsioni meteo':
+               $city = "Bari";
+                $answer = getWeather($city,$parameters,$text);
                 break;
 
             default:
