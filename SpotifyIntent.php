@@ -41,14 +41,14 @@ function getMusicByTrack($resp,$parameters,$text){
 			*/
 			$answer = substr_replace($url, "embed/", 25, 0);
 		}else{
-			$answer = "Canzone non riconosciuta. Riprova!";
+			$answer = "Scusami ma non sono riuscito a capire la canzone da riprodurre. Prova a riscriverla con altre parole";
 		}
 		return $answer;
 
 	}else{
 		$brano = "";
 		$artista = "";
-		return "Canzone non riconosciuta. Riprova!";
+		return "Scusami ma non sono riuscito a capire la canzone da riprodurre. Prova a riscriverla con altre parole";
 	}
 
 }
@@ -63,7 +63,7 @@ function getMusicByArtist($resp,$parameters,$text){
 		$artista = $parameters['music-artist']; //Artista del brano
 	}else{
 		$artista = "";
-		return "Artista non riconosciuto. riprova!";
+		return "Scusami ma non sono riuscito ad identificare l'artista del brano. Prova a riscriverlo!";
 	}
 
 	$results = $api->search($artista, 'track');
@@ -104,7 +104,7 @@ function getMusicByGenre($resp,$parameters,$text){
 		$genere = $parameters['GeneriMusicali']; //Genere del brano
 	}else{
 		$genere = "";
-		return "Genere non riconosciuto. riprova!";
+		return "Scusami ma non sono riuscito ad identificare il genere del brano. Prova a riscriverlo!";
 	}
 
 	//Prendo la playlist di quel genere

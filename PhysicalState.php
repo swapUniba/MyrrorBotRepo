@@ -132,88 +132,96 @@ utilizzando gli ultimi dati disponibli.
 */
 function getCardio($resp,$parameters,$text){
 
+  $answer = "";
+  $today = date("Y-m-d"); 
+  $yesterday = date("Y-m-d",strtotime("-1 days")); 
 
-$answer = "";
-$today = date("Y-m-d"); 
-$yesterday = date("Y-m-d",strtotime("-1 days")); 
 
+  if(isset($parameters['date']) ){
 
-if(isset($parameters['date']) ){
+    $date1 = substr($parameters['date'],0,10);
 
-  $date1 = substr($parameters['date'],0,10);
-  if($today ==  $date1){
-    //dati oggi
-    $arr = cardioToday($parameters,$today);
-    
-    if($arr['date'] == $today){
-      /*
-   la risposta di default ($resp) restituita da dialogflow è
-   costruita per la data di oggi, così sostituiamo alla X presente 
-   in $resp il valore del battito cardiaco da stampare
-      */
-      $answer = str_replace('X',$arr['heart'],$resp);
-    }else{
-      //risposta standard
-      $answer = "gli ultimi dati disponibili sono del ".$arr['date']
-      ." battito cardiaco ".$arr['heart']." bpm";
-    }
+    if($today ==  $date1){
 
-  }elseif($yesterday ==  $date1){
-    //dati ieri
-     $arr = cardioToday($parameters,$yesterday);
+      //dati oggi
+      $arr = cardioToday($parameters,$today);
+      
+      if($arr['date'] == $today){
+        
+        /*
+        la risposta di default ($resp) restituita da dialogflow è
+        costruita per la data di oggi, così sostituiamo alla X presente 
+        in $resp il valore del battito cardiaco da stampare
+        */
+        $answer = str_replace('X',$arr['heart'],$resp);
+      }else{
+
+        //risposta standard
+        $answer = "Gli ultimi dati in mio possesso sono relativi al ".$arr['date']
+        .". Il battito cardiaco è di ".$arr['heart']." bpm";
+      }
+
+    }elseif($yesterday ==  $date1){
+
+      //dati ieri
+      $arr = cardioToday($parameters,$yesterday);
+
       if($arr['date'] == $yesterday){
-      //risposta oggi
-      $answer = "il tuo battito cardiaco era ".$arr['heart']." bpm";
+        $answer = "Il tuo battito cardiaco era di ".$arr['heart']." bpm"; //risposta oggi
+      }else{
+
+        //risposta standard
+        $answer = "Gli ultimi dati in mio possesso sono relativi al ".$arr['date']
+        .". Il battito cardiaco è di ".$arr['heart']." bpm";
+      }
+
+   }elseif(isset($parameters['date-period']['startDate'])){
+
+    //dati ultimo giorno trovato
+    $startDate =  substr($parameters['date-period']['startDate'],0,10);
+    $endDate =  substr($parameters['date-period']['endDate'],0,10);
+    $average = cardioInterval($startDate,$endDate);
+
+    if($average != 0){
+      $answer = "In media, il tuo battito cardiaco è di ".$average." bpm.";
     }else{
-      //risposta standard
-      $answer = "gli ultimi dati disponibili sono del ".$arr['date']
-      ." battito cardiaco ".$arr['heart']." bpm";
+      $arr = cardioToday($parameters,"");
+      $answer = "Gli ultimi dati in mio possesso sono relativi al ".$arr['date']
+        ." ed il battito cardiaco era pari a ".$arr['heart']." bpm";
     }
- }elseif(isset($parameters['date-period']['startDate'])){
-     //dati ultimo giorno trovato
-  $startDate =  substr($parameters['date-period']['startDate'],0,10);
-  $endDate =  substr($parameters['date-period']['endDate'],0,10);
-  $average = cardioInterval($startDate,$endDate);
-  if($average != 0){
-    $answer = "In media, il tuo battito cardiaco è ".$average." bpm.";
-  }else{
-    $arr = cardioToday($parameters,"");
-    $answer = "gli ultimi dati disponibili sono del ".$arr['date']
-      ." battito cardiaco ".$arr['heart']." bpm";
-  }
+
+    }else{
+       $arr = cardioToday($parameters,"");
+       $answer = "Gli ultimi dati in mio possesso sono relativi al ".$arr['date']
+        ." ed il battito cardiaco era pari a ".$arr['heart']." bpm";
+    }
+
+  }elseif (isset($parameters['date-period']['startDate'])) {
+
+    //dati intervallo di tempo
+    $startDate =  substr($parameters['date-period']['startDate'],0,10);
+    $endDate =  substr($parameters['date-period']['endDate'],0,10);
+    $average = cardioInterval($startDate,$endDate);
+    if($average != 0){
+      $answer = "In media, il tuo battito cardiaco è di ".$average." bpm.";
+    }else{
+      $arr = cardioToday($parameters,"");
+      $answer = "Gli ultimi dati in mio possesso sono relativi al ".$arr['date']
+        ." ed il battito cardiaco era pari a ".$arr['heart']." bpm";
+    }
 
   }else{
+
+   //dati ultimo giorno trovato
      $arr = cardioToday($parameters,"");
-     $answer = "gli ultimi dati disponibili sono del ".$arr['date']
-      ." battito cardiaco ".$arr['heart']." bpm";
+     $answer = "Gli ultimi dati in mio possesso sono relativi al ".$arr['date']
+        ." ed il battito cardiaco era pari a ".$arr['heart']." bpm";
   }
+  return $answer;
 
-}elseif (isset($parameters['date-period']['startDate'])) {
-  //dati intervallo di tempo
-  
-  $startDate =  substr($parameters['date-period']['startDate'],0,10);
-  $endDate =  substr($parameters['date-period']['endDate'],0,10);
-  $average = cardioInterval($startDate,$endDate);
-  if($average != 0){
-    $answer = "In media, il tuo battito cardiaco è ".$average." bpm.";
-  }else{
-    $arr = cardioToday($parameters,"");
-    $answer = "gli ultimi dati disponibili sono del ".$arr['date']
-      ." battito cardiaco ".$arr['heart']." bpm";
-  }
-
-}else{
- //dati ultimo giorno trovato
-   $arr = cardioToday($parameters,"");
-   $answer = "gli ultimi dati disponibili sono del ".$arr['date']
-      ." battito cardiaco ".$arr['heart']." bpm";
 }
 
 
-
-return $answer;
-
-}
 /*
 @resp frase di risposta standard ricevuta da dialogflow
 @parameters parametri contenenti le info sui periodi di tempo
@@ -232,197 +240,199 @@ ultimi dati presenti nel file.
 */
 function getCardioBinary($resp,$parameters,$text){
 
-$answer = "";
-$today = date("Y-m-d");
-//$today = "2019-03-27";
-$yesterday = date("Y-m-d",strtotime("-1 days")); 
-if(isset($parameters['date-period']['startDate'])){
+    $answer = "";
+    $today = date("Y-m-d");
+    //$today = "2019-03-27";
 
-  $startDate =  substr($parameters['date-period']['startDate'],0,10);
-  $endDate =  substr($parameters['date-period']['endDate'],0,10);
-  $average = cardioInterval($startDate,$endDate);
+    $yesterday = date("Y-m-d",strtotime("-1 days")); 
 
-  if($average == 0){
-    $answer = "non sono stati trovati dati nel periodo selezionato"; 
-  }else{
-      if(strpos($text, 'buono') || strpos($text, 'buone') || strpos($text, 'bene') || strpos($text, 'ottimo') || strpos($text, 'nella norma') || strpos($text, 'buona')){
-   
-   if($average >= 60 && $average <= 100){
-     $answer = "Si, in media le tue pulsazioni sono nella norma: ".$average." bpm";
-   }else{
-     $answer = "No, in media le tue pulsazioni non sono nella norma: ".$average." bpm";
-   }
+    if(isset($parameters['date-period']['startDate'])){
 
+      $startDate =  substr($parameters['date-period']['startDate'],0,10);
+      $endDate =  substr($parameters['date-period']['endDate'],0,10);
+      $average = cardioInterval($startDate,$endDate);
 
-
-  }elseif (strpos($text, 'pessimo') || strpos($text, 'cattivo') || strpos($text, 'cattive') ||
-   strpos($text, 'male ') || strpos($text, 'fuori norma') ) {
-    
-    if($average >= 60 && $average <= 100){
-     $answer = "No, in media le tue pulsazioni sono nella norma: ".$average." bpm";
-   }else{
-     $answer = "Si, in media le tue pulsazioni non sono nella norma: ".$average." bpm";
-   }
-
-  }
-  }
-
-}elseif (isset($parameters['date'])) {
-  $date1 = substr($parameters['date'],0,10);
-  switch ($date1) {
-    case $today:
-
-      $arr = cardioToday($parameters,$today);
-
-    if(strpos($text, 'buono') || strpos($text, 'buone') || strpos($text, 'bene') || strpos($text, 'ottimo') 
-      || strpos($text, 'nella norma') || strpos($text, 'buona')){
-
-      if($arr['date'] == $today){
-
-          if($arr['heart'] >= 60 && $arr['heart'] <= 100)
-            $answer = "Si,le tue pulsazioni sono nella norma: ".$arr['heart']." bpm";
-          else
-             $answer = "No,le tue pulsazioni non sono nella norma ".$arr['heart']." bpm";
+      if($average == 0){
+        $answer = "Non sono riuscito a recuperare i dati relativi al periodo che mi hai indicato &#x1F62D;"; 
       }else{
+          if(strpos($text, 'buono') || strpos($text, 'buone') || strpos($text, 'bene') || strpos($text, 'ottimo') || strpos($text, 'nella norma') || strpos($text, 'buona')){
+       
+            if($average >= 60 && $average <= 100){
+              $answer = "Si, in media le tue pulsazioni sono nella norma. Infatti ho rilevato ".$average." bpm";
+            }else{
+              $answer = "No, in media le tue pulsazioni non sono nella norma. Infatti ho rilevato ".$average." bpm";
+            }
 
-         if($arr['heart'] >= 60 && $arr['heart'] <= 100){
-            $answer = "nell'ultima data disponibile".$arr['date'].
-                      "le tue pulsazioni erano nella norma: ".$arr['heart']." bpm";
-         }else{
+          }elseif (strpos($text, 'pessimo') || strpos($text, 'cattivo') || strpos($text, 'cattive') ||
+            strpos($text, 'male ') || strpos($text, 'fuori norma') ) {
+        
+            if($average >= 60 && $average <= 100){
+             $answer = "No, in media le tue pulsazioni sono nella norma. Infatti ho rilevato ".$average." bpm";
+            }else{
+             $answer = "Si, in media le tue pulsazioni non sono nella norma. Infatti ho rilevato ".$average." bpm";
+            }
 
-             $answer = "nell'ultima data disponibile".$arr['date'].
-             "le tue pulsazione non erano nella norma ".$arr['heart']." bpm";
-         }
-           
-      }
-              
-      }elseif (strpos($text, 'pessimo') || strpos($text, 'cattivo') || strpos($text, 'cattive') ||
-             strpos($text, 'male ') || strpos($text, 'fuori norma') ) {
-
-         if($arr['date'] == $today){
-          if($arr['heart'] >= 60 && $arr['heart'] <= 100)
-            $answer = "No,le tue pulsazioni sono nella norma: ".$arr['heart']." bpm";
-          else
-             $answer = "Si,le tue pulsazioni non sono nella norma ".$arr['heart']." bpm";
-      }else{
-         if($arr['heart'] >= 60 && $arr['heart'] <= 100){
-            $answer = "nell'ultima data disponibile".$arr['date'].
-                      "le tue pulsazioni erano nella norma: ".$arr['heart']." bpm";
-         }else{
-
-             $answer = "nell'ultima data disponibile".$arr['date'].
-             "le tue pulsazione non erano nella norma ".$arr['heart']." bpm";
-         }
-           
+          }
       }
 
+    }elseif (isset($parameters['date'])) {
+
+      $date1 = substr($parameters['date'],0,10);
+      switch ($date1) {
+
+        case $today:
+          $arr = cardioToday($parameters,$today);
+
+          if(strpos($text, 'buono') || strpos($text, 'buone') || strpos($text, 'bene') || strpos($text, 'ottimo') 
+            || strpos($text, 'nella norma') || strpos($text, 'buona')){
+
+            if($arr['date'] == $today){
+
+                if($arr['heart'] >= 60 && $arr['heart'] <= 100)
+                  $answer = "Si, le tue pulsazioni sono nella norma. Infatti ho rilevato ".$arr['heart']." bpm";
+                else
+                   $answer = "No, le tue pulsazioni non sono nella norma. Infatti ho rilevato ".$arr['heart']." bpm";
+            }else{
+
+               if($arr['heart'] >= 60 && $arr['heart'] <= 100){
+                  $answer = "Gli ultimi dati in mio possesso sono relativi al ".$arr['date'].
+                            ". Le tue pulsazioni erano nella norma, infatti ho rilevato ".$arr['heart']." bpm";
+               }else{
+
+                   $answer = "Gli ultimi dati in mio possesso sono relativi al ".$arr['date'].
+                   ". Le tue pulsazione non erano nella norma, infatti ho rilevato ".$arr['heart']." bpm";
+               }
+                 
+            }
+                    
+            }elseif (strpos($text, 'pessimo') || strpos($text, 'cattivo') || strpos($text, 'cattive') ||
+                   strpos($text, 'male ') || strpos($text, 'fuori norma') ) {
+
+               if($arr['date'] == $today){
+                if($arr['heart'] >= 60 && $arr['heart'] <= 100)
+                  $answer = "No, le tue pulsazioni sono nella norma. Infatti ho rilevato ".$arr['heart']." bpm";
+                else
+                   $answer = "Si, le tue pulsazioni non sono nella norma. Infatti ho rilevato  ".$arr['heart']." bpm";
+            }else{
+               if($arr['heart'] >= 60 && $arr['heart'] <= 100){
+                  $answer = "Gli ultimi dati in mio possesso sono relativi al ".$arr['date'].
+                            ". Le tue pulsazioni erano nella norma, ovvero ".$arr['heart']." bpm";
+               }else{
+
+                   $answer = "Gli ultimi dati in mio possesso sono relativi al ".$arr['date'].
+                   ". Le tue pulsazione non erano nella norma, infatti ho rilevato ".$arr['heart']." bpm";
+               }
+                 
+            }
+
+            }
+
+            break;
+        case $yesterday:
+        
+          $arr = cardioToday($parameters,$yesterday);  
+          if(strpos($text, 'buono') || strpos($text, 'buone') || strpos($text, 'bene') || strpos($text, 'ottimo') || strpos($text, 'nella norma') || strpos($text, 'buona')){
+
+          if($arr['date'] == $yesterday){
+              if($arr['heart'] >= 60 && $arr['heart'] <= 100)
+                $answer = "Si, le tue pulsazioni erano nella norma, infatti ho rilevato ".$arr['heart']." bpm";
+              else
+                 $answer = "No, le tue pulsazioni non erano nella norma, infatti ho rilevato ".$arr['heart']." bpm";
+          }else{
+             if($arr['heart'] >= 60 && $arr['heart'] <= 100){
+                $answer = "Gli ultimi dati in mio possesso sono relativi al ".$arr['date'].
+                          ". Le tue pulsazioni erano nella norma, infatti ho rilevato ".$arr['heart']." bpm";
+             }else{
+
+                 $answer = "Gli ultimi dati in mio possesso sono relativi al ".$arr['date'].
+                 ". Le tue pulsazione non erano nella norma, infatti ho rilevato ".$arr['heart']." bpm";
+             }
+               
+          }
+                  
+          }elseif (strpos($text, 'pessimo') || strpos($text, 'cattivo') || strpos($text, 'cattive') ||
+                 strpos($text, 'male ') || strpos($text, 'fuori norma') ) {
+
+             if($arr['date'] == $yesterday){
+              if($arr['heart'] >= 60 && $arr['heart'] <= 100)
+                $answer = "No, le tue pulsazioni erano nella norma, infatti ho rilevato  ".$arr['heart']." bpm";
+              else
+                 $answer = "Si, le tue pulsazioni non erano nella norma, infatti ho rilevato  ".$arr['heart']." bpm";
+          }else{
+             if($arr['heart'] >= 60 && $arr['heart'] <= 100){
+                $answer = "Gli ultimi dati in mio possesso sono relativi al ".$arr['date'].
+                          ". Le tue pulsazioni erano nella norma, infatti ho rilevato  ".$arr['heart']." bpm";
+             }else{
+
+                 $answer = "Gli ultimi dati in mio possesso sono relativi al ".$arr['date'].
+                 ". Le tue pulsazione non erano nella norma, infatti ho rilevato  ".$arr['heart']." bpm";
+             }
+               
+          }
+
+          }
+       
+          break;
+        default:
+
+             //ultima data disponibile
+             $arr = cardioToday($parameters,"");
+            if($arr['heart'] >= 60 && $arr['heart'] <= 100){
+                $answer = "Gli ultimi dati in mio possesso sono relativi al ".$arr['date'].
+                          ". Le tue pulsazioni erano nella norma, infatti ho rilevato ".$arr['heart']." bpm";
+             }else{
+
+                 $answer = "Gli ultimi dati in mio possesso sono relativi al ".$arr['date'].
+                 ". Le tue pulsazione non erano nella norma, infatti ho rilevato ".$arr['heart']." bpm";
+             }
+          break;
       }
+      
+    }else{
+         $arr = cardioToday($parameters,$today);
+             if(strpos($text, 'buono') || strpos($text, 'buone') || strpos($text, 'bene') || strpos($text, 'ottimo') || strpos($text, 'nella norma') || strpos($text, 'buona')){
 
-      break;
-  case $yesterday:
-    
-      $arr = cardioToday($parameters,$yesterday);  
-      if(strpos($text, 'buono') || strpos($text, 'buone') || strpos($text, 'bene') || strpos($text, 'ottimo') || strpos($text, 'nella norma') || strpos($text, 'buona')){
+          if($arr['date'] == $today){
+              if($arr['heart'] >= 60 && $arr['heart'] <= 100)
+                $answer = "Si, le tue pulsazioni sono nella norma, infatti ho rilevato ".$arr['heart']." bpm";
+              else
+                 $answer = "No, le tue pulsazioni non sono nella norma, infatti ho rilevato ".$arr['heart']." bpm";
+          }else{
+             if($arr['heart'] >= 60 && $arr['heart'] <= 100){
+                $answer = "Gli ultimi dati in mio possesso sono relativi al ".$arr['date'].
+                          ". Le tue pulsazioni erano nella norma, infatti ho rilevato ".$arr['heart']." bpm";
+             }else{
 
-      if($arr['date'] == $yesterday){
-          if($arr['heart'] >= 60 && $arr['heart'] <= 100)
-            $answer = "Si,le tue pulsazioni erano nella norma: ".$arr['heart']." bpm";
-          else
-             $answer = "No,le tue pulsazioni non erano nella norma ".$arr['heart']." bpm";
-      }else{
-         if($arr['heart'] >= 60 && $arr['heart'] <= 100){
-            $answer = "nell'ultima data disponibile ".$arr['date'].
-                      " le tue pulsazioni erano nella norma: ".$arr['heart']." bpm";
-         }else{
+                 $answer = "Gli ultimi dati in mio possesso sono relativi al ".$arr['date'].
+                 ". Le tue pulsazione non erano nella norma, infatti ho rilevato ".$arr['heart']." bpm";
+             }
+               
+          }
+                  
+          }elseif (strpos($text, 'pessimo') || strpos($text, 'cattivo') || strpos($text, 'cattive') ||
+                 strpos($text, 'male ') || strpos($text, 'fuori norma') ) {
 
-             $answer = "nell'ultima data disponibile ".$arr['date'].
-             " le tue pulsazione non erano nella norma ".$arr['heart']." bpm";
-         }
-           
-      }
-              
-      }elseif (strpos($text, 'pessimo') || strpos($text, 'cattivo') || strpos($text, 'cattive') ||
-             strpos($text, 'male ') || strpos($text, 'fuori norma') ) {
+             if($arr['date'] == $today){
+              if($arr['heart'] >= 60 && $arr['heart'] <= 100)
+                $answer = "No, le tue pulsazioni sono nella norma, infatti ho rilevato ".$arr['heart']." bpm";
+              else
+                 $answer = "Si,le tue pulsazioni non sono nella norma, infatti ho rilevato ".$arr['heart']." bpm";
+          }else{
+             if($arr['heart'] >= 60 && $arr['heart'] <= 100){
+                $answer = "Gli ultimi dati in mio possesso sono relativi al ".$arr['date'].
+                          ". Le tue pulsazioni erano nella norma, infatti ho rilevato ".$arr['heart']." bpm";
+             }else{
 
-         if($arr['date'] == $yesterday){
-          if($arr['heart'] >= 60 && $arr['heart'] <= 100)
-            $answer = "No,le tue pulsazioni erano nella norma: ".$arr['heart']." bpm";
-          else
-             $answer = "Si,le tue pulsazioni non erano nella norma ".$arr['heart']." bpm";
-      }else{
-         if($arr['heart'] >= 60 && $arr['heart'] <= 100){
-            $answer = "nell'ultima data disponibile ".$arr['date'].
-                      " le tue pulsazioni erano nella norma: ".$arr['heart']." bpm";
-         }else{
+                 $answer = "Gli ultimi dati in mio possesso sono relativi al ".$arr['date'].
+                 ". Le tue pulsazione non erano nella norma, infatti ho rilevato ".$arr['heart']." bpm";
+             }
+               
+          }
 
-             $answer = "nell'ultima data disponibile ".$arr['date'].
-             " le tue pulsazione non erano nella norma ".$arr['heart']." bpm";
-         }
-           
-      }
+          }
+    }
 
-      }
-   
-      break;
-    default:
-         //ultima data disponibile
-         $arr = cardioToday($parameters,"");
-        if($arr['heart'] >= 60 && $arr['heart'] <= 100){
-            $answer = "nell'ultima data disponibile ".$arr['date'].
-                      " le tue pulsazioni erano nella norma: ".$arr['heart']." bpm";
-         }else{
-
-             $answer = "nell'ultima data disponibile ".$arr['date'].
-             " le tue pulsazione non erano nella norma ".$arr['heart']." bpm";
-         }
-      break;
-  }
-  
-}else{
-     $arr = cardioToday($parameters,$today);
-         if(strpos($text, 'buono') || strpos($text, 'buone') || strpos($text, 'bene') || strpos($text, 'ottimo') || strpos($text, 'nella norma') || strpos($text, 'buona')){
-
-      if($arr['date'] == $today){
-          if($arr['heart'] >= 60 && $arr['heart'] <= 100)
-            $answer = "Si,le tue pulsazioni sono nella norma: ".$arr['heart']." bpm";
-          else
-             $answer = "No,le tue pulsazioni non sono nella norma ".$arr['heart']." bpm";
-      }else{
-         if($arr['heart'] >= 60 && $arr['heart'] <= 100){
-            $answer = "nell'ultima data disponibile ".$arr['date'].
-                      " le tue pulsazioni erano nella norma: ".$arr['heart']." bpm";
-         }else{
-
-             $answer = "nell'ultima data disponibile ".$arr['date'].
-             " le tue pulsazione non erano nella norma ".$arr['heart']." bpm";
-         }
-           
-      }
-              
-      }elseif (strpos($text, 'pessimo') || strpos($text, 'cattivo') || strpos($text, 'cattive') ||
-             strpos($text, 'male ') || strpos($text, 'fuori norma') ) {
-
-         if($arr['date'] == $today){
-          if($arr['heart'] >= 60 && $arr['heart'] <= 100)
-            $answer = "No,le tue pulsazioni sono nella norma: ".$arr['heart']." bpm";
-          else
-             $answer = "Si,le tue pulsazioni non sono nella norma ".$arr['heart']." bpm";
-      }else{
-         if($arr['heart'] >= 60 && $arr['heart'] <= 100){
-            $answer = "nell'ultima data disponibile ".$arr['date'].
-                      " le tue pulsazioni erano nella norma: ".$arr['heart']." bpm";
-         }else{
-
-             $answer = "nell'ultima data disponibile ".$arr['date'].
-             " le tue pulsazione non erano nella norma ".$arr['heart']." bpm";
-         }
-           
-      }
-
-      }
-}
-
-return $answer;
+    return $answer;
 
 }
 
@@ -485,81 +495,88 @@ return risposta da stampare
 */
 function pastSleepBinary($resp,$parameters,$text){
 
-$param = "";
-$json_data = queryMyrror($param);
-$result = "";
+  $param = "";
+  $json_data = queryMyrror($param);
+  $result = "";
 
-$count = 0;
-$sumInBed = 0;
-$sumAsleep = 0;
-foreach ($json_data as $key1 => $value1) {
-  if(isset($value1['sleep'])){
-    
-       //ricerca per periodo   
-   foreach ($value1['sleep'] as $key2 => $value2) {
-        
-       $sumInBed += $value2['timeInBed'];
-       $sumAsleep += $value2['minutesAsleep'];
-       $count++;         
-}
-}
+  $count = 0;
+  $sumInBed = 0;
+  $sumAsleep = 0;
 
-}
+  foreach ($json_data as $key1 => $value1) {
 
-if($count == 0){
-  //non ci sono riferimenti per quel periodo
-  return "non sono stati trovati dati";
-}
-$asleepAV = intval($sumAsleep/$count);
-$inBedAV =intval($sumInBed/$count);
+    if(isset($value1['sleep'])){
+      
+    //ricerca per periodo   
+     foreach ($value1['sleep'] as $key2 => $value2) {
+         $sumInBed += $value2['timeInBed'];
+         $sumAsleep += $value2['minutesAsleep'];
+         $count++;         
+      }
+    }
 
-if(strpos($text, 'abbastanza')){
+  }
 
-   if($asleepAV >= 390)
-     $result = "Si, dormi abbastanza. In media dormi " .$asleepAV. " minuti ";
-   else
-     $result = "No,non dormi abbastanza. In media dormi " .$asleepAV. " minuti ";
+  if($count == 0){
+    //non ci sono riferimenti per quel periodo
+    return "Non sono riuscito a recuperare i dati relativi al periodo che mi hai indicato &#x1F62D;";
+  }
+  $asleepAV = intval($sumAsleep/$count);
+  $inBedAV =intval($sumInBed/$count);
 
-}elseif (strpos($text, 'tanto')) {
+  //Conversione minuti in ore e minuti
+  if ($asleepAV < 1) {
+    return "Non mi risulta che tu abbia dormito &#x1F631;";
+  }
+  $hours = floor($asleepAV / 60);
+  $minutes = ($asleepAV % 60);
 
-   if($asleepAV >= 390)
-     $result = "Si, dormi tanto. In media dormi " .$asleepAV. " minuti ";
-   else
-     $result = "No,non dormi tanto. In media dormi " .$asleepAV. " minuti ";
+  if(strpos($text, 'abbastanza')){
 
-}elseif (strpos($text, 'bene')) {
+     if($asleepAV >= 390)
+       $result = "Si, dormi abbastanza. In media dormi " .$hours. " ore e " . $minutes . " minuti";
+     else
+       $result = "No, non dormi abbastanza. In media dormi " .$hours. " ore e " . $minutes . " minuti";
 
-   if($asleepAV >= 390)
-     $result = "Si, dormi bene. In media dormi " .$asleepAV. " minuti ";
-   else
-     $result = "No,non dormi bene. In media dormi " .$asleepAV. " minuti ";
+  }elseif (strpos($text, 'tanto')) {
 
-}elseif (strpos($text, 'di meno')) {
+     if($asleepAV >= 390)
+       $result = "Si, dormi tanto. In media dormi " .$hours. " ore e " . $minutes . " minuti";
+     else
+       $result = "No,non dormi tanto. In media dormi " .$hours. " ore e " . $minutes . " minuti";
 
+  }elseif (strpos($text, 'bene')) {
+
+     if($asleepAV >= 390)
+       $result = "Si, dormi bene. In media dormi " .$hours. " ore e " . $minutes . " minuti";
+     else
+       $result = "No,non dormi bene. In media dormi " .$hours. " ore e " . $minutes . " minuti";
+
+  }elseif (strpos($text, 'di meno')) {
       if($asleepAV >= 480)
-     $result = "Si, dovresti dormire di meno. In media dormi " .$asleepAV. " minuti ";
-   else
-     $result = "No,dormi abbastanza. In media dormi " .$asleepAV. " minuti ";
+       $result = "Si, dovresti dormire di meno. In media dormi " .$hours. " ore e " . $minutes . " minuti";
+     else
+       $result = "No,dormi abbastanza. In media dormi " .$hours. " ore e " . $minutes . " minuti";
 
-}elseif (strpos($text, 'di più')) {
+  }elseif (strpos($text, 'di più')) {
 
-   if($asleepAV >= 390)
-     $result = "No,non dovresti dormire di più. In media dormi " .$asleepAV. " minuti ";
-   else
-     $result = "Si,dovresti dormire di più. In media dormi " .$asleepAV. " minuti ";
-  
-}elseif (strpos($text, 'poco')){
-  
-   if($asleepAV >= 390)
-     $result = "No, dormi abbastanza. In media dormi " .$asleepAV. " minuti ";
-   else
-     $result = "Si,dovresti dormire di più. In media dormi " .$asleepAV. " minuti ";
+     if($asleepAV >= 390)
+       $result = "No,non dovresti dormire di più. In media dormi " .$hours. " ore e " . $minutes . " minuti";
+     else
+       $result = "Si,dovresti dormire di più. In media dormi " .$hours. " ore e " . $minutes . " minuti";
+    
+  }elseif (strpos($text, 'poco')){
+    
+     if($asleepAV >= 390)
+       $result = "No, dormi abbastanza. In media dormi " .$hours. " ore e " . $minutes . " minuti";
+     else
+       $result = "Si,dovresti dormire di più. In media dormi " .$hours. " ore e " . $minutes . " minuti";
 
-}else{
-   $result = " dormi in media ". $asleepAV ." minuti ";
-}
+  }else{
+     $result = "In media dormi " .$hours. " ore e " . $minutes . " minuti";;
+  }
 
- return $result;
+   return $result;
 }
 
 /*
@@ -578,197 +595,212 @@ return risposta da stampare
 */
 function yestSleepBinary($resp,$parameters,$text,$data){
 
-$param = "";
-$json_data = queryMyrror($param);
-$result = null;
-//serve a capire se vengono presi i dati della data corretta oppure gli ultimi presenti nel file
-$flag = false;
+  $param = "";
+  $json_data = queryMyrror($param);
+  $result = null;
 
-//cerco data di ieri
-foreach ($json_data as $key1 => $value1) {
-  if(isset($value1['sleep'])){
+  //serve a capire se vengono presi i dati della data corretta oppure gli ultimi presenti nel file
+  $flag = false;
+
+  //cerco data di ieri
+  foreach ($json_data as $key1 => $value1) {
+    if(isset($value1['sleep'])){
+
+      foreach ($value1['sleep'] as $key2 => $value2) {
+
+         $timestamp = $value2['timestamp'];
+         $tempDate = date('Y-m-d',$timestamp/1000);
+         if($data == $tempDate){
+           $result = $value2;
+         }
+      }
+    }
+  }
+
+  if($result['minutesAsleep'] != null){
+    
+    //risposta con data di ieri corretta
+    $minutesAsleep = $result['minutesAsleep'];
+    $timeinbed = $result['timeInBed'];
+    $flag = true;
+
+  }else{
+
+    /*risposta standard con ultima data
+    algoritmo ultima data*/
+    foreach ($json_data as $key1 => $value1) {
+
+      if(isset($value1['sleep'])){
+        $max = -1;
 
         foreach ($value1['sleep'] as $key2 => $value2) {
+           $timestamp = $value2['timestamp'];
+           if($timestamp > $max){
+              $result = $value2;
+              $max = $timestamp;
+           }
+         }   
+      }
+    }
 
-             $timestamp = $value2['timestamp'];
-             $tempDate = date('Y-m-d',$timestamp/1000);
-             if($data == $tempDate)
-               $result = $value2;
-        }
+    $data2 = date('Y-m-d',$timestamp/1000);
+
+    if($result['minutesAsleep'] != null){
+      $data = $data2;
+      $minutesAsleep = $result['minutesAsleep'];
+      $timeinbed = $result['timeInBed'];
+
+    }else{
+      return "Non sono riuscito a recuperare i dati relativi al tuo sonno &#x1F62D;";
+    }
   }
-}
 
-if($result['minutesAsleep'] != null){
-  //risposta con data di ieri corretta
- $minutesAsleep = $result['minutesAsleep'];
- $timeinbed = $result['timeInBed'];
- $flag = true;
+  //Conversione minuti in ore e minuti
+  if ($minutesAsleep < 1) {
+    return "Non mi risulta che tu abbia dormito &#x1F631;";
+  }
+  $hours = floor($minutesAsleep / 60);
+  $minutes = ($minutesAsleep % 60);
 
-}else{
-//risposta standard con ultima data
-//algoritmo ultima data
-foreach ($json_data as $key1 => $value1) {
 
-if(isset($value1['sleep'])){
-$max = -1;
-   foreach ($value1['sleep'] as $key2 => $value2) {
-   
-       $timestamp = $value2['timestamp'];
-       if($timestamp > $max){
-        
-        $result = $value2;
-        $max = $timestamp;
-        
+  if(strpos($text, 'abbastanza') ){
+
+    if($minutesAsleep >= 390 ){
+       
+       if($flag == true){
+          $answer = "Si, hai dormito abbastanza. Hai dormito per ben ".$hours. " ore e " . $minutes . " minuti";
+       }else{
+          $answer ="Gli ultimi in mio possesso risalgono al ".$data." ed hai dormito abbastanza. Ovvero "
+          .$hours. " ore e " . $minutes . " minuti";
        }
-   }   
-}
-}
+       
+    }else{
+        if($flag == true){
+          $answer = "No, non hai dormito abbastanza. Hai dormito solo per ".$hours. " ore e " . $minutes . " minuti";
+       }else{
+          $answer ="Gli ultimi in mio possesso risalgono al ".$data." e vedo che non hai dormito abbastanza. Infatti solo per  "
+          .$hours. " ore e " . $minutes . " minuti";
+       }
 
-$data2 = date('Y-m-d',$timestamp/1000);
+    }
 
-if($result['minutesAsleep'] != null){
- $data = $data2;
- $minutesAsleep = $result['minutesAsleep'];
- $timeinbed = $result['timeInBed'];
-
-}else{
-  return "informazione non trovata";
-}
-
-}
-
-
-if(strpos($text, 'abbastanza') ){
-
-  if($minutesAsleep >= 390 ){
-     
-     if($flag == true){
-        $answer = "Si, hai dormito abbastanza. Hai dormito ". $minutesAsleep ." minuti ";
-     }else{
-        $answer ="gli ultimi dati disponibili risalgono a ".$data.", hai dormito abbastanza "
-        .$minutesAsleep." minuti";
-     }
-     
-  }else{
-      if($flag == true){
-        $answer = "No,non hai dormito abbastanza. Hai dormito ". $minutesAsleep ." minuti ";
-     }else{
-        $answer ="gli ultimi dati disponibili risalgono a ".$data." e non hai dormito abbastanza "
-        .$minutesAsleep." minuti";
-     }
-
-  }
-
-}elseif( strpos($text, 'bene')){
-
-    if($minutesAsleep >= 390 ){
-     
-     if($flag == true){
-        $answer = "Si, hai dormito bene. Hai dormito ". $minutesAsleep ." minuti ";
-     }else{
-        $answer ="gli ultimi dati disponibili risalgono a ".$data.", hai dormito bene "
-        .$minutesAsleep." minuti";
-     }
-     
-  }else{
-      if($flag == true){
-        $answer = "No,non hai dormito bene. Hai dormito ". $minutesAsleep ." minuti ";
-     }else{
-        $answer ="gli ultimi dati disponibili risalgono a ".$data." e non hai dormito bene "
-        .$minutesAsleep." minuti";
-     }
-
-  }
-
-}elseif (strpos($text, 'tanto')) {
-
-    if($minutesAsleep >= 390 ){
-     
-     if($flag == true){
-        $answer = "Si, hai dormito tanto. Hai dormito ". $minutesAsleep ." minuti ";
-     }else{
-        $answer ="gli ultimi dati disponibili risalgono a ".$data.", hai dormito tanto "
-        .$minutesAsleep." minuti";
-     }
-     
-  }else{
-      if($flag == true){
-        $answer = "No,non hai dormito tanto. Hai dormito ". $minutesAsleep ." minuti ";
-     }else{
-        $answer ="gli ultimi dati disponibili risalgono a ".$data." e non hai dormito tanto "
-        .$minutesAsleep." minuti";
-     }
-
-  }
-  
-}elseif(strpos($text, 'meno')){
-
-    if($minutesAsleep >= 480 ){
-     
-     if($flag == true){
-        $answer = "Si, dovresti dormire di meno. Hai dormito ". $minutesAsleep ." minuti ";
-     }else{
-        $answer ="gli ultimi dati disponibili risalgono a ".$data.",dovresti dormire di meno. Hai dormito "
-        .$minutesAsleep." minuti";
-     }
-     
-  }else{
-      if($flag == true){
-        $answer = "No,non hai dormito abbastanza. Hai dormito ". $minutesAsleep ." minuti ";
-     }else{
-        $answer ="gli ultimi dati disponibili risalgono a ".$data." e non hai dormito abbastanza "
-        .$minutesAsleep." minuti";
-     }
-
-  }
-
-}elseif(strpos($text,'di più')){
+  }elseif( strpos($text, 'bene')){
 
       if($minutesAsleep >= 390 ){
-     
-     if($flag == true){
-        $answer = "No, non dovresti dormire di più. Hai dormito ". $minutesAsleep ." minuti ";
-     }else{
-        $answer ="gli ultimi dati disponibili risalgono a ".$data.",non dovresti dormire di più.Hai dormito "
-        .$minutesAsleep." minuti";
-     }
-     
-  }else{
-      if($flag == true){
-        $answer = "Si, dovresti dormire di più. Hai dormito ". $minutesAsleep ." minuti ";
-     }else{
-        $answer ="gli ultimi dati disponibili risalgono a ".$data."  dovresti dormire di più.Hai dormito "
-        .$minutesAsleep." minuti";
-     }
+       
+       if($flag == true){
+          $answer = "Si, hai dormito bene. Hai dormito ben ".$hours. " ore e " . $minutes . " minuti";
+       }else{
+          $answer ="Gli ultimi in mio possesso risalgono al ".$data." e noto che hai dormito bene ovvero per ben "
+          .$hours. " ore e " . $minutes . " minuti";
+       }
+       
+    }else{
+        if($flag == true){
+          $answer = "No, non hai dormito bene. Hai dormito solo per ".$hours. " ore e " . $minutes . " minuti";
+       }else{
+          $answer ="Gli ultimi in mio possesso risalgono al ".$data." e non hai dormito molto bene. Infatti hai dormito solo per "
+          .$hours. " ore e " . $minutes . " minuti";
+       }
 
-  }
+    }
 
-}elseif (strpos($text,'poco')) {
+  }elseif (strpos($text, 'tanto')) {
 
       if($minutesAsleep >= 390 ){
-     
-     if($flag == true){
-        $answer = "No, hai dormito abbastanza. Hai dormito ". $minutesAsleep ." minuti ";
-     }else{
-        $answer ="gli ultimi dati disponibili risalgono a ".$data.",hai dormito abbastanza "
-        .$minutesAsleep." minuti";
-     }
-     
-  }else{
+       
+       if($flag == true){
+          $answer = "Si, hai dormito tanto. Hai dormito per ben ".$hours. " ore e " . $minutes . " minuti";
+       }else{
+          $answer ="Gli ultimi in mio possesso risalgono al ".$data." e noto che hai dormito tanto. Ovvero per "
+          .$hours. " ore e " . $minutes . " minuti";
+       }
+       
+    }else{
+        if($flag == true){
+          $answer = "No, non hai dormito tanto. Hai dormito solo per ". $minutesAsleep ." minuti ";
+       }else{
+          $answer ="Gli ultimi in mio possesso risalgono al ".$data." e noto che non hai dormito tanto. Solo "
+          .$minutesAsleep." minuti";
+       }
+
+    }
+    
+  }elseif(strpos($text, 'meno')){
+
+      if($minutesAsleep >= 480 ){
+       
+       if($flag == true){
+          $answer = "Si, dovresti dormire di meno. Vedo che hai dormito per ".$hours. " ore e " . $minutes . " minuti";
+       }else{
+          $answer ="Gli ultimi in mio possesso risalgono a ".$data." e noto che dovresti dormire di meno. Hai dormito per "
+          .$hours. " ore e " . $minutes . " minuti";
+       }
+       
+    }else{
+        if($flag == true){
+          $answer = "No, non hai dormito abbastanza. Hai dormito solamente per ".$hours. " ore e " . $minutes . " minuti";
+       }else{
+          $answer ="Gli ultimi in mio possesso risalgono al ".$data." e noto che non hai dormito abbastanza. Solo "
+          .$hours. " ore e " . $minutes . " minuti";
+       }
+
+    }
+
+  }elseif(strpos($text,'di più')){
+
+        if($minutesAsleep >= 390 ){
+       
+       if($flag == true){
+          $answer = "No, non dovresti dormire di più perchè hai dormito per ".$hours. " ore e " . $minutes . " minuti";
+       }else{
+          $answer ="Gli ultimi in mio possesso risalgono al ".$data." e noto che non dovresti dormire di più visto che hai dormito "
+          .$hours. " ore e " . $minutes . " minuti";
+       }
+       
+    }else{
+        if($flag == true){
+          $answer = "Si, dovresti dormire di più. Infatti hai dormito ".$hours. " ore e " . $minutes . " minuti";
+       }else{
+          $answer ="Gli ultimi in mio possesso risalgono al ".$data." e noto che dovresti dormire di più visto che hai dormito solamente per "
+          .$hours. " ore e " . $minutes . " minuti";
+       }
+
+    }
+
+  }elseif (strpos($text,'poco')) {
+
+    if($minutesAsleep >= 390 ){
+       
+       if($flag == true){
+          $answer = "No, hai dormito abbastanza. Infatti hai dormito ".$hours. " ore e " . $minutes . " minuti";
+       }else{
+          $answer ="Gli ultimi in mio possesso risalgono al ".$data." e noto che hai dormito abbastanza ovvero "
+          .$hours. " ore e " . $minutes . " minuti";
+       }
+       
+    }else{
       if($flag == true){
-        $answer = "Si, dovresti dormire di più. Hai dormito ". $minutesAsleep ." minuti ";
-     }else{
-        $answer ="gli ultimi dati disponibili risalgono a ".$data." dovresti dormire di più.Hai dormito "
-        .$minutesAsleep." minuti";
-     }
+          $answer = "Si, dovresti dormire di più. Hai dormito ".$hours. " ore e " . $minutes . " minuti";
+      }else{
+          $answer ="Gli ultimi in mio possesso risalgono al ".$data." e noto che dovresti dormire di più. Hai dormito solamente "
+          .$hours. " ore e " . $minutes . " minuti";
+      }
+    }
 
+  }else{
+
+      //Conversione minuti in ore e minuti
+      if ($minutesAsleep < 1) {
+        return "Non mi risulta che tu abbia dormito &#x1F631;";
+      }
+      $hours = floor($minutesAsleep / 60);
+      $minutes = ($minutesAsleep % 60);
+
+      $answer = "Hai dormito ". $hours ." ore e " .$minutes . ' minuti';
   }
 
-}else{
-      $answer = "hai dormito ". $minutesAsleep ." minuti ";
-  }
-
-return $answer;
+  return $answer;
 
 }
 
@@ -783,71 +815,96 @@ return risposta da stampare
 */
 function fetchYesterdaySleep($resp,$data){
 
-$param = "";
-$json_data = queryMyrror($param);
-$result = null;
+  $param = "";
+  $json_data = queryMyrror($param);
+  $result = null;
 
-//cerco data di ieri
-foreach ($json_data as $key1 => $value1) {
-  if(isset($value1['sleep'])){
+  //cerco data di ieri
+  foreach ($json_data as $key1 => $value1) {
+    if(isset($value1['sleep'])){
 
+          foreach ($value1['sleep'] as $key2 => $value2) {
+
+               $timestamp = $value2['timestamp'];
+               $tempDate = date('Y-m-d',$timestamp/1000);
+               if($data == $tempDate)
+                 $result = $value2;
+          }
+    }
+  }
+
+  if($result['minutesAsleep'] != null){
+    //risposta con data di ieri corretta
+   $minutesAsleep = $result['minutesAsleep'];
+   $timeinbed = $result['timeInBed'];
+
+    //Conversione minuti in ore e minuti
+    $hoursSleep = floor($minutesAsleep / 60);
+    $minutesSleep = ($minutesAsleep % 60);
+
+    //Conversione minuti in ore e minuti
+    $hoursBed = floor($timeinbed / 60);
+    $minutesBed = ($timeinbed % 60);
+
+    $answer = str_replace("X1",$hoursSleep,$answer);
+    $answer = str_replace('X2', $minutesSleep, $answer);
+    $answer = str_replace("Y1",$hoursBed,$answer);
+    $answer = str_replace('Y2', $minutesBed, $answer);
+
+    return $answer;
+
+  }else{
+    //risposta standard con ultima data
+    //algoritmo ultima data
+    foreach ($json_data as $key1 => $value1) {
+
+      if(isset($value1['sleep'])){
+        $max = -1;
         foreach ($value1['sleep'] as $key2 => $value2) {
-
+         
              $timestamp = $value2['timestamp'];
-             $tempDate = date('Y-m-d',$timestamp/1000);
-             if($data == $tempDate)
-               $result = $value2;
-        }
+             if($timestamp > $max){
+              
+              $result = $value2;
+              $max = $timestamp;
+              
+             }
+         }   
+      }
+    }
+
+    $data2 = date('Y-m-d',$timestamp/1000);
+    $answer = "Gli ultimi dati in mio possesso sono relativi al ".$data2."<br>";
+
+    if($result['minutesAsleep'] != null){
+        $answer .= $resp;
+
+       $minutesAsleep = $result['minutesAsleep'];
+       $timeinbed = $result['timeInBed'];
+
+      //Conversione minuti in ore e minuti
+      $hoursSleep = floor($minutesAsleep / 60);
+      $minutesSleep = ($minutesAsleep % 60);
+
+      //Conversione minuti in ore e minuti
+      $hoursBed = floor($timeinbed / 60);
+      $minutesBed = ($timeinbed % 60);
+
+     $answer = str_replace("X1",$hoursSleep,$answer);
+     $answer = str_replace('X2', $minutesSleep, $answer);
+     $answer = str_replace("Y1",$hoursBed,$answer);
+     $answer = str_replace('Y2', $minutesBed, $answer);
+
+    }else{
+      $answer = "Non sono riuscito a recuperare i dati relativi al periodo che mi hai indicato &#x1F62D;";
+    }
+
+     return $answer;
+
   }
 }
 
-if($result['minutesAsleep'] != null){
-  //risposta con data di ieri corretta
- $minutesAsleep = $result['minutesAsleep'];
- $timeinbed = $result['timeInBed'];
- $answer = str_replace('X',$minutesAsleep,$resp);
- $answer = str_replace('Y', $timeinbed, $answer);
- return $answer;
 
-}else{
-//risposta standard con ultima data
-//algoritmo ultima data
-foreach ($json_data as $key1 => $value1) {
-
-if(isset($value1['sleep'])){
-$max = -1;
-   foreach ($value1['sleep'] as $key2 => $value2) {
-   
-       $timestamp = $value2['timestamp'];
-       if($timestamp > $max){
-        
-        $result = $value2;
-        $max = $timestamp;
-        
-       }
-   }   
-}
-}
-
-$data2 = date('Y-m-d',$timestamp/1000);
-$answer = "i dati sono stati selezionati in base all'ultima data disponiblie ".$data2."<br>";
-if($result['minutesAsleep'] != null){
-  $answer .= $resp;
-
- $minutesAsleep = $result['minutesAsleep'];
- $timeinbed = $result['timeInBed'];
- $answer = str_replace("X",$minutesAsleep,$answer);
- $answer = str_replace('Y', $timeinbed, $answer);
-
-}else{
-  $answer = "informazione non trovata";
-}
-
- return $answer;
-
-}
-
-}
 /*
 @resp frase di risposta standard ricevuta da dialogflow
 @parameters parametri contenenti le info sui periodi di tempo
@@ -862,52 +919,52 @@ return risposta da stampare
 */
 function getSleep($resp,$parameters,$text){
 
-$yesterday = date("Y-m-d",strtotime("-1 days")); 
-$timestamp = strtotime($yesterday);
+  $yesterday = date("Y-m-d",strtotime("-1 days")); 
+  $timestamp = strtotime($yesterday);
 
 
 
-if(isset($parameters['date'])  ||  isset($parameters['Passato']) || isset($parameters['date-period']) ){
-$date1 = substr($parameters['date'],0,10);
+  if(isset($parameters['date'])  ||  isset($parameters['Passato']) || isset($parameters['date-period']) ){
+  $date1 = substr($parameters['date'],0,10);
 
-//echo $yesterday;
-if($date1 == $yesterday){
-  //dati di ieri 
- $answer = fetchYesterdaySleep($resp,$yesterday);
-  //$answer = fetchYesterdaySleep($resp,'2019-02-22');
-}else if(isset($parameters['date-period']['endDate']) && isset($parameters['date-period']['startDate'])){
- 
- 
- 
-foreach ($parameters['date-period'] as $keyP => $valueP) {
-
-  if($keyP == 'endDate' )
-    $endDate = substr($valueP,0,10);
-  else
-    $startDate = substr($valueP,0,10);
-  
-}
-
-$answer = fetchPastSleep($endDate,$startDate);
-
-}else if(isset($parameters['Passato'])){
-//dati di ieri
+  //echo $yesterday;
+  if($date1 == $yesterday){
+    //dati di ieri 
+   $answer = fetchYesterdaySleep($resp,$yesterday);
+    //$answer = fetchYesterdaySleep($resp,'2019-02-22');
+  }else if(isset($parameters['date-period']['endDate']) && isset($parameters['date-period']['startDate'])){
    
-$answer = fetchYesterdaySleep($resp,$yesterday);
-
-}else{
    
-//dati storici
-  $answer = fetchPastSleep("","");
-}
+   
+  foreach ($parameters['date-period'] as $keyP => $valueP) {
 
-}else{
-  
-//dati storici
-  $answer = fetchPastSleep("","");
-}
+    if($keyP == 'endDate' )
+      $endDate = substr($valueP,0,10);
+    else
+      $startDate = substr($valueP,0,10);
+    
+  }
 
-return $answer;
+  $answer = fetchPastSleep($endDate,$startDate);
+
+  }else if(isset($parameters['Passato'])){
+  //dati di ieri
+     
+  $answer = fetchYesterdaySleep($resp,$yesterday);
+
+  }else{
+     
+  //dati storici
+    $answer = fetchPastSleep("","");
+  }
+
+  }else{
+    
+  //dati storici
+    $answer = fetchPastSleep("","");
+  }
+
+  return $answer;
 
 }
 /*
@@ -922,57 +979,64 @@ return risposta da stampare
 */
 function fetchPastSleep($endDate,$startDate){
 
-$param = "";
-$json_data = queryMyrror($param);
-$result = "";
+  $param = "";
+  $json_data = queryMyrror($param);
+  $result = "";
 
-$count = 0;
-$sumInBed = 0;
-$sumAsleep = 0;
-foreach ($json_data as $key1 => $value1) {
-  if(isset($value1['sleep'])){
-     if($endDate != "" && $startDate != ""){
-       //ricerca per periodo
-      
-    foreach ($value1['sleep'] as $key2 => $value2) {
-      $timestamp = $value2['timestamp']; 
-      $data = date('Y-m-d',$timestamp/1000);
+  $count = 0;
+  $sumInBed = 0;
+  $sumAsleep = 0;
+  foreach ($json_data as $key1 => $value1) {
+    if(isset($value1['sleep'])){
+       if($endDate != "" && $startDate != ""){
+         //ricerca per periodo
+        
+      foreach ($value1['sleep'] as $key2 => $value2) {
+        $timestamp = $value2['timestamp']; 
+        $data = date('Y-m-d',$timestamp/1000);
 
-      if($data >= $startDate && $data <= $endDate){
+        if($data >= $startDate && $data <= $endDate){
+           $sumInBed += $value2['timeInBed'];
+           $sumAsleep += $value2['minutesAsleep'];
+           $count++;  
+        }
+      }
+        $result = "dal ".$startDate ." al ".$endDate;
+
+       }else{
+
+
+     foreach ($value1['sleep'] as $key2 => $value2) {
+         
          $sumInBed += $value2['timeInBed'];
          $sumAsleep += $value2['minutesAsleep'];
-         $count++;  
-      }
-    }
-      $result = "dal ".$startDate ." al ".$endDate;
-
-     }else{
-
-
-   foreach ($value1['sleep'] as $key2 => $value2) {
-   
-       
-       $sumInBed += $value2['timeInBed'];
-       $sumAsleep += $value2['minutesAsleep'];
-       $count++;      
-       
-       
-   }   
-}
-}
+         $count++;      
+      
+     }   
+  }
+  }
 
 
-}
+  }
 
-if($count == 0){
-  //non ci sono riferimenti per quel periodo
-  return fetchPastSleep("","");
-}
-$asleepAV = intval($sumAsleep/$count);
-$inBedAV =intval($sumInBed/$count);
+  if($count == 0){
+    //non ci sono riferimenti per quel periodo
+    return fetchPastSleep("","");
+  }
+  $asleepAV = intval($sumAsleep/$count);
+  $inBedAV =intval($sumInBed/$count);
 
-$result .= " in media hai dormito ".$asleepAV ." minuti trascorrendo nel letto ".$inBedAV." minuti";
-return $result;
+  //Conversione minuti in ore e minuti
+  $hoursSleep = floor($asleepAV / 60);
+  $minutesSleep = ($asleepAV % 60);
+
+  //Conversione minuti in ore e minuti
+  $hoursBed = floor($inBedAV / 60);
+  $minutesBed = ($inBedAV % 60);
+
+  $result .= " in media hai dormito ".$hoursSleep ." ore e " .$minutesSleep ." minuti, trascorrendo nel letto ".$hoursBed." ore e " .$minutesSleep ." minuti";
+
+  return $result;
 
 
 }

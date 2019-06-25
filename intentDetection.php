@@ -52,9 +52,9 @@ function detect_intent_texts($projectId, $text, $sessionId, $languageCode = 'it-
     
     $queryText = $queryResult->getQueryText();
     $intent = $queryResult->getIntent();
+    
     //risposta intent
     $fulfilmentText = $queryResult->getFulfillmentText();
-
 
     if(!is_null($intent)){
         $displayName = $intent->getDisplayName(); //Nome dell'intent
@@ -63,12 +63,12 @@ function detect_intent_texts($projectId, $text, $sessionId, $languageCode = 'it-
         
     }else{
 
-        $answer = "Intent non riconosciuto. Riprova con altre parole!";
+        $answer = "Purtroppo non ho capito la domanda. Prova a rifarla con altre parole! Devo ancora imparare molte cose &#x1F605;";
 
         //Stampo la risposta relativa all'intent non identificato
         $arr = array('intentName' => "Non identificato", 'confidence' => "0",'answer' => $answer);
-        printf(json_encode($arr,JSON_UNESCAPED_UNICODE));
-         //JSON_UNESCAPED_UNICODE utilizzato per il formato UTF8
+        printf(json_encode($arr,JSON_UNESCAPED_UNICODE));  //JSON_UNESCAPED_UNICODE utilizzato per il formato UTF8
+
     }
     
     $sessionsClient->close();
@@ -193,12 +193,17 @@ function selectIntent($intent, $confidence,$text,$resp,$parameters){
                 break;
 
             default:
-                $answer = "Intent non riconosciuto";
+                if ($resp != "") { //Small Talk
+                    $answer = $resp;
+                }else{
+                    $answer = "Purtroppo non ho capito la domanda. Prova a rifarla con altre parole! Devo ancora imparare molte cose &#x1F605;";
+
+                }
                 break;
         }
 
     }else {
-        $answer = "Intent non riconosciuto. Riprova con altre parole!";
+        $answer = "Purtroppo non ho capito la domanda. Prova a rifarla con altre parole! Devo ancora imparare molte cose &#x1F605;";
     }
 
 
@@ -230,7 +235,7 @@ function selectIntent($intent, $confidence,$text,$resp,$parameters){
                 break;
 
             default:
-                $answer = "Intent non riconosciuto";
+                $answer = "Purtroppo non ho capito la domanda. Prova a rifarla con altre parole! Devo ancora imparare molte cose &#x1F605;";
                 break;;
         }
     }
@@ -247,7 +252,7 @@ function selectIntent($intent, $confidence,$text,$resp,$parameters){
                 break;
 
             default:
-                $answer = "Intent non riconosciuto";
+                $answer = "Purtroppo non ho capito la domanda. Prova a rifarla con altre parole! Devo ancora imparare molte cose &#x1F605;";
                 break;;
         }
     }
@@ -273,7 +278,7 @@ function selectIntent($intent, $confidence,$text,$resp,$parameters){
                 break;  
 
             default:
-                $answer = "Intent non riconosciuto";
+                $answer = "Purtroppo non ho capito la domanda. Prova a rifarla con altre parole! Devo ancora imparare molte cose &#x1F605;";
                 break;
         }
 

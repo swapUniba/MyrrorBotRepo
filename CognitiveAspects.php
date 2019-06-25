@@ -30,8 +30,6 @@ function personalita($resp,$parameters){
 				$agreeableness = $value2['agreeableness'];
 				$neuroticism = $value2['neuroticism'];
 				$confidence = $value2['confidence'];
-
-				//print_r($timestamp + "<br>");
 		 
          		if($timestamp > $max ){
          
@@ -50,40 +48,40 @@ function personalita($resp,$parameters){
 
 	//openness
 	if ($openness > 0.5){
-		$personalita1 = "1)inventivo e curioso";
+		$personalita1 = "inventivo e curioso";
 	} else{
-		$personalita1 = "1)concreto e cauto";
+		$personalita1 = "concreto e cauto";
 	}
 
 	//conscientiousness
 	if ($conscientiousness > 0.5){
-		$personalita2 = "2)efficiente ed organizzato";
+		$personalita2 = "efficiente ed organizzato";
 	} else{
-		$personalita2 = "2)rilassato e negligente";
+		$personalita2 = "rilassato e negligente";
 	}
 
 	//extroversion
 	if ($extroversion > 0.5){
-		$personalita3 = "3)estroverso ed energico";
+		$personalita3 = "estroverso ed energico";
 	} else{
-		$personalita3 = "3)solitario e riservato";
+		$personalita3 = "solitario e riservato";
 	}
 
 	//agreeableness 
 	if ($agreeableness  > 0.5){
-		$personalita4 = "4)amichevole e compassionevole";
+		$personalita4 = "amichevole e compassionevole";
 	} else{
-		$personalita4 = "4)distaccato";
+		$personalita4 = "distaccato";
 	}
 	
 	//neuroticism
 	if ($neuroticism > 0.5){
-		$personalita5 = "5)sensibile e nervoso";
+		$personalita5 = "sensibile e nervoso";
 	} else{
-		$personalita5 = "5)fiducioso";
+		$personalita5 = "fiducioso";
 	}
 
-	$answer = "<br>" . $resp . "<br>" . $personalita1 . "<br>" . $personalita2 . "<br>" . $personalita3 . "<br>" . $personalita4 . "<br>" . $personalita5;
+	$answer = "<br>" . $resp . " " . $personalita1 . ", " . $personalita2 . ", " . $personalita3 . ".<br>Inoltre sei anche " . $personalita4 . ", " . $personalita5;
 
 	return $answer;
 

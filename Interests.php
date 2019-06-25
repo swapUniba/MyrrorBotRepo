@@ -16,16 +16,19 @@ function interessi($resp,$parameters){
 
 					$categoria = $value['value']; //Prendo la categoria
 
-   	 				//Controllo ed elimino la dicitura "Category:" da alcuni item
-					if (strpos($categoria, 'Category:') !== false) {
-    					$categoria = substr($categoria,9); //Elimino le prime 9 lettere
-					}
+					if (strlen($categoria) <= 30) {//Se la frase è lunga meno di 30 caratteri
 
-					$categorieArray[] = $categoria; //Inserisco la categoria nell'array
+						//Includo solo le frasi che non contengono la dicitura "category","articles", "categoria"
+						if (strpos(strtolower($categoria), 'category:') !== false || strpos(strtolower($categoria), 'categoria') !== false || strpos(strtolower($categoria), 'articles') !== false) {	
+							//Non effettuo alcuna operazione
+						}else{
+							$categorieArray[] = $categoria; //Inserisco la categoria nell'array
 
-					//Se l'array delle categorie non è vuoto, trovo gli interessi più frequenti
-					if (count($categorieArray) != 0) {
-						$top5 = interessiFrequenti($categorieArray);
+							//Se l'array delle categorie non è vuoto, trovo gli interessi più frequenti
+							if (count($categorieArray) != 0) {
+								$top5 = interessiFrequenti($categorieArray);
+							}						
+						}
 					}
 				}
 			}
@@ -38,19 +41,22 @@ function interessi($resp,$parameters){
 
 		if (count($top5) != 0) {
 			foreach ($top5 as $key => $value){
-   				$answer = $answer . "<br>" . $key . ": " . $value;;
+   				$answer = $answer . " " . $key .", " ;
         	}
+
+        	//Rimuovo lo spazio con la virgola finale
+        	$answer = substr($answer, 0, -2);
 		}else {
-			$answer = "Errore nel caricamento degli interessi. Riprova!";
+			$answer = "Purtroppo non sono riuscito a recuperare i tuoi interessi &#x1F613; Riprova più tardi oppure controlla se nel tuo profilo sono presenti gli interessi!";
 		}
 
 	}else{
-		$answer = "Interessi non presenti. Riprova!";
+		$answer = "Purtroppo non sono riuscito a recuperare i tuoi interessi &#x1F613; Riprova più tardi oppure controlla se nel tuo profilo sono presenti gli interessi!";
 	}
 
 	//A volte la richiesta non restituisce nessun elenco perciò dovrà essere rifatta
 	if ($answer == null) {
-		$answer = "Errore nel caricamento degli interessi. Riprova.";
+		$answer = "Non sono riuscito a caricare i tuoi interessi &#x1F613; Riprova più tardi";
 	}
 
 	return $answer;
@@ -86,23 +92,27 @@ function getInterestsList(){
 
 					$categoria = $value['value']; //Prendo la categoria
 
-   	 				//Controllo ed elimino la dicitura "Category:" da alcuni item
-					if (strpos($categoria, 'Category:') !== false) {
-    					$categoria = substr($categoria,9); //Elimino le prime 9 lettere
+					if (strlen($categoria) <= 30) {//Se la frase è lunga meno di 30 caratteri
+
+						//Includo solo le frasi che non contengono la dicitura "category","articles", "categoria"
+						if (strpos(strtolower($categoria), 'category:') !== false || strpos(strtolower($categoria), 'categoria') !== false || strpos(strtolower($categoria), 'articles') !== false) {	
+							//Non effettuo alcuna operazione
+						}else{
+							$categorieArray[] = $categoria; //Inserisco la categoria nell'array
+
+							//Se l'array delle categorie non è vuoto, trovo gli interessi più frequenti
+							if (count($categorieArray) != 0) {
+								$interessiFrequenti = array();
+
+			                    $interessiFrequenti = array_count_values($categorieArray); //Genera un array associativo: nome->(occorrenze di nome)
+			                    arsort($interessiFrequenti);//Ordino l'array in relazione al maggior numero di interazioni
+		                          //prendo i primi 30 elementi
+			                    $top30 = array_slice($interessiFrequenti, 0, 30);
+								
+							}					
+						}
 					}
-
-					$categorieArray[] = $categoria; //Inserisco la categoria nell'array
-
-					//Se l'array delle categorie non è vuoto, trovo gli interessi più frequenti
-					if (count($categorieArray) != 0) {
-						$interessiFrequenti = array();
-
-	                    $interessiFrequenti = array_count_values($categorieArray); //Genera un array associativo: nome->(occorrenze di nome)
-	                    arsort($interessiFrequenti);//Ordino l'array in relazione al maggior numero di interazioni
-                          //prendo i primi 30 elementi
-	                    $top30 = array_slice($interessiFrequenti, 0, 30);
-						
-					}
+					
 				}
 			}
         }	

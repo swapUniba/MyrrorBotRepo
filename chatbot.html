@@ -8,7 +8,7 @@
 		$(document).ready(function() {
 			$("#input").keypress(function(event) {
 				if (event.which == 13) {
-					$('.chatBox').append('<span class="userInput">' + 'me:'+ $('input').val() + '</span><br><br>');
+					$('.chatBox').append('<span class="userInput">' + $('input').val() + '</span><br><br>');
 					event.preventDefault();
 					let query  = $('input').val();
 					$('input').val('');
@@ -17,7 +17,7 @@
 			});
 			
 			$("#send").click(function(){
-               	$('.chatBox').append('<span class="userInput">' + 'me:'+ $('input').val() + '</span><br><br>');
+               	$('.chatBox').append('<span class="userInput">' +  $('input').val() + '</span><br><br>');
 				
 					let query  = $('input').val()
 					$('input').val('')
@@ -44,25 +44,45 @@
 			console.log(val);
 			val = JSON.parse(val);
 
+			var canzoneNomeSpotify = "Ecco qui la canzone richiesta!";
+			var canzoneArtistaSpotify = "Ecco qui la canzone dell'artista richiesto!";
+			var canzoneGenereSpotify = "Ecco una playlist di canzoni del genere richiesto!";
+			var playlistEmozioniSpotify = "Ecco qui una playlist di canzoni raccomandata in base al tuo umore";
+			var canzoneEmozioniSpotify = "Ecco qui un brano consigliato in base al tuo umore";
+			var canzoniPersonalizzateSpotify = "Ecco qui un brano consigliato che potrebbe piacerti";
+
+
 			//Stampa risposte
 			if (val["intentName"] == "Interessi" || val["intentName"] == "Contatti" || val["intentName"] == "Esercizio fisico" || val["intentName"] == "Personalita") {
-				$(".chatBox").append('<span class="responseData">'+'Answer: '+val["answer"]+'</span><br><br><br><br><br><br><br>');
-			}else if(val['intentName'] == "Canzone per nome" || val['intentName'] == "Canzone per artista" || val["intentName"] == "Canzoni in base al genere" || val['intentName'] == "Playlist di canzoni in base alle emozioni" || val['intentName'] == "Canzoni in base alle emozioni" || val['intentName'] == "Canzoni personalizzate"){
-
-				$(".chatBox").append('<span class="responseData">'+ '<iframe src="' + val['answer'] + '" width="300" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe></span><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>');
-
+				$(".chatBox").append('<span class="responseData">'+val["answer"]+'</span><br><br><br><br><br><br><br>');
+			}else if(val['intentName'] == "Canzone per nome"){
+				$(".chatBox").append('<span class="responseData">'+ canzoneNomeSpotify + '&#x1F601;' +'<br>'+ '<iframe src="' + val['answer'] + '" width="300" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe></span><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>');
+			}else if(val['intentName'] == "Canzone per artista"){
+				$(".chatBox").append('<span class="responseData">'+ canzoneArtistaSpotify + '&#x1F601;' +'<br>'+ '<iframe src="' + val['answer'] + '" width="300" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe></span><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>');
+			}else if(val['intentName'] == "Canzoni in base al genere"){
+				$(".chatBox").append('<span class="responseData">'+ canzoneGenereSpotify + '&#x1F601;' +'<br>'+ '<iframe src="' + val['answer'] + '" width="300" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe></span><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>');
+			}else if(val['intentName'] == "Playlist di canzoni in base alle emozioni"){
+				$(".chatBox").append('<span class="responseData">'+ playlistEmozioniSpotify + '&#x1F601;' +'<br>'+ '<iframe src="' + val['answer'] + '" width="300" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe></span><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>');
+			}else if(val['intentName'] == "Canzoni in base alle emozioni"){
+				$(".chatBox").append('<span class="responseData">'+ canzoneEmozioniSpotify + '&#x1F601;' +'<br>'+ '<iframe src="' + val['answer'] + '" width="300" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe></span><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>');
+			}else if(val['intentName'] == "Canzoni personalizzate"){
+				$(".chatBox").append('<span class="responseData">'+ canzoniPersonalizzateSpotify + '&#x1F601;' +'<br>'+ '<iframe src="' + val['answer'] + '" width="300" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe></span><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>');
 			}else if(val["intentName"] == "Notizie in base ad un argomento" || val["intentName"] == "Notizie in base agli interessi" || val["intentName"] == "Notizie odierne"){
-	           $(".chatBox").append('<a href="'+val["answer"]+'">'+'Answer: '+val["answer"]+
+	           $(".chatBox").append('<a href="'+val["answer"]+'">'+val["answer"]+
 	             '</a><br><br><br><br><br><br>');
 	  		}else if(val["intentName"] == "Video in base alle emozioni" || val["intentName"] == "Ricerca Video"){
 
   				$(".chatBox").append('<span class="responseData">'+ '<iframe id="ytplayer" type="text/html" width="540" height="260" src="' + val['answer'] + '" frameborder="0" allowfullscreen/></iframe></span><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>');
 
 	  		}else {
-				$(".chatBox").append('<span class="responseData">'+'Answer: '+val["answer"]+'</span><br><br>');
+				$(".chatBox").append('<span class="responseData">'+val["answer"]+'</span><br><br><br>');
 			}
 
+		}
 
+		//Intent avviato all'inizio del dialogo
+		function welcomeIntent(){
+			send("aiuto");
 		}
 
 	</script>
@@ -75,7 +95,7 @@
 		button { width: 70px; }
 	</style>
 </head>
-<body>
+<body onload="welcomeIntent()">
 	<div class = 'chatBox'>
 	</div>
 	<input id="input" type="text" style="width: 700px;margin-top: 30px;"><button id="send">Invia</button>

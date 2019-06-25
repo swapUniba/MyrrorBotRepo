@@ -21,14 +21,10 @@ function identitaUtente($resp,$parameters,$text){
 	}
 
 	
-     
 	if (isset($result)) {
-
 		$answer = str_replace("X",$result,$resp);
-
-
 	}else{
-		$answer = "Nome non presente";
+		$answer = "Non sono riuscito a reperire le informazioni relative al tuo nome &#x1F62D;. Verifica che sia presente nel tuo account";
 	}
 
 	return $answer;
@@ -58,13 +54,11 @@ function getEta($resp,$parameters,$text){
 	}
 
 	if($result == null){
-		$answer = "Data di compleanno non disponibile";
+		$answer = "Non sono riuscito a reperire le informazioni relative alla tua data di nascita &#x1F62D;. Verifica che sia presente nel tuo account";
 	}else{
 		$today = date("Y-m-d");
 		$diff = abs(strtotime($today) - strtotime($result));
     	$years = floor($diff / (365*60*60*24));
-
-
 		$answer = str_replace("X",$years,$resp);
 	}
 
@@ -96,7 +90,7 @@ function getCountry($resp,$parameters,$text){
 		$answer = str_replace("X",$result,$resp);
 
 	}else{
-		$answer = "Luogo di nascita non presente";
+		$answer = "Non sono riuscito a reperire le informazioni relative al tuo luogo di nascita &#x1F62D;. Verifica che sia presente nel tuo account";
 	}
 
 	return $answer;
@@ -129,7 +123,7 @@ function getHeight($resp,$parameters,$text){
 
 
 	}else{
-		$answer = "Altezza non presente";
+		$answer = "Non sono riuscito a reperire le informazioni relative alla tua altezza &#x1F62D;. Verifica che sia presente nel tuo account";
 	}
 
 	return $answer;
@@ -159,7 +153,7 @@ function getWeight($resp,$parameters,$text){
 		$answer = str_replace("X",$result,$resp);
 
 	}else{
-		$answer = "Peso non presente";
+		$answer = "Non sono riuscito a reperire le informazioni relative al tuo peso &#x1F62D;. Verifica che sia presente nel tuo account";
 	}
 
 	return $answer;
@@ -200,7 +194,7 @@ function lavoro($resp,$parameters,$text){
 
 
 	}else{
-		$answer = "Lavoro non presente";
+		$answer = "Non sono riuscito a reperire le informazioni relative al tuo lavoro &#x1F62D;. Verifica che sia presente nel tuo account";
 	}
 
 	return $answer;
@@ -241,7 +235,7 @@ function email($resp,$parameters,$text){
 		$answer = str_replace("X",$email,$resp);
 
 	}else{
-		$answer = "Email non presente";
+		$answer = "Non sono riuscito a reperire le informazioni relative alla tua email &#x1F62D;. Verifica che sia presente nel tuo account";
 	}
 
 	return $answer;
