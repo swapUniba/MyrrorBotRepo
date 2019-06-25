@@ -50,6 +50,7 @@
 			var playlistEmozioniSpotify = "Ecco qui una playlist di canzoni raccomandata in base al tuo umore";
 			var canzoneEmozioniSpotify = "Ecco qui un brano consigliato in base al tuo umore";
 			var canzoniPersonalizzateSpotify = "Ecco qui un brano consigliato che potrebbe piacerti";
+			var video = "Ecco qui il video richiesto";
 
 
 			//Stampa risposte
@@ -72,7 +73,7 @@
 	             '</a><br><br><br><br><br><br>');
 	  		}else if(val["intentName"] == "Video in base alle emozioni" || val["intentName"] == "Ricerca Video"){
 
-  				$(".chatBox").append('<span class="responseData">'+ '<iframe id="ytplayer" type="text/html" width="540" height="260" src="' + val['answer'] + '" frameborder="0" allowfullscreen/></iframe></span><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>');
+  				$(".chatBox").append('<span class="responseData">'+ video + ' &#x1F603; <br>' +'<iframe id="ytplayer" type="text/html" width="540" height="260" src="' + val['answer'] + '" frameborder="0" allowfullscreen/></iframe></span><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>');
 
 	  		}else {
 				$(".chatBox").append('<span class="responseData">'+val["answer"]+'</span><br><br><br>');
