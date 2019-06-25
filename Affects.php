@@ -136,7 +136,7 @@ function getTodayUmore($oggi){
       $response = "il tuo umore era neutro";
     }
     
-    $answer = "Non sono presenti dati." . "<br>" . "Ecco gli ultimi dati rilevati" . "<br>" . "Umore: " . $response;
+    $answer = "Secondo gli ultimi dati rilevati " . $response;
   }
 
   return $answer;
@@ -202,7 +202,7 @@ function getPastUmore($ieri){
       $response = "il tuo umore era neutro";
     }
     
-    $answer = "Non sono presenti dati relativi al periodo specificato." . "<br>" . "Ecco gli ultimi dati rilevati" . "<br>" . "Umore: " . $response;
+   $answer = "Secondo gli ultimi dati rilevati " . $response;
   }
 
   return $answer;
@@ -246,7 +246,7 @@ function getPast($ieri){
     }
 
     $emotion = getEmotion($result);
-    $answer = "Non sono presenti dati relativi al periodo specificato." . "<br>" . "Ecco gli ultimi dati rilevati" . "<br>" . "Emozione: " . $emotion;
+    $answer = "Secondo gli ultimi dati rilevati stavi provando " . $emotion;
 
   }
 
@@ -304,7 +304,7 @@ function getToday($oggi){
     }
 
     $emotion = getEmotion($result);
-    $answer = "Non sono presenti dati." . "<br>" . "Ecco gli ultimi dati rilevati" . "<br>" . "Emozione: " . $emotion;
+   $answer = "Secondo gli ultimi dati rilevati stavi provando " . $emotion;
   }
 
   return $answer;
@@ -327,7 +327,7 @@ function getEmotion($result){
     }else if (strpos($result['emotion'], 'surprise') !== false) {
       $emotion = "sorpresa";
     }else{
-         return "non stai provando alcuna emozione";
+         return "al momento non stai provando alcuna emozione";
     }
 
   return $emotion;
@@ -496,7 +496,7 @@ function getPastUmoreBinario($ieri, $parameters){
         $risposta = "il tuo umore era negativo";
      }
 
-    $answer = "Non sono presenti dati relativi al periodo specificato." . "<br>" . "Ecco gli ultimi dati rilevati" . "<br>" . $risposta;
+       $answer = "Secondo gli ultimi dati rilevati " . $risposta;
 
   }
 
@@ -595,7 +595,7 @@ function getTodayUmoreBinario($oggi, $parameters){
      }
 
 
-    $answer = "Non sono presenti dati." . "<br>" . "Ecco gli ultimi dati rilevati" . "<br>" . $risposta;
+        $answer = "Secondo gli ultimi dati rilevati " . $risposta;
   }
 
   return $answer;
@@ -748,7 +748,7 @@ function getPastBinario($ieri, $parameters){
         break;
     }
 
-    $answer = "Non sono presenti dati relativi al periodo specificato." . "<br>" . "Ecco gli ultimi dati rilevati" . "<br>" . $risposta;
+    $answer = "Basandomi sugli ultimi dati presenti <br>" . $risposta;
 
   }
 
@@ -905,7 +905,7 @@ function getTodayBinario($oggi, $parameters){
         break;
     }
 
-    $answer = "Non sono presenti dati." . "<br>" . "Ecco gli ultimi dati rilevati" . "<br>" . $risposta;
+    $answer = "Basandomi sugli ultimi dati presenti <br>" . $risposta;
   }
 
   return $answer;

@@ -222,22 +222,22 @@ $endDate = substr($parameters['date-period']['endDate'],0,10);
     	 $activity = attivitaData($startDate);
 
     if($activity[0] == 0 && $activity[1] == 0 && $activity[2] ==  0)
-    	return "non ti sei allenato";
+    	return "oggi non hai svolto attività fisica";
 	
 	
-		$answer = "gli ultimi dati disponibili sono del ".$activity[3]."<br>";
-		$answer .= "Attività molto attiva:". $activity[2] ."minuti <br> "."Attività poco attiva: "
-         .$activity[1] ."minuti <br> ";
+		$answer = "gli ultimi dati disponibili sono del ".$activity[3].", quando hai svolto";
+		$answer .=  $activity[2] ."minuti di attività molto attiva <br> ".
+         $activity[1] ." minuti di attività poco attiva e ";
 
-        $answer .= "Attività abbastanza attiva:". $activity[0]."minuti <br><br>";
+        $answer .=  $activity[0]." minuti di attività abbastanza attiva<br><br>";
 
     }else{
 
        //risposta con intervallo 
-    	$answer = "Ecco i tempi medi dei tuoi allenamenti:<br>";
-    	$answer .= "Attività molto attiva: ".$arr[0]." minuti <br>";
-        $answer .= "Attività poco attiva: ".$arr[1]." minuti <br>";
-        $answer .= "Attività abbastanza attiva: ".$arr[2]." minuti <br>";
+    	$answer = "In media svolgi ";
+    	$answer .= $arr[0]." minuti di attività molto attiva, ";
+        $answer .= $arr[1]." minuti di attività poco attiva <br>";
+        $answer .= $arr[2]." minuti di attività abbastanza attiva <br>";
 
 
     }
@@ -250,22 +250,22 @@ $endDate = substr($parameters['date-period']['endDate'],0,10);
     $activity = attivitaData($date);
 
     if($activity[0] == 0 && $activity[1] == 0 && $activity[2] ==  0)
-    	return "non ti sei allenato";
+    	return "oggi non hai svolto attività fisica";
 	
 	if($date  == $activity[3]){
-        $answer = "ti sei allenato facendo <br>";
+        $answer = "ti sei allenato facendo ";
      
-     $answer .= "Attività molto attiva:". $activity[2] ."minuti <br> "."Attività poco attiva: "
-         .$activity[1] ."minuti <br> ";
+    $answer .=  $activity[2] ."minuti di attività molto attiva <br> ".
+         $activity[1] ." minuti di attività poco attiva e ";
 
-     $answer .= "Attività abbastanza attiva:". $activity[0]."minuti <br><br>";
+        $answer .=  $activity[0]." minuti di attività abbastanza attiva<br><br>";
 
 	}else{
-		$answer = "gli ultimi dati disponibili sono del ".$activity[3]."<br>";
-		$answer .= "Attività molto attiva:". $activity[2] ."minuti <br> "."Attività poco attiva: "
-         .$activity[1] ."minuti <br> ";
+	$answer = "gli ultimi dati disponibili sono del ".$activity[3].", quando hai svolto";
+    $answer .=  $activity[2] ."minuti di attività molto attiva <br> ".
+         $activity[1] ." minuti di attività poco attiva e ";
 
-        $answer .= "Attività abbastanza attiva:". $activity[0]."minuti <br><br>";
+        $answer .=  $activity[0]." minuti di attività abbastanza attiva<br><br>";
 
 
 	}
@@ -276,11 +276,11 @@ $endDate = substr($parameters['date-period']['endDate'],0,10);
   $activity = attivitaData("");
 
  
-  $answer = "gli ultimi dati disponibili sono del ".$activity[3]."<br>";
-  $answer .= "Attività molto attiva:". $activity[2] ."minuti <br> "."Attività poco attiva: "
-        .$activity[1] ."minuti <br> ";
+ $answer = "gli ultimi dati disponibili sono del ".$activity[3].", quando hai svolto";
+    $answer .=  $activity[2] ."minuti di attività molto attiva <br> ".
+         $activity[1] ." minuti di attività poco attiva e ";
 
-  $answer .= "Attività abbastanza attiva:". $activity[0]."minuti <br><br>";
+        $answer .=  $activity[0]." minuti di attività abbastanza attiva<br><br>";
 
 }
 
@@ -359,7 +359,7 @@ if(isset($parameters['date-period']['startDate'])){
 
 }else{
 
-    $answer = "informazione non trovata";
+    $answer = "sfortunatamente non sono riuscito a trovare dati sulla tua attività fisica";
 }
 
 return $answer;
@@ -778,12 +778,12 @@ $arr = stepsInterval($startDate,$endDate);
 
 if($arr[0] == $startDate){
 	//risposta corretta
-	$answer = "hai fatto una media di ".$arr[1]." passi giornalieri";
+	$answer = "hai una media di ".$arr[1]." passi giornalieri";
 
 }else{
 	//intervallo completo
-     $answer = "i dati presenti non risalgono al periodo indicato. <br>";
-     $answer .= "in media fai ".$arr[1]." passi giornalieri";
+     $answer = "secondo gli ultimi dati presenti hai ";
+     $answer .= "una media di ".$arr[1]." passi giornalieri";
 }
 }else{
 
@@ -795,7 +795,7 @@ $arr = stepsDay($date);
 if($arr[0] == $date){
 	$answer = str_replace('X', $arr[1], $resp);
 }else{
-	$answer = "gli ultimi dati disponibili risalgono al ".$arr[0]." <br>";
+	$answer = "secondo gli ultimi dati del ".$arr[0].", ";
 	$answer .= str_replace('X', $arr[1], $resp);
 }
 
@@ -807,7 +807,7 @@ $arr = stepsDay($today);
 if($arr[0] == $date){
 	$answer = str_replace('X', $arr[1], $resp);
 }else{
-	$answer = "gli ultimi dati disponibili risalgono al ".$arr[0]." <br>";
+	$answer = "secondo gli ultimi dati del ".$arr[0].", ";
 	$answer .= str_replace('X', $arr[1], $resp);
 }
 
@@ -856,9 +856,9 @@ if($intAv[0] == $startDate){
 
 }else{
 
-$answer = "non ci sono dati risalenti al periodo specificato <br> ";
+$answer = "secondo gli ultimi dati presenti hai ";
   
- $answer .= " La tua media giornaliera è di ".$intAv[1]." passi";
+ $answer .= "Una media giornaliera di ".$intAv[1]." passi";
   
   
   
@@ -927,8 +927,8 @@ $answer = str_replace('X', $arr[1], $resp);
 
 }else{
 //ultimi dati
-$answer = "gli ultimi dati risalgono al ".$arr[0]. " <br> ";
-$answer .= str_replace('X', $arr[1], $resp);
+$answer = "secondo gli ultimi dati del ".$arr[0]. " ";
+$answer .= "sei stato sedentario per ".$arr[1]." minuti";
 
 }
 
@@ -961,7 +961,7 @@ $endWeek = date('Y-m-d');
 $result = sedentaryInterval($startWeek,$endWeek);
 
 if($result == null){
- return "non ci sono dati nell'ultima settimana";	
+ return "sfortunatamente non sono stati trovati dati sufficienti per rispondere";	
 }
 
 if(strpos($text, 'seduto') || strpos($text, 'fermo') || strpos($text, 'sedentario')){

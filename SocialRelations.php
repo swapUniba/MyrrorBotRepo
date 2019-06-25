@@ -25,17 +25,18 @@ function contatti($resp,$parameters,$text){
     			if(count($contactIdArray) !== 0) {
     				$top3 = contattiFrequenti($contactIdArray);
     				$answer = printAnswer($top3, $resp);
+
     				return $answer;
     			}else{
     				//print_r("Non sono presenti contatti sul social network richiesto");
-    				$answer = "Errore nel caricamento dei contatti. Riprova!";
+    				$answer = "C'è stato un problema durante il caricamento dei contatti. Riprova!";
     				return $answer;
     			}
 
 
 			}else{
 				//print_r("Inserisci un solo social network");
-				$answer = "Inserisci un solo social network";
+				$answer = "Scegli un solo social network";
     			return $answer;
 			}
 		}
@@ -56,16 +57,18 @@ function contatti($resp,$parameters,$text){
     			if(count($contactIdArray) !== 0) {
     				$top3 = contattiFrequenti($contactIdArray);
     				$answer = printAnswer($top3, $resp);
+
+
     				return $answer;
     			}else{
     				//print_r("Non sono presenti contatti sul social network richiesto");
-    				$answer = "Errore nel caricamento dei contatti. Riprova!";
+    				$answer = "C'è stato un problema durante il caricamento dei contatti. Riprova!";
     				return $answer;
     			}
 
 			}else{
 				//print_r("Inserisci un solo social network");
-				$answer = "Inserisci un solo social network";
+				$answer = "Scegli un solo social network";
     			return $answer;
 			}
 		}
@@ -85,16 +88,20 @@ function contatti($resp,$parameters,$text){
     			if(count($contactIdArray) !== 0) {
     				$top3 = contattiFrequenti($contactIdArray);
     				$answer = printAnswer($top3, $resp);
+
+
+
+
     				return $answer;
     			}else{
     				//print_r("Non sono presenti contatti sul social network richiesto");
-    				$answer = "Errore nel caricamento dei contatti. Riprova!";
+    				$answer = "C'è stato un problema durante il caricamento dei contatti. Riprova!";
     				return $answer;
     			}
 
 			}else{
 				//print_r("Inserisci un solo social network");
-				$answer = "Inserisci un solo social network";
+				$answer = "Scegli un solo social network";
     			return $answer;
 			}
 		}
@@ -115,6 +122,7 @@ function contattiFrequenti($contactIdArray){
 	arsort($contattiFrequenti);//Ordino l'array in relazione al maggior numero di interazioni
 
 	$top3 = array_slice($contattiFrequenti, 0, 3);//Prendo i primi tre
+
 
 	return $top3;
 }
@@ -150,11 +158,11 @@ function printAnswer($top3, $resp){
 		$answer = "<br>". $resp;
 
         foreach ($top3 as $key => $value) {
-   			$answer = $answer . "<br>" . $key . ": " . $value;
+   			$answer = $answer . "<br>" . $key ;
 		}
 
 	}else{
-		$answer = "Contatti non presenti";
+		$answer = "Sfortunatamente sembra che non ci siano contatti nel tuo profilo";
 	}
 
 	return $answer;
