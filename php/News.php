@@ -45,8 +45,10 @@ if(!isset($json['articles'] ))
 
 foreach ($json['articles'] as $key => $value) {
 	$url = $value['url'];
+	$image = $value['urlToImage'];
+	$title = $value['title'];
     if($url != "")
-	return $url;
+	return array('url' => $url,'image' => $image, 'title' => $title );
 }
 
 if($url == ""){
@@ -55,12 +57,14 @@ $every= "https://newsapi.org/v2/everything?q=".$val
 $json = googleNewsQuery($every);
 foreach ($json['articles'] as $key => $value) {
 	$url = $value['url'];
+	$image = $value['urlToImage'];
+	$title = $value['title'];
     if($url != "")
-	return $url;
+	return array('url' => $url,'image' => $image, 'title' => $title );
 }
 
 if($url = "")
-	return "nessun articolo trovato";
+	return "sfortunatamente non sono stati trovati articoli";
 
 }
 
@@ -90,7 +94,10 @@ foreach ($list as $key => $value){
 
 	if($json['totalResults'] != 0){
 		foreach ($json['articles'] as $key => $value) {
-			return $value['url'];
+			$image = $value['urlToImage'];
+	        $title = $value['title'];
+		    $url =  $value['url'];
+			return array('url' => $url,'image' => $image, 'title' => $title );
 			
 		}
 		
@@ -123,8 +130,10 @@ if(!isset($json['articles'] ))
 
 foreach ($json['articles'] as $key => $value) {
 	$url = $value['url'];
+	$image = $value['urlToImage'];
+	$title = $value['title'];
     if($url != "")
-	return $url;
+	return array('url' => $url,'image' => $image, 'title' => $title );
 }
 
 if($url = "")
@@ -153,8 +162,10 @@ if(!isset($json['articles'] ))
 
 foreach ($json['articles'] as $key => $value) {
 	$url = $value['url'];
+	$image = $value['urlToImage'];
+	$title = $value['title'];
     if($url != "")
-	  return $url;
+	  return array('url' => $url,'image' => $image, 'title' => $title );
 }
 if($url = "")
 	return getTodayNews();

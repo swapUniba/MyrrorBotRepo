@@ -92,38 +92,162 @@ function setResponse(val) {
        
          $(".chat").append('<li class="replies"><img src="immagini/chatbot.png" alt="" /><p>' + val["answer"] + '</p></li>');
 
-      }else if(val['intentName'] == "Canzone per nome"){
+      }else if(val['intentName'] == "Canzone per nome"  || val['intentName'] == "Canzone per nome subintent"){
         
         $(".chat").append('<li class="replies"><img src="immagini/chatbot.png" alt="" /><p>' + canzoneNomeSpotify + '&#x1F603;' +'<br>'+ '<iframe src="' + val['answer'] + '" width="250" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe></p></li>');
       
-      }else if(val['intentName'] == "Canzone per artista"){
+      }else if(val['intentName'] == "Canzone per artista" || val['intentName'] == "Canzone per artista subintent"){
 
         $(".chat").append('<li class="replies"><img src="immagini/chatbot.png" alt="" /><p>' + canzoneArtistaSpotify + '&#x1F603;' +'<br>'+ '<iframe src="' + val['answer'] + '" width="250" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe></p></li>');
 
-      }else if(val['intentName'] == "Canzoni in base al genere"){
+      }else if(val['intentName'] == "Canzoni in base al genere" || val['intentName'] == "Canzoni in base al genere subintent"){
 
         $(".chat").append('<li class="replies"><img src="immagini/chatbot.png" alt="" /><p>' + canzoneGenereSpotify + '&#x1F603;' +'<br>'+ '<iframe src="' + val['answer'] + '" width="250" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe></p></li>');
 
-      }else if(val['intentName'] == "Playlist di canzoni in base alle emozioni"){
+      }else if(val['intentName'] == "Playlist di canzoni in base alle emozioni" || val['intentName'] == "Playlist di canzoni in base alle emozioni subintent"){
       
         $(".chat").append('<li class="replies"><img src="immagini/chatbot.png" alt="" /><p>' + playlistEmozioniSpotify + '&#x1F603;' +'<br>'+ '<iframe src="' + val['answer'] + '" width="250" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe></p></li>');
 
-      }else if(val['intentName'] == "Canzoni in base alle emozioni"){
+      }else if(val['intentName'] == "Canzoni in base alle emozioni" || val['intentName'] == "Canzoni in base alle emozioni subintent"){
 
         $(".chat").append('<li class="replies"><img src="immagini/chatbot.png" alt="" /><p>' + canzoneEmozioniSpotify + '&#x1F603;' +'<br>'+ '<iframe src="' + val['answer'] + '" width="250" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe></p></li>');
 
-      }else if(val['intentName'] == "Canzoni personalizzate"){
+      }else if(val['intentName'] == "Canzoni personalizzate" || val['intentName'] == "Canzoni personalizzate subintent" ){
         
         $(".chat").append('<li class="replies"><img src="immagini/chatbot.png" alt="" /><p>' + canzoniPersonalizzateSpotify + '&#x1F603;' +'<br>'+ '<iframe src="' + val['answer'] + '" width="250" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe></p></li>');
 
-      }else if(val["intentName"] == "Notizie in base ad un argomento" || val["intentName"] == "Notizie in base agli interessi" || val["intentName"] == "Notizie odierne"){
-
-        $(".chat").append('<li class="replies"><img src="immagini/chatbot.png" alt="" /><p><a href="'+val["answer"]+'">'+val["answer"]+'</a></p></li>');
-
-      
+      }else if(val["intentName"] == "Notizie in base ad un argomento" || val["intentName"] == "Notizie in base agli interessi" || val["intentName"] == "Notizie odierne"  || val["intentName"] == "Ricerca articolo" ){
+                                    
+        $(".chat").append('<li class="replies"><img src="immagini/chatbot.png" alt="" /><p><img style="width: 100%;height: 100%;" src= "'+val['answer']['image']+'"/><a href="'+val['answer']['url']+'">'+val["answer"]['title']+'</a></p></li>');
+   
       }else if(val["intentName"] == "Video in base alle emozioni" || val["intentName"] == "Ricerca Video"){
 
           $(".chat").append('<li class="replies"><img src="immagini/chatbot.png" alt="" /><p>' + video + ' &#x1F603; <br>' +'<iframe id="ytplayer" type="text/html" width="260" height="260" src="' + val['answer'] + '" frameborder="0" allowfullscreen/></iframe></p></li>');
+
+      }else if(val["intentName"] == "Meteo odierno" || val["intentName"] == "Previsioni meteo"){
+          var json = val['answer'];
+           var res = json.split("<br>");
+           var str = res[0].split(";");
+            var timestamp = new Date().getUTCMilliseconds();
+            var imglink = "";
+
+            switch(str[3]){
+
+              case 'cielo sereno':
+              imglink = "icon-2.svg";
+              break;
+
+              case 'poco nuvoloso':
+              imglink = "icon-1.svg";
+              break;
+
+              case 'parzialmente nuvoloso':
+              imglink = "icon-7.svg";
+              break;
+
+              case 'nubi sparse':
+              imglink = "icon-6.svg";
+              break;
+
+              case 'pioggia leggera':
+              imglink = "icon-4.svg";
+              break;
+
+              case 'nuvoloso':
+              imglink = "icon-5.svg";
+              break;
+
+              case 'piogge modeste':
+              imglink = "icon-9.svg";
+              break;
+
+              case 'pioggia pesante':
+              imglink = "icon-11.svg";
+              break;
+
+              case 'neve leggera':
+              imglink = "icon-13.svg";
+              break;
+
+              case 'neve':
+              imglink = "icon-14.svg";
+              break;
+
+
+
+            }
+
+           $(".chat").append('<li class="replies"><p><div class="container">'+
+            '<div class="forecast-container" id= "f'+timestamp+'"><div class="today forecast">'+
+            '<div class="forecast-header"><div class="day">'+str[0]+'</div></div>'+
+            '<div class="forecast-content"><div class="location">Bari Ore '+str[1]+':00</div><div class="degree">'+
+            ' <div class="num">'+str[2]+'<sup>o</sup>C</div><div class="forecast-icon">'+
+            ' <img src="immagini/icons/'+imglink+'" alt="" style="width:100px;"> </div></div>'+
+            ' </div></div></div> </div></p></li>');
+
+           str = null;
+           for (var i = 1; i < res.length-1; i++) {
+
+                      var str =  res[i].split(";");
+
+              
+              var imglink = "";
+
+            switch(str[3]){
+
+              case 'cielo sereno':
+              imglink = "icon-2.svg";
+              break;
+
+              case 'poco nuvoloso':
+              imglink = "icon-1.svg";
+              break;
+
+              case 'parzialmente nuvoloso':
+              imglink = "icon-7.svg";
+              break;
+
+              case 'nubi sparse':
+              imglink = "icon-6.svg";
+              break;
+
+              case 'pioggia leggera':
+              imglink = "icon-4.svg";
+              break;
+
+              case 'nuvoloso':
+              imglink = "icon-5.svg";
+              break;
+
+              case 'piogge modeste':
+              imglink = "icon-9.svg";
+              break;
+
+              case 'pioggia pesante':
+              imglink = "icon-11.svg";
+              break;
+
+              case 'neve leggera':
+              imglink = "icon-13.svg";
+              break;
+
+              case 'neve':
+              imglink = "icon-14.svg";
+              break;
+
+            }
+
+                   $('#f'+timestamp).append('<div class="forecast">'+
+              '<div class="forecast-header"><div class="day">'+str[1]+':00</div>'+
+              '</div><div class="forecast-content"> <div class="forecast-icon">'+
+                '<img src="immagini/icons/'+imglink+'" alt="" width=64></div>'+
+                '<div class="degree">'+Math.trunc( str[2] )+'<sup>o</sup>C</div></div></div>');
+
+             
+          }           
+    
+        
+      
 
       }else {
 

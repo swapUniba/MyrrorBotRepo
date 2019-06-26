@@ -38,7 +38,7 @@ foreach ($json_data['list'] as $key => $value) {
     $hour = substr($value['dt_txt'], 11,2);
     $temp = 0;
     $description = "";
-     if($data == $today){
+     if($data == $today && $hour >= 3){
         $temp = $value['main']['temp'];
             
           foreach ($value['weather'] as $key2 => $value2) {
@@ -77,12 +77,21 @@ foreach ($json_data['list'] as $key => $value) {
           	case 'heavy rain':
           		$condition = "pioggia pesante";
           		break;
+            
+            case 'light snow':
+              $condition = "neve leggera";
+              break;
+
+             case 'snow':
+              $condition = "neve";
+              break;
+              
           	
           	default:
           		# code...
           		break;
           }
-       $result.= $data.";ore:".$hour.";temperatura ".$temp."°;".$condition;
+       $result.= $data.";".$hour.";".$temp.";".$condition;
      }
    
 	$result .= "<br>";
@@ -120,7 +129,7 @@ foreach ($json_data['list'] as $key => $value) {
     $hour = substr($value['dt_txt'], 11,2);
     $temp = 0;
     $description = "";
-     if($data == $date){
+     if($data == $date && $hour >= 6){
         $temp = $value['main']['temp'];
             
           foreach ($value['weather'] as $key2 => $value2) {
@@ -164,13 +173,12 @@ foreach ($json_data['list'] as $key => $value) {
           		# code...
           		break;
           }
-       $result.= $data.";ore:".$hour.";temperatura ".$temp."°;".$condition."<br>";
+       $result.= $data.";".$hour."; ".$temp.";".$condition."<br>";
      }
    
 	
 }
 
-$result.="<br><br><br>";
 return $result;
 
 
@@ -206,7 +214,7 @@ foreach ($json_data['list'] as $key => $value) {
     $hour = substr($value['dt_txt'], 11,2);
     $temp = 0;
     $description = "";
-     if($data == $date && $hour >= 6){
+     if($data == $date && $hour >= 3){
         $temp = $value['main']['temp'];
             
           foreach ($value['weather'] as $key2 => $value2) {

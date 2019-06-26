@@ -314,18 +314,22 @@ function selectIntent($intent, $confidence,$text,$resp,$parameters){
         switch ($intent) {
              case 'Notizie in base ad un argomento':
                 $answer = getNewsTopic($parameters);
+                
                 break;
 
             case 'Notizie in base agli interessi':
-                $answer = getInterestsNews();
+               $answer = getInterestsNews();
+                
                 break;
 
             case 'Notizie odierne':
-                $answer = getTodayNews();   
+                $answer =getTodayNews();   
+              
                 break;
 
             case 'Ricerca articolo':
-                $answer = cercaNews($parameters);   
+               $answer = cercaNews($parameters);   
+
                 break;  
 
             default:
