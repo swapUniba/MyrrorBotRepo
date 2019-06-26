@@ -30,14 +30,13 @@
         var email = $("#email").val();  
         var password = $("#password").val();  
         
-$.ajax({
-type:'POST',
-url: 'json_creation.php',
-success:function(response){
-
-}
-
-});
+		$.ajax({
+			type:'POST',
+			url: 'php/json_creation.php',
+			success:function(response){
+			}
+		});
+		
         $.ajax({  
           type: "POST",
           url: "Login/login.php",  
