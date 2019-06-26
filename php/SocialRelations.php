@@ -155,7 +155,7 @@ function getContatti($json_data, $contactIdArray, $source){
 function printAnswer($top3, $resp){
 
 	if (isset($top3)) {
-		$answer = "<br>". $resp;
+		$answer = $resp;
 
         foreach ($top3 as $key => $value) {
    			$answer = " ".$answer . " " . $key."," ;

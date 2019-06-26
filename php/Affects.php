@@ -136,7 +136,7 @@ function getTodayUmore($oggi){
       $response = "il tuo umore era neutro";
     }
     
-    $answer = "Secondo gli ultimi dati rilevati " . $response;
+    $answer = "In base agli ultimi dati rilevati " . $response;
   }
 
   return $answer;
@@ -246,7 +246,7 @@ function getPast($ieri){
     }
 
     $emotion = getEmotion($result);
-    $answer = "Secondo gli ultimi dati rilevati stavi provando " . $emotion;
+    $answer = "Basandomi sugli ultimi dati rilevati stavi provando " . $emotion;
 
   }
 
@@ -304,7 +304,7 @@ function getToday($oggi){
     }
 
     $emotion = getEmotion($result);
-   $answer = "Secondo gli ultimi dati rilevati stavi provando " . $emotion;
+   $answer = "Basandomi sugli ultimi dati rilevati stavi provando " . $emotion;
   }
 
   return $answer;
@@ -496,7 +496,7 @@ function getPastUmoreBinario($ieri, $parameters){
         $risposta = "il tuo umore era negativo";
      }
 
-       $answer = "Secondo gli ultimi dati rilevati " . $risposta;
+       $answer = "Basandomi sugli ultimi dati rilevati " . $risposta;
 
   }
 
@@ -595,7 +595,7 @@ function getTodayUmoreBinario($oggi, $parameters){
      }
 
 
-        $answer = "Secondo gli ultimi dati rilevati " . $risposta;
+        $answer = "Basandomi sugli ultimi dati rilevati " . $risposta;
   }
 
   return $answer;

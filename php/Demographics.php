@@ -31,7 +31,6 @@ function identitaUtente($resp,$parameters,$text){
 }
 
 
-
 //ETA'
 function getEta($resp,$parameters,$text){
 

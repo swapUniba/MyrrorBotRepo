@@ -1,104 +1,112 @@
-<html>
-<head>
-	<title>Chatbot</title>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<!DOCTYPE html>
+<html class=''>
+  <head>
+    <script src='https://code.jquery.com/jquery-2.2.4.min.js'></script>
 
-	<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-	<script type="text/javascript">		
-		$(document).ready(function() {
-			$("#input").keypress(function(event) {
-				if (event.which == 13) {
-					$('.chatBox').append('<span class="userInput">' + $('input').val() + '</span><br><br>');
-					event.preventDefault();
-					let query  = $('input').val();
-					$('input').val('');
-					send(query);
-				}
-			});
-			
-			$("#send").click(function(){
-               	$('.chatBox').append('<span class="userInput">' +  $('input').val() + '</span><br><br>');
-				
-					let query  = $('input').val()
-					$('input').val('')
-					send(query);
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 
-			});	
-		});
-	
-	
-		function send(query) {
-			var text = query;
-			$.ajax({
-				type: "POST",
-				url: "intentDetection.php",
-				//contentType: "application/json; charset=utf-8",
-				data: {testo:text},
-				success: function(data) {
-					setResponse(data);
-				}
-			});
-		}
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
 
-		function setResponse(val) {
-			console.log(val);
-			val = JSON.parse(val);
+    <script src='//production-assets.codepen.io/assets/editor/live/console_runner-079c09a0e3b9ff743e39ee2d5637b9216b3545af0de366d4b9aad9dc87e26bfd.js'></script>
+    <script src='//production-assets.codepen.io/assets/editor/live/events_runner-73716630c22bbc8cff4bd0f07b135f00a0bdc5d14629260c3ec49e5606f98fdd.js'></script>
+    <script src='//production-assets.codepen.io/assets/editor/live/css_live_reload_init-2c0dc5167d60a5af3ee189d570b1835129687ea2a61bee3513dee3a50c115a77.js'></script>
 
-			var canzoneNomeSpotify = "Ecco qui la canzone richiesta!";
-			var canzoneArtistaSpotify = "Ecco qui la canzone dell'artista richiesto!";
-			var canzoneGenereSpotify = "Ecco una playlist di canzoni del genere richiesto!";
-			var playlistEmozioniSpotify = "Ecco qui una playlist di canzoni raccomandata in base al tuo umore";
-			var canzoneEmozioniSpotify = "Ecco qui un brano consigliato in base al tuo umore";
-			var canzoniPersonalizzateSpotify = "Ecco qui un brano consigliato che potrebbe piacerti";
-			var video = "Ecco qui il video richiesto";
+    <meta charset='UTF-8'>
+    <meta name="robots" content="noindex">
 
+    <link rel="shortcut icon" type="image/x-icon" href="//production-assets.codepen.io/assets/favicon/favicon-8ea04875e70c4b0bb41da869e81236e54394d63638a1ef12fa558a4a835f1164.ico" />
+    <link rel="mask-icon" type="" href="//production-assets.codepen.io/assets/favicon/logo-pin-f2d2b6d2c61838f7e76325261b7195c27224080bc099486ddd6dccb469b8e8e6.svg" color="#111" />
+    <link rel="canonical" href="https://codepen.io/emilcarlsson/pen/ZOQZaV?limit=all&page=74&q=contact+" />
+    
+    <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600,700,300' rel='stylesheet' type='text/css'>
 
-			//Stampa risposte
-			if (val["intentName"] == "Interessi" || val["intentName"] == "Contatti" || val["intentName"] == "Esercizio fisico" || val["intentName"] == "Personalita") {
-				$(".chatBox").append('<span class="responseData">'+val["answer"]+'</span><br><br><br><br><br><br><br>');
-			}else if(val['intentName'] == "Canzone per nome"){
-				$(".chatBox").append('<span class="responseData">'+ canzoneNomeSpotify + '&#x1F601;' +'<br>'+ '<iframe src="' + val['answer'] + '" width="300" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe></span><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>');
-			}else if(val['intentName'] == "Canzone per artista"){
-				$(".chatBox").append('<span class="responseData">'+ canzoneArtistaSpotify + '&#x1F601;' +'<br>'+ '<iframe src="' + val['answer'] + '" width="300" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe></span><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>');
-			}else if(val['intentName'] == "Canzoni in base al genere"){
-				$(".chatBox").append('<span class="responseData">'+ canzoneGenereSpotify + '&#x1F601;' +'<br>'+ '<iframe src="' + val['answer'] + '" width="300" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe></span><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>');
-			}else if(val['intentName'] == "Playlist di canzoni in base alle emozioni"){
-				$(".chatBox").append('<span class="responseData">'+ playlistEmozioniSpotify + '&#x1F601;' +'<br>'+ '<iframe src="' + val['answer'] + '" width="300" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe></span><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>');
-			}else if(val['intentName'] == "Canzoni in base alle emozioni"){
-				$(".chatBox").append('<span class="responseData">'+ canzoneEmozioniSpotify + '&#x1F601;' +'<br>'+ '<iframe src="' + val['answer'] + '" width="300" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe></span><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>');
-			}else if(val['intentName'] == "Canzoni personalizzate"){
-				$(".chatBox").append('<span class="responseData">'+ canzoniPersonalizzateSpotify + '&#x1F601;' +'<br>'+ '<iframe src="' + val['answer'] + '" width="300" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe></span><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>');
-			}else if(val["intentName"] == "Notizie in base ad un argomento" || val["intentName"] == "Notizie in base agli interessi" || val["intentName"] == "Notizie odierne"){
-	           $(".chatBox").append('<a href="'+val["answer"]+'">'+val["answer"]+
-	             '</a><br><br><br><br><br><br>');
-	  		}else if(val["intentName"] == "Video in base alle emozioni" || val["intentName"] == "Ricerca Video"){
+    <script src="https://use.typekit.net/hoy3lrg.js"></script>
 
-  				$(".chatBox").append('<span class="responseData">'+ video + ' &#x1F603; <br>' +'<iframe id="ytplayer" type="text/html" width="540" height="260" src="' + val['answer'] + '" frameborder="0" allowfullscreen/></iframe></span><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>');
+    <script>
+      try{
+        Typekit.load({ async: true });
+      }catch(e){
+      }
+    </script>
 
-	  		}else {
-				$(".chatBox").append('<span class="responseData">'+val["answer"]+'</span><br><br><br>');
-			}
+    <link rel='stylesheet prefetch' href='https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css'>
+    <link rel='stylesheet prefetch' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.2/css/font-awesome.min.css'>
 
-		}
+    <link href="css/stile.css" rel="stylesheet" type="text/css">
 
-		//Intent avviato all'inizio del dialogo
-		function welcomeIntent(){
-			send("aiuto");
-		}
+  </head>
 
-	</script>
-	<style type="text/css">
-		body { width: 800px; margin: 0 auto;height: 650px; border: 2px solid black;padding: 10px;	 }
-		div { width: 800px;height: 600px;overflow: auto	 }
-		.userInput{float: left;}
-		.responseData{float:right};
-		#input { width: 900px; }
-		button { width: 70px; }
-	</style>
-</head>
-<body onload="welcomeIntent()">
-	<div class = 'chatBox'>
-	</div>
-	<input id="input" type="text" style="width: 700px;margin-top: 30px;"><button id="send">Invia</button>
-</body>
+  <body onload="welcomeIntent()">
+    <div id="frame">
+    	<div id="sidepanel">
+    		<div id="profile">
+    			<div class="wrap">
+    				<img id="profile-img" src="immagini/user.png" class="online" alt="" />
+
+    				<p class="nomeUtente"></p> <!------- NOME PRESO DA MYRROR ---------->
+
+    			</div>
+    		</div>
+
+        <div id="contacts">
+    			<ul>
+    				
+    				<li class="contact active">
+    					<div class="wrap">
+    						<span class="contact-status busy"></span>
+    						<img src="immagini/chatbot.png" alt="" />
+    						<div class="meta">
+    							<p class="name">Nome del chatbot</p> <!------------------------------ NOME DEL CHATBOT --------------------------------------------------->
+
+    							<p class="preview">Ciao! 😄 Sono il tuo assistente personale. Sono in grado di fornirti informazioni sul tuo stato fisico, sui tuoi interessi e sulla personalità. Posso consigliarti canzoni, musica e video in base alle tue emozioni e preferenze.</p>
+    						</div>
+    					</div>
+    				</li>
+    			</ul>
+    		</div>
+    	</div>
+    	<div class="content">
+    		<div class="contact-profile">
+    			<img src="immagini/chatbot.png" alt="" />
+
+    			<p>Nome del chatbot</p> <!------------------------------------ NOME DEL CHATBOT --------------------------------------------------->
+
+    			<div class="social-media">
+    				<i class="fa fa-facebook" aria-hidden="true"></i>
+    				<i class="fa fa-twitter" aria-hidden="true"></i>
+    				 <i class="fa fa-instagram" aria-hidden="true"></i>
+    			</div>
+    		</div>
+    		<div class="messages">
+    			<ul class="chat"> <!-- In questo spazio vengono incluse le domande con le risposte (script.js) -->
+    				<!--<li class="sent">
+    					<img src="immagini/user.png" alt="" />
+    					<p>Ciao come stai?!</p>
+    				</li>
+    				<li class="replies">
+    					<img src="immagini/chatbot.png" alt="" />
+    					<p>Tutto bene</p>
+    				</li>
+    				-->
+    			</ul>
+    		</div>
+    		<div class="message-input">
+    			<div class="wrap">
+    			<input type="text" placeholder="Scrivi il tuo messaggio..." />
+    			<i class="fa fa-paperclip attachment" aria-hidden="true"></i>
+    			<button class="submit"><i class="fa fa-paper-plane" aria-hidden="true"></i></button>
+    			</div>
+    		</div>
+    	</div>
+    </div>
+
+    <script src='//production-assets.codepen.io/assets/common/stopExecutionOnTimeout-b2a7b3fe212eaa732349046d8416e00a9dec26eb7fd347590fbced3ab38af52e.js'></script>
+
+    <script src='js/script.js'></script>
+
+  </body>
 </html>

@@ -37,7 +37,7 @@ function interessi($resp,$parameters){
 
     //Se è valorizzato l'array, stampo gli interessi
 	if (isset($top5)) {
-		$answer = "<br>" . $resp;
+		$answer = $resp;
 
 		if (count($top5) != 0) {
 			foreach ($top5 as $key => $value){

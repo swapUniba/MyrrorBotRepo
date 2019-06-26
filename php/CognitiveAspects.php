@@ -81,7 +81,7 @@ function personalita($resp,$parameters){
 		$personalita5 = "fiducioso";
 	}
 
-	$answer = "<br>" . $resp . " " . $personalita1 . ", " . $personalita2 . ", " . $personalita3 . ".<br>Inoltre sei anche " . $personalita4 . ", " . $personalita5;
+	$answer = $resp . " " . $personalita1 . ", " . $personalita2 . ", " . $personalita3 . ".<br>Inoltre sei anche " . $personalita4 . ", " . $personalita5;
 
 	return $answer;
 

@@ -533,47 +533,102 @@ function pastSleepBinary($resp,$parameters,$text){
 
   if(strpos($text, 'abbastanza')){
 
-     if($asleepAV >= 390)
-       $result = "Si, dormi abbastanza. In media dormi " .$hours. " ore e " . $minutes . " minuti";
-     else
-       $result = "No, non dormi abbastanza. In media dormi " .$hours. " ore e " . $minutes . " minuti";
-
+     if($asleepAV >= 390){
+          if ($hours == 1) {
+            $result = "Si, dormi abbastanza. In media dormi " .$hours. " ora e " . $minutes . " minuti";
+          }else{
+            $result = "Si, dormi abbastanza. In media dormi " .$hours. " ore e " . $minutes . " minuti";
+          }
+     }else{
+        if ($hours == 1) {
+          $result = "No, non dormi abbastanza. In media dormi " .$hours. " ora e " . $minutes . " minuti";
+        }else{
+          $result = "No, non dormi abbastanza. In media dormi " .$hours. " ore e " . $minutes . " minuti";
+        }
+      }
   }elseif (strpos($text, 'tanto')) {
 
-     if($asleepAV >= 390)
-       $result = "Si, dormi tanto. In media dormi " .$hours. " ore e " . $minutes . " minuti";
-     else
-       $result = "No,non dormi tanto. In media dormi " .$hours. " ore e " . $minutes . " minuti";
+     if($asleepAV >= 390){
+        if ($hours == 1) {
+          $result = "Si, dormi tanto. In media dormi " .$hours. " ora e " . $minutes . " minuti";
+        }else{
+            $result = "Si, dormi tanto. In media dormi " .$hours. " ore e " . $minutes . " minuti";
+        }
+      }else{
+        if ($hours == 1) {
+          $result = "No, non dormi tanto. In media dormi " .$hours. " ora e " . $minutes . " minuti";
+        } else{
+          $result = "No, non dormi tanto. In media dormi " .$hours. " ore e " . $minutes . " minuti";
+        }
+      }
 
   }elseif (strpos($text, 'bene')) {
 
-     if($asleepAV >= 390)
-       $result = "Si, dormi bene. In media dormi " .$hours. " ore e " . $minutes . " minuti";
-     else
-       $result = "No,non dormi bene. In media dormi " .$hours. " ore e " . $minutes . " minuti";
-
+     if($asleepAV >= 390){
+        if ($hours == 1) {
+         $result = "Si, dormi bene. In media dormi " .$hours. " ora e " . $minutes . " minuti";
+        }else{
+         $result = "Si, dormi bene. In media dormi " .$hours. " ore e " . $minutes . " minuti";
+        }
+     }else{
+        if ($hours == 1) {
+         $result = "No, non dormi bene. In media dormi " .$hours. " ora e " . $minutes . " minuti";
+        }else{
+          $result = "No, non dormi bene. In media dormi " .$hours. " ore e " . $minutes . " minuti";
+        }
+      }
   }elseif (strpos($text, 'di meno')) {
-      if($asleepAV >= 480)
-       $result = "Si, dovresti dormire di meno. In media dormi " .$hours. " ore e " . $minutes . " minuti";
-     else
-       $result = "No,dormi abbastanza. In media dormi " .$hours. " ore e " . $minutes . " minuti";
-
+      if($asleepAV >= 480){
+        if ($hours == 1) {
+          $result = "Si, dovresti dormire di meno. In media dormi " .$hours. " ora e " . $minutes . " minuti";
+        }else{
+          $result = "Si, dovresti dormire di meno. In media dormi " .$hours. " ore e " . $minutes . " minuti";
+        }
+     }else{
+        if ($hours == 1) {
+         $result = "No, dormi abbastanza. In media dormi " .$hours. " ora e " . $minutes . " minuti";
+        }else{
+          $result = "No, dormi abbastanza. In media dormi " .$hours. " ore e " . $minutes . " minuti";
+        }
+    }
   }elseif (strpos($text, 'di più')) {
 
-     if($asleepAV >= 390)
-       $result = "No,non dovresti dormire di più. In media dormi " .$hours. " ore e " . $minutes . " minuti";
-     else
-       $result = "Si,dovresti dormire di più. In media dormi " .$hours. " ore e " . $minutes . " minuti";
+     if($asleepAV >= 390){
+      if ($hours == 1) {
+       $result = "No, non dovresti dormire di più. In media dormi " .$hours. " ora e " . $minutes . " minuti";
+      }else{
+        $result = "No, non dovresti dormire di più. In media dormi " .$hours. " ore e " . $minutes . " minuti";
+      }
+     }else{
+      if ($hours == 1) {
+        $result = "Si, dovresti dormire di più. In media dormi " .$hours. " ora e " . $minutes . " minuti";
+      }else{
+        $result = "Si, dovresti dormire di più. In media dormi " .$hours. " ore e " . $minutes . " minuti";
+      }
+    }
     
   }elseif (strpos($text, 'poco')){
     
-     if($asleepAV >= 390)
-       $result = "No, dormi abbastanza. In media dormi " .$hours. " ore e " . $minutes . " minuti";
-     else
-       $result = "Si,dovresti dormire di più. In media dormi " .$hours. " ore e " . $minutes . " minuti";
+     if($asleepAV >= 390){
+      if ($hours == 1) {
+       $result = "No, dormi abbastanza. In media dormi " .$hours. " ora e " . $minutes . " minuti";
+      }else{
+        $result = "No, dormi abbastanza. In media dormi " .$hours. " ore e " . $minutes . " minuti";
+      }
+     }else{
+      if ($hours == 1) {
+       $result = "Si, dovresti dormire di più. In media dormi " .$hours. " ora e " . $minutes . " minuti";
+      }else{
+       $result = "Si, dovresti dormire di più. In media dormi " .$hours. " ora e " . $minutes . " minuti";
+      }
+     }
 
   }else{
-     $result = "In media dormi " .$hours. " ore e " . $minutes . " minuti";;
+    if ($hours == 1) {
+      $result = "In media dormi " .$hours. " ora e " . $minutes . " minuti";;
+    }else{
+      $result = "In media dormi " .$hours. " ore e " . $minutes . " minuti";;
+    }
   }
 
    return $result;
@@ -668,18 +723,37 @@ function yestSleepBinary($resp,$parameters,$text,$data){
     if($minutesAsleep >= 390 ){
        
        if($flag == true){
-          $answer = "Si, hai dormito abbastanza. Hai dormito per ben ".$hours. " ore e " . $minutes . " minuti";
+          if ($hours == 1) {
+            $answer = "Si, hai dormito abbastanza. Hai dormito per ben ".$hours. " ora e " . $minutes . " minuti";
+          }else{
+            $answer = "Si, hai dormito abbastanza. Hai dormito per ben ".$hours. " ore e " . $minutes . " minuti";
+          }
        }else{
-          $answer ="Gli ultimi in mio possesso risalgono al ".$data." ed hai dormito abbastanza. Ovvero "
-          .$hours. " ore e " . $minutes . " minuti";
+          if ($hours == 1) {
+            $answer ="Gli ultimi in mio possesso risalgono al ".$data." ed hai dormito abbastanza. Ovvero " .$hours. " ora e " . $minutes . " minuti"; 
+          }else{
+              $answer ="Gli ultimi in mio possesso risalgono al ".$data." ed hai dormito abbastanza. Ovvero ".$hours. " ore e " . $minutes . " minuti";   
+          }
+          
        }
        
     }else{
         if($flag == true){
-          $answer = "No, non hai dormito abbastanza. Hai dormito solo per ".$hours. " ore e " . $minutes . " minuti";
+          if ($hours == 1) {
+            $answer = "No, non hai dormito abbastanza. Hai dormito solo per ".$hours. " ora e " . $minutes . " minuti";
+          }else{
+            $answer = "No, non hai dormito abbastanza. Hai dormito solo per ".$hours. " ore e " . $minutes . " minuti";
+          }
+          
        }else{
+        if ($hours == 1) {
+          $answer ="Gli ultimi in mio possesso risalgono al ".$data." e vedo che non hai dormito abbastanza. Infatti solo per  "
+          .$hours. " ora e " . $minutes . " minuti";
+        }else{
           $answer ="Gli ultimi in mio possesso risalgono al ".$data." e vedo che non hai dormito abbastanza. Infatti solo per  "
           .$hours. " ore e " . $minutes . " minuti";
+        }
+
        }
 
     }
@@ -689,18 +763,39 @@ function yestSleepBinary($resp,$parameters,$text,$data){
       if($minutesAsleep >= 390 ){
        
        if($flag == true){
-          $answer = "Si, hai dormito bene. Hai dormito ben ".$hours. " ore e " . $minutes . " minuti";
+          if ($hours == 1) {
+            $answer = "Si, hai dormito bene. Hai dormito ben ".$hours. " ora e " . $minutes . " minuti";
+          }else{
+            $answer = "Si, hai dormito bene. Hai dormito ben ".$hours. " ore e " . $minutes . " minuti";
+          }
+          
        }else{
-          $answer ="Gli ultimi in mio possesso risalgono al ".$data." e noto che hai dormito bene ovvero per ben "
+        if ($hours == 1) {
+            $answer ="Gli ultimi in mio possesso risalgono al ".$data." e noto che hai dormito bene ovvero per ben "
+          .$hours. " ora e " . $minutes . " minuti";
+        }else{
+            $answer ="Gli ultimi in mio possesso risalgono al ".$data." e noto che hai dormito bene ovvero per ben "
           .$hours. " ore e " . $minutes . " minuti";
+        }
        }
        
     }else{
         if($flag == true){
-          $answer = "No, non hai dormito bene. Hai dormito solo per ".$hours. " ore e " . $minutes . " minuti";
+          if ($hours == 1) {
+            $answer = "No, non hai dormito bene. Hai dormito solo per ".$hours. " ora e " . $minutes . " minuti";
+          }else{
+            $answer = "No, non hai dormito bene. Hai dormito solo per ".$hours. " ore e " . $minutes . " minuti";
+          }
+          
        }else{
+        if ($hours == 1) {
+          $answer ="Gli ultimi in mio possesso risalgono al ".$data." e non hai dormito molto bene. Infatti hai dormito solo per "
+          .$hours. " ora e " . $minutes . " minuti";
+        }else{
           $answer ="Gli ultimi in mio possesso risalgono al ".$data." e non hai dormito molto bene. Infatti hai dormito solo per "
           .$hours. " ore e " . $minutes . " minuti";
+        }
+          
        }
 
     }
@@ -710,18 +805,40 @@ function yestSleepBinary($resp,$parameters,$text,$data){
       if($minutesAsleep >= 390 ){
        
        if($flag == true){
+        if ($hours == 1) {
+          $answer = "Si, hai dormito tanto. Hai dormito per ben ".$hours. " ora e " . $minutes . " minuti";
+        }else{
           $answer = "Si, hai dormito tanto. Hai dormito per ben ".$hours. " ore e " . $minutes . " minuti";
+        }
+          
        }else{
+        if ($hours == 1) {
+          $answer ="Gli ultimi in mio possesso risalgono al ".$data." e noto che hai dormito tanto. Ovvero per "
+          .$hours. " ora e " . $minutes . " minuti";
+        }else{
           $answer ="Gli ultimi in mio possesso risalgono al ".$data." e noto che hai dormito tanto. Ovvero per "
           .$hours. " ore e " . $minutes . " minuti";
+        }
+          
        }
        
     }else{
         if($flag == true){
-          $answer = "No, non hai dormito tanto. Hai dormito solo per ". $minutesAsleep ." minuti ";
+          if ($hours == 1) {
+            $answer = "No, non hai dormito tanto. Hai dormito solo per ".$hours. " ora e " . $minutes . " minuti";
+          }else{
+            $answer = "No, non hai dormito tanto. Hai dormito solo per ".$hours. " ore e " . $minutes . " minuti";
+          }
+          
        }else{
-          $answer ="Gli ultimi in mio possesso risalgono al ".$data." e noto che non hai dormito tanto. Solo "
-          .$minutesAsleep." minuti";
+          if ($hours == 1) {
+              $answer ="Gli ultimi in mio possesso risalgono al ".$data." e noto che non hai dormito tanto. Solo "
+            .$hours. " ora e " . $minutes . " minuti";
+          }else{
+            $answer ="Gli ultimi in mio possesso risalgono al ".$data." e noto che non hai dormito tanto. Solo "
+            .$hours. " ore e " . $minutes . " minuti";
+          }
+          
        }
 
     }
@@ -731,18 +848,40 @@ function yestSleepBinary($resp,$parameters,$text,$data){
       if($minutesAsleep >= 480 ){
        
        if($flag == true){
+        if ($hours == 1) {
+          $answer = "Si, dovresti dormire di meno. Vedo che hai dormito per ".$hours. " ora e " . $minutes . " minuti";
+        }else{
           $answer = "Si, dovresti dormire di meno. Vedo che hai dormito per ".$hours. " ore e " . $minutes . " minuti";
+        }
+          
        }else{
+        if ($hours == 1) {
+            $answer ="Gli ultimi in mio possesso risalgono a ".$data." e noto che dovresti dormire di meno. Hai dormito per "
+          .$hours. " ora e " . $minutes . " minuti";
+        }else{
           $answer ="Gli ultimi in mio possesso risalgono a ".$data." e noto che dovresti dormire di meno. Hai dormito per "
           .$hours. " ore e " . $minutes . " minuti";
+        }
+          
        }
        
     }else{
         if($flag == true){
-          $answer = "No, non hai dormito abbastanza. Hai dormito solamente per ".$hours. " ore e " . $minutes . " minuti";
+          if ($hours == 1) {
+            $answer = "No, non hai dormito abbastanza. Hai dormito solamente per ".$hours. " ora e " . $minutes . " minuti";
+          }else{
+            $answer = "No, non hai dormito abbastanza. Hai dormito solamente per ".$hours. " ore e " . $minutes . " minuti";
+          }
+          
        }else{
+        if ($hours == 1) {
+          $answer ="Gli ultimi in mio possesso risalgono al ".$data." e noto che non hai dormito abbastanza. Solo "
+          .$hours. " ora e " . $minutes . " minuti";
+        }else{
           $answer ="Gli ultimi in mio possesso risalgono al ".$data." e noto che non hai dormito abbastanza. Solo "
           .$hours. " ore e " . $minutes . " minuti";
+        }
+          
        }
 
     }
@@ -752,18 +891,40 @@ function yestSleepBinary($resp,$parameters,$text,$data){
         if($minutesAsleep >= 390 ){
        
        if($flag == true){
+        if ($hours == 1) {
+          $answer = "No, non dovresti dormire di più perchè hai dormito per ".$hours. " ora e " . $minutes . " minuti";
+        }else{
           $answer = "No, non dovresti dormire di più perchè hai dormito per ".$hours. " ore e " . $minutes . " minuti";
+        }
+          
        }else{
+        if ($hours == 1) {
+          $answer ="Gli ultimi in mio possesso risalgono al ".$data." e noto che non dovresti dormire di più visto che hai dormito "
+          .$hours. " ora e " . $minutes . " minuti";
+        }else{
           $answer ="Gli ultimi in mio possesso risalgono al ".$data." e noto che non dovresti dormire di più visto che hai dormito "
           .$hours. " ore e " . $minutes . " minuti";
+        }
+          
        }
        
     }else{
         if($flag == true){
-          $answer = "Si, dovresti dormire di più. Infatti hai dormito ".$hours. " ore e " . $minutes . " minuti";
+          if ($hours == 1) {
+            $answer = "Si, dovresti dormire di più. Infatti hai dormito ".$hours. " ora e " . $minutes . " minuti";
+          }else{
+            $answer = "Si, dovresti dormire di più. Infatti hai dormito ".$hours. " ore e " . $minutes . " minuti";
+          }
+          
        }else{
+        if ($hours == 1) {
+          $answer ="Gli ultimi in mio possesso risalgono al ".$data." e noto che dovresti dormire di più visto che hai dormito solamente per "
+          .$hours. " ora e " . $minutes . " minuti";
+        }else{
           $answer ="Gli ultimi in mio possesso risalgono al ".$data." e noto che dovresti dormire di più visto che hai dormito solamente per "
           .$hours. " ore e " . $minutes . " minuti";
+        }
+          
        }
 
     }
@@ -773,18 +934,40 @@ function yestSleepBinary($resp,$parameters,$text,$data){
     if($minutesAsleep >= 390 ){
        
        if($flag == true){
+        if ($hours == 1) {
+          $answer = "No, hai dormito abbastanza. Infatti hai dormito ".$hours. " ora e " . $minutes . " minuti";
+        }else{
           $answer = "No, hai dormito abbastanza. Infatti hai dormito ".$hours. " ore e " . $minutes . " minuti";
+        }
+          
        }else{
+        if ($hours == 1) {
+          $answer ="Gli ultimi in mio possesso risalgono al ".$data." e noto che hai dormito abbastanza ovvero "
+          .$hours. " ora e " . $minutes . " minuti";
+        }else{
           $answer ="Gli ultimi in mio possesso risalgono al ".$data." e noto che hai dormito abbastanza ovvero "
           .$hours. " ore e " . $minutes . " minuti";
+        }
+          
        }
        
     }else{
       if($flag == true){
+        if ($hours == 1) {
+          $answer = "Si, dovresti dormire di più. Hai dormito ".$hours. " ora e " . $minutes . " minuti";
+        }else{
           $answer = "Si, dovresti dormire di più. Hai dormito ".$hours. " ore e " . $minutes . " minuti";
+        }
+          
       }else{
+        if ($hours == 1) {
+          $answer ="Gli ultimi in mio possesso risalgono al ".$data." e noto che dovresti dormire di più. Hai dormito solamente "
+          .$hours. " ora e " . $minutes . " minuti";
+        }else{
           $answer ="Gli ultimi in mio possesso risalgono al ".$data." e noto che dovresti dormire di più. Hai dormito solamente "
           .$hours. " ore e " . $minutes . " minuti";
+        }
+          
       }
     }
 
@@ -797,7 +980,11 @@ function yestSleepBinary($resp,$parameters,$text,$data){
       $hours = floor($minutesAsleep / 60);
       $minutes = ($minutesAsleep % 60);
 
-      $answer = "Hai dormito ". $hours ." ore e " .$minutes . ' minuti';
+      if ($hours == 1) {
+          $answer = "Hai dormito ". $hours ." ora e " .$minutes . ' minuti'; 
+      }else{
+          $answer = "Hai dormito ". $hours ." ore e " .$minutes . ' minuti';
+      }
   }
 
   return $answer;

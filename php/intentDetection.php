@@ -228,21 +228,44 @@ function selectIntent($intent, $confidence,$text,$resp,$parameters){
 
 
     //SPOTIFY --> Valori soglia diversi
-    if(($confidence > 0.86 ||  str_word_count($text) >= 2) && $confidence >= 0.50 && ($intent == 'Canzone per nome' || $intent == 'Canzone per artista' || $intent == 'Canzoni in base al genere' || $intent == 'Playlist di canzoni in base alle emozioni' || $intent == 'Canzoni in base alle emozioni' || $intent == 'Canzoni personalizzate')){
+    if(($confidence > 0.86 ||  str_word_count($text) >= 2) && $confidence >= 0.50 && ($intent == 'Canzone per nome' || $intent == 'Canzone per artista' || $intent == 'Canzoni in base al genere' || $intent == 'Playlist di canzoni in base alle emozioni' || $intent == 'Canzoni in base alle emozioni' || $intent == 'Canzoni personalizzate'  
+        ||  $intent == 'Canzone per nome subintent'  || $intent == 'Canzone per artista subintent' || 
+        $intent == 'Canzoni in base al genere subintent' || $intent=='Playlist di canzoni in base alle emozioni subintent'
+        || $intent == 'Canzoni in base alle emozioni subintent' || $intent == 'Canzoni personalizzate subintent' )){
+
         switch ($intent) {
             case 'Canzone per nome':
                 $answer = getMusicByTrack($resp,$parameters,$text);
                 break;
 
+            case 'Canzone per nome subintent':
+                $par = array('music-artist' => $resp);
+                $answer = getMusicByArtist($resp,$par,$text);
+                break;
+
             case 'Canzone per artista':
                 $answer = getMusicByArtist($resp,$parameters,$text);
                 break;
-            
+
+            case 'Canzone per artista subintent':
+                $par = array('music-artist' =>  $resp);  
+                $answer = getMusicByArtist($resp,$par,$text);
+                break;
+           
             case 'Canzoni in base al genere':
                 $answer = getMusicByGenre($resp,$parameters,$text);
                 break;
 
+            case 'Canzoni in base al genere subintent':
+                $par  = array('GeneriMusicali' =>  $resp);
+                $answer = getMusicByGenre($resp,$par,$text);
+                break;
+
             case 'Playlist di canzoni in base alle emozioni':
+                $answer = getPlaylistByEmotion($resp,$parameters,$text);
+                break;
+
+            case 'Playlist di canzoni in base alle emozioni subintent':
                 $answer = getPlaylistByEmotion($resp,$parameters,$text);
                 break;
 
@@ -250,13 +273,21 @@ function selectIntent($intent, $confidence,$text,$resp,$parameters){
                 $answer = getMusicByEmotion($resp,$parameters,$text);
                 break;
 
+            case 'Canzoni in base alle emozioni subintent':
+                $answer = getMusicByEmotion($resp,$parameters,$text);
+                break;
+
             case 'Canzoni personalizzate':
+                $answer = getMusicCustom($resp,$parameters,$text);
+                break;
+
+            case 'Canzoni personalizzate subintent':
                 $answer = getMusicCustom($resp,$parameters,$text);
                 break;
 
             default:
                 $answer = "Purtroppo non ho capito la domanda. Prova a rifarla con altre parole! Devo ancora imparare molte cose &#x1F605;";
-                break;;
+                break;
         }
     }
 
