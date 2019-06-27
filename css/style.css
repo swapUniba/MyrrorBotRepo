@@ -1,9 +1,4 @@
-/*!
- * Project_Name: Weather
- * Author: Themezy
- * Email: contact[at]themezy.com
- * Url: http://www.themezy.com
- */
+
 /*=========================================== 
  * Importing CSS Libraries
  *===========================================*/
@@ -204,21 +199,6 @@ table {
 *, *:before, *:after {
   box-sizing: border-box; }
 
-/*
- * Global Styles
- */
-html {
-  font-size: 14px; }
-
-body {
-  /*
-  color: #bfc1c8;
-  font-family: "Roboto", "Open Sans", sans-serif;
-  font-size: 14px;
-  font-weight: 300;
-  line-height: 1.5;
-  background: #1e202b;
-  */ }
 
 h1, h2, h3, h4, h5, h6 {
   font-weight: 700;
