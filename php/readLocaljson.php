@@ -18,6 +18,9 @@ function queryMyrror($param){
 
 		return $result;
 
+	}else{
+		echo "<script>location.href='index.html';</script>";
+
 	}
 
 	
