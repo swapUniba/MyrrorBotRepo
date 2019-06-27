@@ -1,43 +1,46 @@
 <?php
-$servername = "sql212.epizy.com";
-$username = "epiz_23987663";
-$password = "xJodtMmqrsm";
-$db = "epiz_23987663_MyrrorDb";
 
-// Create connection
-$conn = new mysqli($servername, $username, $password, $db);
+    //Recupero email e password
+    $email      = trim($_POST['email']);
+    $password  = trim($_POST['password']);
 
-// Check connection
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-} 
+    //Url per inviare la richiesta POST
+    $url = 'http://90.147.102.243:5000/auth/login';
 
-//Recupero il nome e la password inseriti dall'utente
-$email      = trim($_POST['email']);
-$password  = trim($_POST['password']);
-    
-$sql = "SELECT * FROM Login";
-$result = $conn->query($sql);
-if ($result->num_rows > 0) {
-    // output data of each row
-    while($row = $result->fetch_assoc()) {
-        $emailR = $row["email"];
-        $passwordR = $row["password"];
+    //Dati da inviare nella richiesta
+    $fields = [
+        'email' => $email,
+        'password' => $password
+    ];
 
-        if($email == $emailR && $password == $passwordR){
-               $messaggio = 'LoginOk';
-               echo $messaggio;
-        }
+    //url-ify the data for the POST
+    $fields_string = http_build_query($fields);
+
+    //open connection
+    $ch = curl_init();
+
+    //set the url, number of POST vars, POST data
+    curl_setopt($ch,CURLOPT_URL, $url);
+    curl_setopt($ch,CURLOPT_POST, true);
+    curl_setopt($ch,CURLOPT_POSTFIELDS, $fields_string);
+
+    //So that curl_exec returns the contents of the cURL; rather than echoing it
+    curl_setopt($ch,CURLOPT_RETURNTRANSFER, true); 
+
+    //Esecuzione post
+    $result = curl_exec($ch);
+
+    //Decodifico il json
+    $json = json_decode($result);
+
+    $auth = $json -> auth; //Flag per verificare se si è ottenuto l'accesso
+
+    if ($auth == 1) {//Credenziali corrette
+        $token = $json -> token;
+        echo $token;
+    }else{
+        echo ""; //Credenziali errate
     }
-
-    if(!$messaggio){
-        $messaggio = 'LoginNo';
-        echo $messaggio;
-    }
-} else {
-    echo "0 results";
-}
-$conn->close();
 
 
 ?>
