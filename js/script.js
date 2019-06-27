@@ -177,20 +177,20 @@ function setResponse(val) {
 
             }
 
-           $(".chat").append('<li class="replies"><p><div class="container">'+
+           $(".chat").append('<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>'+
+            '<br><br><br><br><br><br><br><br><li class="replies"><img src="immagini/chatbot.png" alt="" />'+
+            '<p><div class="container">'+
             '<div class="forecast-container" id= "f'+timestamp+'"><div class="today forecast">'+
             '<div class="forecast-header"><div class="day">'+str[0]+'</div></div>'+
             '<div class="forecast-content"><div class="location">Bari Ore '+str[1]+':00</div><div class="degree">'+
-            ' <div class="num">'+str[2]+'<sup>o</sup>C</div><div class="forecast-icon">'+
-            ' <img src="immagini/icons/'+imglink+'" alt="" style="width:100px;"> </div></div>'+
-            ' </div></div></div> </div></p></li>');
+            '<div class="num">'+Math.trunc( str[2])+'<sup>o</sup>C</div><div class="forecast-icon">'+
+            '<img src="immagini/icons/'+imglink+'" alt="" style="width:90px;"> </div></div>'+
+            '</div></div></div> </div></p></li>');
 
            str = null;
            for (var i = 1; i < res.length-1; i++) {
 
-                      var str =  res[i].split(";");
-
-              
+              var str =  res[i].split(";");
               var imglink = "";
 
             switch(str[3]){
@@ -237,11 +237,11 @@ function setResponse(val) {
 
             }
 
-                   $('#f'+timestamp).append('<div class="forecast">'+
+              $('#f'+timestamp).append('<div class="forecast">'+
               '<div class="forecast-header"><div class="day">'+str[1]+':00</div>'+
               '</div><div class="forecast-content"> <div class="forecast-icon">'+
-                '<img src="immagini/icons/'+imglink+'" alt="" width=64></div>'+
-                '<div class="degree">'+Math.trunc( str[2] )+'<sup>o</sup>C</div></div></div>');
+              '<img src="immagini/icons/'+imglink+'" alt="" style="width:40px;"></div>'+
+              '<div class="degree">'+Math.trunc( str[2] )+'<sup>o</sup>C</div></div></div>');
 
              
           }           
@@ -264,6 +264,7 @@ function setResponse(val) {
     function welcomeIntent(){
       send("aiuto");
       setNominativo(); //Nome per la grafica del sito
+      
       
     }
 
