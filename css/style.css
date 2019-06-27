@@ -211,11 +211,14 @@ html {
   font-size: 14px; }
 
 body {
+  /*
+  color: #bfc1c8;
   font-family: "Roboto", "Open Sans", sans-serif;
   font-size: 14px;
   font-weight: 300;
   line-height: 1.5;
-  background: #1e202b; }
+  background: #1e202b;
+  */ }
 
 h1, h2, h3, h4, h5, h6 {
   font-weight: 700;
@@ -270,22 +273,25 @@ form textarea {
   margin-left: auto;
   padding-left: 15px;
   padding-right: 15px;
-  *zoom: 1; }
+  *zoom: 1;
+   width: 400px;
+   }
   .container:after {
     content: " ";
     clear: both;
     display: block;
     overflow: hidden;
     height: 0; }
+
   @media (min-width: 768px) {
     .container {
-      width: 400px !important; } }
+      width: 450px !important;  } }
   @media (min-width: 992px) {
     .container {
-      width: 400px !important; } }
+      width: 450px !important; } }
   @media (min-width: 1200px) {
     .container {
-      width: 400px !important; } }
+      width: 450px !important; } }
 
 .container-fluid {
   margin-right: auto;
@@ -785,6 +791,7 @@ form textarea {
 
   .col-md-offset-12 {
     margin-left: 100%; } }
+/*
 @media (min-width: 1200px) {
   .col-lg-1, .col-lg-2, .col-lg-3, .col-lg-4, .col-lg-5, .col-lg-6, .col-lg-7, .col-lg-8, .col-lg-9, .col-lg-10, .col-lg-11, .col-lg-12 {
     float: left; }
@@ -941,6 +948,8 @@ form textarea {
 
   .col-lg-offset-12 {
     margin-left: 100%; } }
+
+    */
 @-ms-viewport {
   width: device-width; }
 .visible-xs, .visible-sm, .visible-md, .visible-lg {
@@ -984,7 +993,7 @@ form textarea {
 @media (max-width: 767px) {
   .visible-xs-inline-block {
     display: inline-block !important; } }
-
+/*
 @media (min-width: 768px) and (max-width: 991px) {
   .visible-sm {
     display: block !important; }
@@ -998,6 +1007,8 @@ form textarea {
   th.visible-sm,
   td.visible-sm {
     display: table-cell !important; } }
+    
+
 @media (min-width: 768px) and (max-width: 991px) {
   .visible-sm-block {
     display: block !important; } }
@@ -1039,6 +1050,8 @@ form textarea {
   .visible-lg {
     display: block !important; }
 
+    */
+
   table.visible-lg {
     display: table; }
 
@@ -1048,6 +1061,7 @@ form textarea {
   th.visible-lg,
   td.visible-lg {
     display: table-cell !important; } }
+/*
 @media (min-width: 1200px) {
   .visible-lg-block {
     display: block !important; } }
@@ -1059,19 +1073,25 @@ form textarea {
 @media (min-width: 1200px) {
   .visible-lg-inline-block {
     display: inline-block !important; } }
+    */
 
 @media (max-width: 767px) {
   .hidden-xs {
     display: none !important; } }
+
 @media (min-width: 768px) and (max-width: 991px) {
   .hidden-sm {
     display: none !important; } }
+    /*
 @media (min-width: 992px) and (max-width: 1199px) {
   .hidden-md {
     display: none !important; } }
+    
+
 @media (min-width: 1200px) {
   .hidden-lg {
     display: none !important; } }
+    */
 .visible-print {
   display: none !important; }
 
@@ -1146,7 +1166,7 @@ form textarea {
             transition: .3s ease;
     display: none;
     outline: none; }
-    @media screen and (max-width: 990px) {
+    @media screen and (max-width: 1990px) {
       .main-navigation .menu-toggle {
         display: inline-block; } }
     .main-navigation .menu-toggle:hover, .main-navigation .menu-toggle:active {
@@ -1162,7 +1182,7 @@ form textarea {
       display: block;
       overflow: hidden;
       height: 0; }
-    @media screen and (max-width: 990px) {
+    @media screen and (max-width: 1990px) {
       .main-navigation .menu {
         display: none; } }
     .main-navigation .menu .menu-item {
@@ -1184,9 +1204,11 @@ form textarea {
   padding: 30px 0 0;
   clear: both;
   display: none; }
+/*
   @media screen and (min-width: 991px) {
     .mobile-navigation {
       display: none !important; } }
+      */
   .mobile-navigation .menu {
     background: #262936;
     list-style: none;
@@ -1225,7 +1247,6 @@ form textarea {
     padding: 0 40px; }
 
 .forecast-container {
-  width: 100%;
   background: #323544;
   display: table;
   table-layout: fixed;
@@ -1239,13 +1260,13 @@ form textarea {
     vertical-align: top; }
     .forecast-container .forecast:nth-child(even) {
       background-color: #262936; }
-    @media screen and (max-width: 990px) {
+    @media screen and (max-width: 1990px) {
       .forecast-container .forecast {
         display: block;
         width: 16.6667%;
         float: left; } }
     .forecast-container .forecast.today {
-      width: 420px; }
+      width: 400px ;  }
       .forecast-container .forecast.today .forecast-header {
         *zoom: 1; }
         .forecast-container .forecast.today .forecast-header:after {
@@ -1278,7 +1299,7 @@ form textarea {
         .forecast-container .forecast.today span img {
           margin-right: 5px;
           vertical-align: middle; }
-      @media screen and (max-width: 990px) {
+      @media screen and (max-width: 1990px) {
         .forecast-container .forecast.today {
           display: block;
           width: 100%; } }
@@ -1290,13 +1311,13 @@ form textarea {
     .forecast-container .forecast .forecast-icon {
       height: 50px; }
     .forecast-container .forecast .forecast-content {
-      padding: 50px 20px 10px;
+      padding: 50px 12px 10px;
       text-align: center; }
       .forecast-container .forecast .forecast-content .forecast-icon {
         margin-bottom: 20px; }
       .forecast-container .forecast .forecast-content .degree {
-        font-size: 24px;
-        font-size: 1.7142857143em;
+        font-size: 20px;
+        
         color: white;
         font-weight: 700; }
       .forecast-container .forecast .forecast-content small {
