@@ -21,22 +21,22 @@
 	<link rel="stylesheet" type="text/css" href="Login/css/main.css">
 <!--===============================================================================================-->
 
+<link rel="stylesheet" type="text/css" href="Login/css/loginStyle.css">
+
 
 <script src="http://code.jquery.com/jquery-latest.js"></script>
     <script type="text/javascript">  
     $(document).ready(function() {  
-    	
+    
+    	//Loader non presente
+    	document.getElementById("loader").style.display = "none";
+
+
       $("#form").submit(function(){  
         var email = $("#email").val();  
         var password = $("#password").val();  
         
-		$.ajax({
-			type:'POST',
-			url: 'php/json_creation.php',
-			success:function(response){
-			}
-		});
-		
+	
         $.ajax({  
           type: "POST",
           url: "Login/login.php",  
@@ -48,7 +48,22 @@
             //Quando le credenziali sono errate, viene rilasciata un token con 7 spazi vuoti
             if(risposta.length != 7){
                 var token = risposta; //Token utilizzato per effettuare le richieste
-                window.location.href = 'chatbot.html';
+
+                caricaPagina();//Inizia il caricamento della pagina fino a quando i file non sono stati creati
+
+                //Se le credenziali sono corrette, creo i file json per la lettura
+                $.ajax({
+					type:'POST',
+					url: 'php/json_creation.php',
+					data: "email=" + email + "&password=" + password + "&token=" + token,
+					dataType: "html",
+					success:function(response){
+						if (response.localeCompare("ok") == 1) {
+							showPage(); //Termino il caricmaneto e mostro la pagina
+						}
+					}
+				});
+                
 
             }else{
            		window.alert("Email o password errata");
@@ -102,6 +117,8 @@
 						</button>
 					</div>
 
+					<div id="loader"></div>
+
 					<!--<div class="text-center p-t-12">
 						<span class="txt1">
 							Forgot
@@ -141,6 +158,22 @@
 	</script>
 <!--===============================================================================================-->
 	<script src="Login/js/main.js"></script>
+
+
+<!-- SCRIPT PER IL LOADER -->
+<script>
+	var myVar;
+
+	function caricaPagina() {
+	  document.getElementById("loader").style.display = "inline";
+	  //myVar = setTimeout(showPage, 3000);
+	}
+
+	function showPage() {
+	  document.getElementById("loader").style.display = "none";
+	  window.location.href = 'chatbot.html';
+	}
+</script>
 
 </body>
 </html>	
