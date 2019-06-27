@@ -2,6 +2,11 @@
       var geocoder;
       var watch = null;
       var options = {enableHighAccuracy:true, timeout: 35000}; 
+      var comune = "Bari";
+
+     function getCity(){
+      return comune;
+    }
 
       document.addEventListener("deviceready", onDeviceReady, false);
 
@@ -16,6 +21,9 @@
          watch = navigator.geolocation.watchPosition(onSuccess,onError,options);
        
     }
+
+   
+    
 function onSuccess(position){
       //geolocalizzazione avvenuta con successo        
 
@@ -31,39 +39,35 @@ function onSuccess(position){
     geocoder.geocode({'location': latlng}, function(results, status) {
 
         if (status === 'OK') {        
+  
+            //divido l'indirizzo 
+            var add = results[0].formatted_address.split(",");
+            /*
+            se l'indirizzo contiene anche un numero civico l'array 
+            restituito da google sarà  di 4 elementi quindi i primi
+            2 conterranno indirizzo e numero civico e il terzo il comune
+            */
 
-           console.log(results);
+            if (add.length == 4){
 
+                indirizzo = add[0] + add[1];
+                //prendo il CAP del comune
+                comune = add[2].split(" ");
+                cap = comune[1];
+             } else {
+                /*
+                in caso di numero civico mancante l'array che ottengo 
+                contiene solo 3 campi
+                */
+                indirizzo = add[0];
+                comune = add[1].split(" ");
+                cap = comune[1];
+
+              }
+              console.log(comune);
           }
 
-    });
-     /*
-       $.ajax({
-        type: 'GET',
-        dataType: "json",
-        url: "http://maps.googleapis.com/maps/api/geocode/json?latlng="+lat+","+long+"&sensor=false&key=",
-        data: {},
-        success: function(data) {
-            console.log(data);
-            $.each( data['results'],function(i, val) {
-                $.each( val['address_components'],function(i, val) {
-                    if (val['types'] == "locality,political") {
-                        if (val['long_name']!="") {
-                            console.log(val['long_name']);
-                        }
-                        else {
-                            console.log("unknown");
-                        }
-                        console.log(i+", " + val['long_name']);
-                        console.log(i+", " + val['types']);
-                    }
-                });
-            });
-           
-        },
-        error: function () { console.log('error'); } 
     }); 
-         */
     
     }      
 

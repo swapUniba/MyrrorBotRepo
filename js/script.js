@@ -66,10 +66,11 @@ $(".messages").animate({ scrollTop: $(document).height() }, "fast");
  
  function send(query) {
       var text = query;
+      var citta = getCity();
       $.ajax({
         type: "POST",
         url: "php/intentDetection.php",
-        data: {testo:text},
+        data: {testo:text,city:citta},
         success: function(data) {
           setResponse(data);
         }

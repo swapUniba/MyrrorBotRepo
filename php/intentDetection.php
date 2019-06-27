@@ -20,7 +20,7 @@ include 'Video.php';
 include 'News.php';
 include 'Meteo.php';
 
-
+$city = "Roma";
 header('Content-type: text/plain; charset=utf-8');
 
 //Controllo se la variabile 'testo' ricevuta è nulla
@@ -28,7 +28,11 @@ if (isset($_POST{'testo'})) {
     $testo = $_POST{'testo'};
 }
 
-function detect_intent_texts($projectId, $text, $sessionId, $languageCode = 'it-IT')
+if(isset($_POST{'city'})){
+    $city = $_POST{'city'};
+}
+
+function detect_intent_texts($projectId,$city, $text, $sessionId, $languageCode = 'it-IT')
 {
     // new session
     $test = array('credentials' => 'myrrorbot-4f360-cbcab170b890.json');
@@ -60,7 +64,7 @@ function detect_intent_texts($projectId, $text, $sessionId, $languageCode = 'it-
     if(!is_null($intent)){
         $displayName = $intent->getDisplayName(); //Nome dell'intent
         $confidence = $queryResult->getIntentDetectionConfidence(); //Livello di confidence
-        selectIntent($displayName,$confidence,$text,$fulfilmentText,$parameters);
+        selectIntent($displayName,$confidence,$text,$fulfilmentText,$parameters,$city);
         
     }else{
 
@@ -77,7 +81,7 @@ function detect_intent_texts($projectId, $text, $sessionId, $languageCode = 'it-
 
 
 
-function selectIntent($intent, $confidence,$text,$resp,$parameters){
+function selectIntent($intent, $confidence,$text,$resp,$parameters,$city){
 
     if(($confidence > 0.86 ||  str_word_count($text) >= 2) && $confidence >= 0.60){              
 
@@ -198,17 +202,17 @@ function selectIntent($intent, $confidence,$text,$resp,$parameters){
                 break;
                 
              case 'meteo binario':
-             $city = "Bari";
+             //$city = "Bari";
                 $answer = binaryWeather($city,$parameters,$text);
                 break; 
 
              case 'Meteo odierno':
-             $city = "Bari";
+             //$city = "Bari";
                 $answer = getTodayWeather($city,$parameters,$text);
                 break; 
 
              case 'Previsioni meteo':
-               $city = "Bari";
+               //$city = "Bari";
                 $answer = getWeather($city,$parameters,$text);
                 break;
 
@@ -351,6 +355,6 @@ function selectIntent($intent, $confidence,$text,$resp,$parameters){
 
 date_default_timezone_set('Europe/Madrid'); //Imposto la stessa timezone di Dialogflow (per gli orari)
 
-detect_intent_texts('myrrorbot-4f360',$testo,'123456');
+detect_intent_texts('myrrorbot-4f360',$city,$testo,'123456');
 
 
