@@ -129,7 +129,7 @@ foreach ($json_data['list'] as $key => $value) {
     $hour = substr($value['dt_txt'], 11,2);
     $temp = 0;
     $description = "";
-     if($data == $date && $hour >= 6){
+     if($data == $date && $hour >= 3){
         $temp = $value['main']['temp'];
             
           foreach ($value['weather'] as $key2 => $value2) {
