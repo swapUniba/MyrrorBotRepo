@@ -178,7 +178,7 @@ function setResponse(val) {
 
             }
 
-           $(".chat").append('<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>'+
+           $(".chat").append('<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>'+
             '<li class="replies"><img src="immagini/chatbot.png" alt="" /><div class="container">'+
             '<div class="forecast-container" id= "f'+timestamp+'"><div class="today forecast">'+
             '<div class="forecast-header"><div class="day">'+str[0]+'</div></div>'+
