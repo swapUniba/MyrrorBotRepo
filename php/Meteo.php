@@ -92,9 +92,10 @@ foreach ($json_data['list'] as $key => $value) {
           		break;
           }
        $result.= $data.";".$hour.";".$temp.";".$condition;
+       $result .= "<br>";
      }
    
-	$result .= "<br>";
+	
 }
 
 return $result;
