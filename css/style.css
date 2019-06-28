@@ -20,6 +20,7 @@ canvas,
 video {
   display: inline-block; }
 
+
 audio:not([controls]) {
   display: none;
   height: 0; }
@@ -1234,8 +1235,10 @@ form textarea {
   overflow: hidden;
   border-radius: 10px;
   margin-top: -150px;
-  margin-bottom: 50px; }
+  margin-bottom: 50px;
+   }
   .forecast-container .forecast {
+     color:white !important;
     display: table-cell;
     vertical-align: top; }
     .forecast-container .forecast:nth-child(even) {
@@ -1246,8 +1249,10 @@ form textarea {
         width: 16.6667%;
         float: left; } }
     .forecast-container .forecast.today {
-      width: 400px ;  }
+      width: 400px ; 
+       color:white !important; }
       .forecast-container .forecast.today .forecast-header {
+         color:white !important;
         *zoom: 1; }
         .forecast-container .forecast.today .forecast-header:after {
           content: " ";
@@ -1256,17 +1261,21 @@ form textarea {
           overflow: hidden;
           height: 0; }
         .forecast-container .forecast.today .forecast-header .day {
-          float: left; }
+          float: left;
+          color:white !important; }
         .forecast-container .forecast.today .forecast-header .date {
-          float: right; }
+          float: right;
+          color:white !important; }
       .forecast-container .forecast.today .forecast-content {
         text-align: left;
         padding-top: 30px;
-        padding-bottom: 30px; }
+        padding-bottom: 30px;
+        color:white !important; }
       .forecast-container .forecast.today .location {
         font-size: 18px;
         font-size: 1.2857142857em;
-        font-weight: 400; }
+        font-weight: 400;
+        color:white !important; }
       .forecast-container .forecast.today .degree .num, .forecast-container .forecast.today .degree .forecast-icon {
         display: inline-block;
         vertical-align: middle; }
@@ -1287,18 +1296,20 @@ form textarea {
       background: rgba(0, 0, 0, 0.1);
       padding: 10px;
       text-align: center;
-      font-weight: 400; }
+      font-weight: 400;
+      color:white; }
     .forecast-container .forecast .forecast-icon {
       height: 50px; }
     .forecast-container .forecast .forecast-content {
       padding: 50px 12px 10px;
-      text-align: center; }
+      text-align: center;
+      color: white !important; }
       .forecast-container .forecast .forecast-content .forecast-icon {
         margin-bottom: 20px; }
       .forecast-container .forecast .forecast-content .degree {
         font-size: 20px;
         
-        color: white;
+        color: white!important;
         font-weight: 700; }
       .forecast-container .forecast .forecast-content small {
         font-size: 16px;

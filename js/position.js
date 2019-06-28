@@ -52,18 +52,28 @@ function onSuccess(position){
 
                 indirizzo = add[0] + add[1];
                 //prendo il CAP del comune
-                comune = add[2].split(" ");
-                cap = comune[1];
+                com = add[2].split(" ");
+                cap = com[1];
              } else {
                 /*
                 in caso di numero civico mancante l'array che ottengo 
                 contiene solo 3 campi
                 */
                 indirizzo = add[0];
-                comune = add[1].split(" ");
-                cap = comune[1];
-
+                com = add[1].split(" ");
+                
+                cap = com[1];
+                
               }
+
+               comune = "";
+                for (var i = 2; i < com.length -1; i++) {
+                  comune += com[i]+" ";
+                }
+                
+                if(comune == "")
+                     comune = "Bari"
+                             
               console.log(comune);
           }
 
