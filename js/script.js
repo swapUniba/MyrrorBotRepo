@@ -179,13 +179,13 @@ function setResponse(val) {
             }
 
            $(".chat").append('<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>'+
-            '<li class="replies"><img src="immagini/chatbot.png" alt="" /><p><div class="container">'+
+            '<li class="replies"><img src="immagini/chatbot.png" alt="" /><div class="container">'+
             '<div class="forecast-container" id= "f'+timestamp+'"><div class="today forecast">'+
             '<div class="forecast-header"><div class="day">'+str[0]+'</div></div>'+
             '<div class="forecast-content"><div class="location">'+getCity()+' Ore '+str[1]+':00</div><div class="degree">'+
             '<div class="num">'+Math.trunc( str[2])+'<sup>o</sup>C</div><div class="forecast-icon">'+
             '<img src="immagini/icons/'+imglink+'" alt="" style="width:90px;"> </div></div>'+
-            '</div></div></div> </div></p></li><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>');
+            '</div></div></div> </div></li><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>');
 
            str = null;
            for (var i = 1; i < res.length-1; i++) {
