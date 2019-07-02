@@ -91,7 +91,7 @@ foreach ($json_data['list'] as $key => $value) {
           		# code...
           		break;
           }
-       $result.= $data.";".$hour.";".$temp.";".$condition;
+      $result.= $data.";".$hour.":00;".$temp.";".$condition."<br>";
        $result .= "<br>";
      }
    
@@ -115,9 +115,88 @@ fascia oraria
 */
 function getWeather($city,$parameters,$text){
 
-if(isset($parameters['date'])){
+if(isset($parameters['date']) && $parameters['date'] != ""){
 $date = substr($parameters['date'],0,10);
+}elseif(isset($parameters['date-period']) && isset($parameters['date-period']) != ""){
+
+$date1 = substr($parameters['date-period']['startDate'],0,10);
+$date2 = substr($parameters['date-period']['endDate'],0,10);
+$json_data = queryWeather($city);
+
+$result ="" ;
+$i = 0;
+foreach ($json_data['list'] as $key => $value) {
+    $data = substr($value['dt_txt'], 0,10);
+    $tmp = strtotime($data);
+    $timestamp1 = strtotime($date1);
+    $timestamp2 = strtotime($date2);
+    $hour = substr($value['dt_txt'], 11,2);
+    $temp = 0;
+    $description = "";
+   
+     if($tmp >= $timestamp1 && $tmp <= $timestamp2 && $hour == 12){
+        $temp = $value['main']['temp'];
+       
+            
+          foreach ($value['weather'] as $key2 => $value2) {
+           $val =   $value2['main'];
+           $description = $value2['description'];
+          }
+          switch ($description) {
+            case 'clear sky':
+              $condition = "cielo sereno";
+              break;
+
+            case 'few clouds':
+              $condition = "poco nuvoloso";
+              break;
+
+            case 'broken clouds':
+              $condition = "parzialmente nuvoloso";
+              break;
+
+            case 'scattered clouds':
+              $condition = "nubi sparse";
+              break;
+
+            case 'moderate rain':
+              $condition = "piogge modeste";
+              break;
+
+            case 'overcast clouds':
+              $condition = "nuvoloso";
+              break;
+
+            case 'light rain':
+              $condition = "pioggia leggera";
+              break;
+
+            case 'heavy rain':
+              $condition = "pioggia pesante";
+              break;
+            
+            default:
+              # code...
+              break;
+          }
+          if($i == 0){
+              $result.= $data.";".$hour.":00;".$temp.";".$condition."<br>";
+              $i++;
+          }else{
+            $result.= $data.";".$data."; ".$temp.";".$condition."<br>";
+          }
+     
+     }
+   
+  
+}
+
+
+  return $result;
+ 
+
 }else{
+
   //prendiamo la data di domani di default se non ci sono dati
 $date = date('Y-m-d',strtotime("+1days")); 
 }
@@ -174,7 +253,7 @@ foreach ($json_data['list'] as $key => $value) {
           		# code...
           		break;
           }
-       $result.= $data.";".$hour."; ".$temp.";".$condition."<br>";
+      $result.= $data.";".$hour.":00;".$temp.";".$condition."<br>";
      }
    
 	

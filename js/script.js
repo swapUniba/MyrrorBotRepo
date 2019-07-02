@@ -127,7 +127,12 @@ function setResponse(val) {
 
       }else if(val["intentName"] == "Meteo odierno" || val["intentName"] == "Previsioni meteo"){
           var json = val['answer'];
-           var res = json.split("<br>");
+
+           if( json == ""){
+          $(".chat").append('<li class="replies"><img src="immagini/chatbot.png" alt="" /><p>sfortunatamente non sono disponibili dati riguardanti il periodo indicato</p></li>');
+      
+           }else{
+              var res = json.split("<br>");
            var str = res[0].split(";");
             var timestamp = new Date().getUTCMilliseconds();
             var imglink = "";
@@ -182,7 +187,7 @@ function setResponse(val) {
             '<li class="replies"><img src="immagini/chatbot.png" alt="" /><p><div class="container">'+
             '<div class="forecast-container" id= "f'+timestamp+'"><div class="today forecast">'+
             '<div class="forecast-header"><div class="day">'+str[0]+'</div></div>'+
-            '<div class="forecast-content"><div class="location">'+getCity()+' Ore '+str[1]+':00</div><div class="degree">'+
+            '<div class="forecast-content"><div class="location">'+getCity()+' Ore '+str[1]+'</div><div class="degree">'+
             '<div class="num">'+Math.trunc( str[2])+'<sup>o</sup>C</div><div class="forecast-icon">'+
             '<img src="immagini/icons/'+imglink+'" alt="" style="width:90px;"> </div></div>'+
             '</div></div></div> </p></div></li>'
@@ -240,13 +245,15 @@ function setResponse(val) {
             }
 
               $('#f'+timestamp).append('<div class="forecast">'+
-              '<div class="forecast-header"><div class="day">'+str[1]+':00</div>'+
+              '<div class="forecast-header"><div class="day">'+str[1]+'</div>'+
               '</div><div class="forecast-content"> <div class="forecast-icon">'+
               '<img src="immagini/icons/'+imglink+'" alt="" style="width:40px;"></div>'+
               '<div class="degree">'+Math.trunc( str[2] )+'<sup>o</sup>C</div></div></div>');
 
              
-          }           
+          } 
+           }
+                   
     
  
       

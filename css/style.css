@@ -1234,8 +1234,8 @@ form textarea {
   width: 100%;
   overflow: hidden;
   border-radius: 10px;
-  margin-top: 0px;
-  margin-bottom: 0px;
+  margin-top: 0px !important;
+  margin-bottom: 0px !important;
    }
   .forecast-container .forecast {
      color:white !important;
