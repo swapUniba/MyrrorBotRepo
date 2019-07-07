@@ -8,7 +8,7 @@ include 'connection_spotify.php';
 include 'spotifyFetch.php';
 
 //Permette di ottenere il brano richiesto dall'utente e mostrarlo a schermo
-function getMusicByTrack($resp,$parameters,$text){
+function getMusicByTrack($resp,$parameters,$text,$email){
 
 	$api = getApi(); //Api per Spotify
 
@@ -54,7 +54,7 @@ function getMusicByTrack($resp,$parameters,$text){
 }
 
 //Permette di ottenere un brano casuale in relazione all'artista richiesto
-function getMusicByArtist($resp,$parameters,$text){
+function getMusicByArtist($resp,$parameters,$text,$email){
 
 	$api = getApi(); //Api per Spotify
 
@@ -95,7 +95,7 @@ function getMusicByArtist($resp,$parameters,$text){
 }
 
 //Permette di ottenere una playlist in relazione ad un determinato genere richiesto
-function getMusicByGenre($resp,$parameters,$text){
+function getMusicByGenre($resp,$parameters,$text,$email){
 
 	$api = getApi(); //Api per Spotify
 
@@ -141,11 +141,11 @@ function getMusicByGenre($resp,$parameters,$text){
 
 
 //Permette di ottenere una playlist in relazione alle emozioni che si sta provando. Verranno rilevate le più recenti emozioni
-function getPlaylistByEmotion($resp,$parameters,$text){
+function getPlaylistByEmotion($resp,$parameters,$text,$email){
 
 	$api = getApi(); //Api per Spotify
 
-	$emotion = getLastEmotion(); //Rilevo l'ultima emozione dell'utente
+	$emotion = getLastEmotion($email); //Rilevo l'ultima emozione dell'utente
 
 	switch ($emotion) {
       case 'gioia':
@@ -257,13 +257,54 @@ function getPlaylistByEmotion($resp,$parameters,$text){
 
 }
 
+function explainMusicEmotion($resp,$parameters,$text,$email){
+
+$emotion = getLastEmotion($email); 
+
+$answer = "Ti ho consigliato questa canzone perchè ";
+
+ switch ($emotion) {
+      case 'gioia':
+        $answer .= "sei felice  &#x1f601";
+        break;
+
+      case 'paura':
+       $answer .= "sei spaventato &#x1f628";
+        break;
+
+      case 'rabbia':
+        $answer .= "sei arrabbiato &#x1f621";
+        break;
+
+      case 'disgusto':
+        $answer .= "sei disgustato &#x1f629";
+        break;
+
+      case 'tristezza':
+       $answer .= "sei triste &#x1f625";
+        break;
+
+      case 'sorpresa':
+        $answer .= "sei sorpreso &#x1f631";
+        break;
+      
+      default:
+       $answer .= "il tuo sato d'animo è neutro  &#x1f636";
+        break;
+    }
+
+
+return $answer;
+
+
+}
 
 //Permette di ottenere dei brani in relazione alle emozioni che si sta provando. Verranno rilevate le più recenti emozioni
-function getMusicByEmotion($resp,$parameters,$text){
+function getMusicByEmotion($resp,$parameters,$text,$email){
 
 	$api = getApi(); //Api per Spotify
 
-	$emotion = getLastEmotion(); //Rilevo l'ultima emozione dell'utente
+	$emotion = getLastEmotion($email); //Rilevo l'ultima emozione dell'utente
 
 	switch ($emotion) {
       case 'gioia':
@@ -394,14 +435,44 @@ function getMusicByEmotion($resp,$parameters,$text){
 }
 
 
+function  explainCustomMusic($resp,$parameters,$text,$email){
+
+$eta = getEta($resp,$parameters,$text,$email); //Prendo la data dell'utente
+
+$valori = getLastAttivitaFisica($resp,$parameters,$text,$email); //Prendo i valori sull'attività fisica
+$minutiEffettuati = $valori['abbastanzaAttiva'] + $valori['pocoAttiva'] + $valori['moltoAttiva'];
+
+	$answer = "Ti ho consigliato questa playlist perchè ";
+
+	if ($eta < 20 ) {
+		$answer .= "sei giovane ";
+	}elseif ($eta < 50 ) {
+		$answer .= "sei adulto "; 
+	}else{
+        $answer .= "sei di età avanzata ";
+	}
+
+	if ($minutiEffettuati >= 30) {
+		$answer .= "e hai uno stile di vita attivo";
+	}else{
+		$answer .= "e sedentario";
+	}
+
+	return $answer;
+
+
+}
+
 //Permette di ottenere dei brani personalizzati
-function getMusicCustom($resp,$parameters,$text){
+function getMusicCustom($resp,$parameters,$text,$email){
 
 	$api = getApi(); //Api per Spotify
 
-	$eta = getEta($resp,$parameters,$text); //Prendo la data dell'utente
+	$eta = getEta($resp,$parameters,$text,$email); //Prendo la data dell'utente
 
-	$valori = getLastAttivitaFisica($resp,$parameters,$text); //Prendo i valori sull'attività fisica
+	$valori = getLastAttivitaFisica($resp,$parameters,$text,$email); //Prendo i valori sull'attività fisica
+
+	
 
 	//TEST----------------------------------------------------------
 	/*$eta = 65;
@@ -489,7 +560,7 @@ function getMusicCustom($resp,$parameters,$text){
 			
 		}
   	}else{
-  		return getMusicByEmotion($resp,$parameters,$text);
+  		return getMusicByEmotion($resp,$parameters,$text,$email);
   	}
 
 	

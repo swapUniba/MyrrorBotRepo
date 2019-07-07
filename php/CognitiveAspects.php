@@ -1,10 +1,10 @@
 <?php
 
 //Permette di determinare i 5 tipi di personalità retivi ad un individuo
-function personalita($resp,$parameters){
+function personalita($resp,$parameters,$email){
 
 	$param = "";
-	$json_data = queryMyrror($param);
+	$json_data = queryMyrror($param,$email);
 	$result = null;
 
 	$openness = "";
@@ -89,10 +89,10 @@ function personalita($resp,$parameters){
 
 
 //Funzione che permette di fornire risposte binarie relative a domande sulla personalità
-function personalitaBinario($resp,$parameters){
+function personalitaBinario($resp,$parameters,$email){
 
 	$param = "";
-	$json_data = queryMyrror($param);
+	$json_data = queryMyrror($param,$email);
 	$result = null;
 
 	$openness = "";

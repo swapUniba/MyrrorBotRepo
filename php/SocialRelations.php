@@ -1,10 +1,10 @@
 <?php
 
 //La funzione permette di fornire i contatti con i quali si interagisce maggiormente su un determinato social network
-function contatti($resp,$parameters,$text){
+function contatti($resp,$parameters,$text,$email){
 
 	$param = "";
-	$json_data = queryMyrror($param);
+	$json_data = queryMyrror($param,$email);
 	$source = ""; //Twitter/Facebook, Instagram
 
 	//Controllo se nella domanda è presente almeno un social network e ne verifico l'unicità

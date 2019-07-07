@@ -77,10 +77,10 @@ non viene trovato un articolo,una volta trovato l'articolo
 viene restituito l'url altrimenti un messaggio d'errore
 */
 
-function getInterestsNews(){
+function getInterestsNews($email){
 
 
-$list = getInterestsList();
+$list = getInterestsList($email);
 //echo $list[0];
 foreach ($list as $key => $value){
 
@@ -113,6 +113,43 @@ return getTodayNews();
 
 
 }
+
+function explainNews($email){
+
+$list = getInterestsList($email);
+//echo $list[0];
+foreach ($list as $key => $value){
+
+	$link = "https://newsapi.org/v2/everything?q=".$key."&sortBy=publishedAt&apiKey=17c1953c3cc7450d958ff14f9e262c02";
+	$link = str_replace(' ', '%20', $link);
+	$json = googleNewsQuery($link);
+	
+	if(!isset($json['articles'] ))
+        return "Non è possibile fornire una spiegazione &#x1f614";
+
+
+	if($json['totalResults'] != 0){
+		foreach ($json['articles'] as $key2 => $value2) {
+			$image = $value2['urlToImage'];
+	        $title = $value2['title'];
+		    $url =  $value2['url'];
+
+			return "Ti ho consigliato questo articolo perchè sei interessato a ".$key ."  &#x1f600";
+			
+		}
+		
+	}
+    
+}
+
+/*
+se non viene trovato alcun articolo relativo agli interessi
+principali dell'utente vengono restituite le notizie odierne
+*/
+return "Non ho trovato articoli adatti a te e ti ho dato l'ultima notizia  &#x1f600";
+
+}
+
 /*
 Questo metodo usa googleNewsQuery($link) per ottenere
 l'elenco delle maggiori notizie odierne e ne resituisce la prima

@@ -32,7 +32,11 @@ if(isset($_POST{'city'})){
     $city = $_POST{'city'};
 }
 
-function detect_intent_texts($projectId,$city, $text, $sessionId, $languageCode = 'it-IT')
+if(isset($_POST{'mail'})){
+    $email = $_POST{'mail'};
+}
+
+function detect_intent_texts($projectId,$city,$email, $text, $sessionId, $languageCode = 'it-IT')
 {
     // new session
     $test = array('credentials' => 'myrrorbot-4f360-cbcab170b890.json');
@@ -64,7 +68,7 @@ function detect_intent_texts($projectId,$city, $text, $sessionId, $languageCode 
     if(!is_null($intent)){
         $displayName = $intent->getDisplayName(); //Nome dell'intent
         $confidence = $queryResult->getIntentDetectionConfidence(); //Livello di confidence
-        selectIntent($displayName,$confidence,$text,$fulfilmentText,$parameters,$city);
+        selectIntent($email,$displayName,$confidence,$text,$fulfilmentText,$parameters,$city);
         
     }else{
 
@@ -81,7 +85,7 @@ function detect_intent_texts($projectId,$city, $text, $sessionId, $languageCode 
 
 
 
-function selectIntent($intent, $confidence,$text,$resp,$parameters,$city){
+function selectIntent($email,$intent, $confidence,$text,$resp,$parameters,$city){
 
     if(($confidence > 0.86 ||  str_word_count($text) >= 2) && $confidence >= 0.60){              
 
@@ -90,115 +94,115 @@ function selectIntent($intent, $confidence,$text,$resp,$parameters,$city){
         switch ($intent) {
 
             case 'Attivita fisica':
-                $answer = attivitaFisica($resp,$parameters,$text);
+                $answer = attivitaFisica($resp,$parameters,$text,$email);
                 break;
 
             case 'Attivita fisica binario':
-                $answer = attivitaFisicaBinary($resp,$parameters,$text);
+                $answer = attivitaFisicaBinary($resp,$parameters,$text,$email);
                 break;
     
             case 'Battito cardiaco':
-                $answer= getCardio($resp,$parameters,$text);
+                $answer= getCardio($resp,$parameters,$text,$email);
                 break;
 
             case 'Battito cardiaco binario':
-                $answer= getCardioBinary($resp,$parameters,$text);
+                $answer= getCardioBinary($resp,$parameters,$text,$email);
                 break;
      
             case 'Calorie bruciate':
-                $answer = getCalories($resp,$parameters,$text);
+                $answer = getCalories($resp,$parameters,$text,$email);
                 break;
 
             case 'Calorie bruciate binario':
-                $answer = getCaloriesBinary($resp,$parameters,$text);
+                $answer = getCaloriesBinary($resp,$parameters,$text,$email);
                 break;
 
             case 'Contapassi':
-                $answer = getSteps($resp,$parameters,$text);      
+                $answer = getSteps($resp,$parameters,$text,$email);      
                 break;
 
             case 'Contapassi binario':
-                $answer = getStepsBinary($resp,$parameters,$text);      
+                $answer = getStepsBinary($resp,$parameters,$text,$email);      
                 break;    
 
             case 'Contatti':
-                $answer = contatti($resp,$parameters,$text);
+                $answer = contatti($resp,$parameters,$text,$email);
                 break;
 
             case 'Contatti_subintent':
-                $answer = contatti($resp,$parameters,$text);
+                $answer = contatti($resp,$parameters,$text,$email);
                 break;
 
             case 'Email':
-                $answer = email($resp,$parameters,$text);
+                $answer = email($resp,$parameters,$text,$email);
                 break;
                 
             case 'Peso':
-                $answer = getWeight($resp,$parameters,$text);
+                $answer = getWeight($resp,$parameters,$text,$email);
                 break;
 
             case 'Altezza':
-                $answer = getHeight($resp,$parameters,$text);
+                $answer = getHeight($resp,$parameters,$text,$email);
                 break;
 
             case 'Emozioni':
-                $answer = getSentiment(1,$resp,$parameters);
+                $answer = getSentiment(1,$resp,$parameters,$email);
                 break;
 
             case 'Emozioni binario':
-                $answer = getSentimentBinario(1,$resp,$parameters);
+                $answer = getSentimentBinario(1,$resp,$parameters,$email);
                 break;
 
             case 'Umore':
-                $answer = getSentiment(0,$resp,$parameters);
+                $answer = getSentiment(0,$resp,$parameters,$email);
                 break;
 
             case 'Umore binario':
-                $answer = getSentimentBinario(0,$resp,$parameters);
+                $answer = getSentimentBinario(0,$resp,$parameters,$email);
                 break;
 
             case 'Eta':
-                $answer = getEta($resp,$parameters,$text);
+                $answer = getEta($resp,$parameters,$text,$email);
                 break;
 
             case 'Identita utente':
-                $answer = identitaUtente($resp,$parameters,$text);
+                $answer = identitaUtente($resp,$parameters,$text,$email);
                 break;
 
             case 'Interessi':
-                $answer = interessi($resp,$parameters);
+                $answer = interessi($resp,$parameters,$email);
                 break;
 
             case 'Lavoro':
-                $answer = lavoro($resp,$parameters,$text);
+                $answer = lavoro($resp,$parameters,$text,$email);
                 break;
 
             case 'Luogo di nascita':
-                $answer = getCountry($resp,$parameters,$text);
+                $answer = getCountry($resp,$parameters,$text,$email);
                 break;
 
             case 'Personalita':
-                $answer = personalita($resp,$parameters);
+                $answer = personalita($resp,$parameters,$email);
                 break;
 
             case 'Personalita binario':
-                $answer = personalitaBinario($resp,$parameters);
+                $answer = personalitaBinario($resp,$parameters,$email);
                 break;
 
             case 'Qualita del sonno':
-                $answer = getSleep($resp,$parameters,$text);
+                $answer = getSleep($resp,$parameters,$text,$email);
                 break;
 
             case 'Qualita del sonno binario':
-                $answer = getSleepBinary($resp,$parameters,$text);
+                $answer = getSleepBinary($resp,$parameters,$text,$email);
                 break;
 
             case 'Sedentarieta':
-                $answer = getSedentary($resp,$parameters,$text);
+                $answer = getSedentary($resp,$parameters,$text,$email);
                 break;
 
             case 'Sedentarieta binario':
-                $answer = getSedentaryBinary($resp,$parameters,$text);
+                $answer = getSedentaryBinary($resp,$parameters,$text,$email);
                 break;
                 
              case 'meteo binario':
@@ -235,58 +239,74 @@ function selectIntent($intent, $confidence,$text,$resp,$parameters,$city){
     if(($confidence > 0.86 ||  str_word_count($text) >= 2) && $confidence >= 0.50 && ($intent == 'Canzone per nome' || $intent == 'Canzone per artista' || $intent == 'Canzoni in base al genere' || $intent == 'Playlist di canzoni in base alle emozioni' || $intent == 'Canzoni in base alle emozioni' || $intent == 'Canzoni personalizzate'  
         ||  $intent == 'Canzone per nome subintent'  || $intent == 'Canzone per artista subintent' || 
         $intent == 'Canzoni in base al genere subintent' || $intent=='Playlist di canzoni in base alle emozioni subintent'
-        || $intent == 'Canzoni in base alle emozioni subintent' || $intent == 'Canzoni personalizzate subintent' )){
+        || $intent == 'Canzoni in base alle emozioni subintent' || $intent == 'Canzoni personalizzate subintent' 
+        || $intent == 'Canzoni in base alle emozioni spiegazione' || $intent == 'Canzoni personalizzate spiegazione'
+        || $intent == 'Playlist di canzoni in base alle emozioni spiegazione'  )){
 
         switch ($intent) {
             case 'Canzone per nome':
-                $answer = getMusicByTrack($resp,$parameters,$text);
+                $answer = getMusicByTrack($resp,$parameters,$text,$email);
                 break;
 
             case 'Canzone per nome subintent':
                 $par = array('music-artist' => $resp);
-                $answer = getMusicByArtist($resp,$par,$text);
+                $answer = getMusicByArtist($resp,$par,$text,$email);
                 break;
 
             case 'Canzone per artista':
-                $answer = getMusicByArtist($resp,$parameters,$text);
+                $answer = getMusicByArtist($resp,$parameters,$text,$email);
                 break;
 
             case 'Canzone per artista subintent':
                 $par = array('music-artist' =>  $resp);  
-                $answer = getMusicByArtist($resp,$par,$text);
+                $answer = getMusicByArtist($resp,$par,$text,$email);
                 break;
            
             case 'Canzoni in base al genere':
-                $answer = getMusicByGenre($resp,$parameters,$text);
+                $answer = getMusicByGenre($resp,$parameters,$text,$email);
                 break;
 
             case 'Canzoni in base al genere subintent':
                 $par  = array('GeneriMusicali' =>  $resp);
-                $answer = getMusicByGenre($resp,$par,$text);
+                $answer = getMusicByGenre($resp,$par,$text,$email);
                 break;
 
             case 'Playlist di canzoni in base alle emozioni':
-                $answer = getPlaylistByEmotion($resp,$parameters,$text);
+                $answer = getPlaylistByEmotion($resp,$parameters,$text,$email);
                 break;
 
+            case 'Playlist di canzoni in base alle emozioni spiegazione':
+                $answer = explainMusicEmotion($resp,$parameters,$text,$email);
+                break;
+
+
             case 'Playlist di canzoni in base alle emozioni subintent':
-                $answer = getPlaylistByEmotion($resp,$parameters,$text);
+                $answer = getPlaylistByEmotion($resp,$parameters,$text,$email);
                 break;
 
             case 'Canzoni in base alle emozioni':
-                $answer = getMusicByEmotion($resp,$parameters,$text);
+                $answer = getMusicByEmotion($resp,$parameters,$text,$email);
+                break;
+
+            case 'Canzoni in base alle emozioni spiegazione':
+                $answer =  explainMusicEmotion($resp,$parameters,$text,$email);
                 break;
 
             case 'Canzoni in base alle emozioni subintent':
-                $answer = getMusicByEmotion($resp,$parameters,$text);
+                $answer = getMusicByEmotion($resp,$parameters,$text,$email);
                 break;
 
             case 'Canzoni personalizzate':
-                $answer = getMusicCustom($resp,$parameters,$text);
+                $answer = getMusicCustom($resp,$parameters,$text,$email);
                 break;
 
             case 'Canzoni personalizzate subintent':
-                $answer = getMusicCustom($resp,$parameters,$text);
+                $answer = getMusicCustom($resp,$parameters,$text,$email);
+                break;
+
+
+            case 'Canzoni personalizzate spiegazione':
+                $answer = explainCustomMusic($resp,$parameters,$text,$email);
                 break;
 
             default:
@@ -297,23 +317,28 @@ function selectIntent($intent, $confidence,$text,$resp,$parameters,$city){
 
 
     //YOUTUBE --> Valori soglia diversi
-    if(($confidence > 0.86 ||  str_word_count($text) >= 2) && $confidence >= 0.50 && ($intent == 'Video in base alle emozioni' || $intent == 'Ricerca Video')){
+    if(($confidence > 0.86 ||  str_word_count($text) >= 2) && $confidence >= 0.50 && ($intent == 'Video in base alle emozioni' || $intent == 'Ricerca Video'  || $intent == 'Video in base alle emozioni subintent'   )){
         switch ($intent) {
             case 'Video in base alle emozioni':
-                $answer = getVideoByEmotion($resp,$parameters,$text);
+                $answer = getVideoByEmotion($resp,$parameters,$text,$email);
                 break;
+
+             case 'Video in base alle emozioni subintent':
+                $answer = explainVideo($email);
+                break;
+
             case 'Ricerca Video':
-                $answer = getVideoBySearch($resp,$parameters,$text);
+                $answer = getVideoBySearch($resp,$parameters,$text,$email);
                 break;
 
             default:
                 $answer = "Purtroppo non ho capito la domanda. Prova a rifarla con altre parole! Devo ancora imparare molte cose &#x1F605;";
-                break;;
+                break;
         }
     }
     
         //GOOGLE-NEWS--> Valori soglia diversi
-    if($confidence >= 0.50  && ($intent == 'Notizie in base ad un argomento' || $intent == 'Notizie in base agli interessi' || $intent == 'Notizie odierne' || $intent == 'Ricerca articolo' )){
+    if($confidence >= 0.50  && ($intent == 'Notizie in base ad un argomento' || $intent == 'Notizie in base agli interessi' || $intent == 'Notizie odierne' || $intent == 'Ricerca articolo' || $intent == 'Notizie in base agli interessi subintent' )){
 
         switch ($intent) {
              case 'Notizie in base ad un argomento':
@@ -322,8 +347,11 @@ function selectIntent($intent, $confidence,$text,$resp,$parameters,$city){
                 break;
 
             case 'Notizie in base agli interessi':
-               $answer = getInterestsNews();
-                
+               $answer = getInterestsNews($email);
+                break;
+
+            case 'Notizie in base agli interessi subintent':
+               $answer = explainNews($email);
                 break;
 
             case 'Notizie odierne':
@@ -355,6 +383,6 @@ function selectIntent($intent, $confidence,$text,$resp,$parameters,$city){
 
 date_default_timezone_set('Europe/Madrid'); //Imposto la stessa timezone di Dialogflow (per gli orari)
 
-detect_intent_texts('myrrorbot-4f360',$city,$testo,'123456');
+detect_intent_texts('myrrorbot-4f360',$city,$email,$testo,'123456');
 
 

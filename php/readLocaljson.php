@@ -1,14 +1,14 @@
 <?php
 
 
-function queryMyrror($param){
+function queryMyrror($param,$email){
 
 	$json = null;
 
 	if (isset($_COOKIE['myrror'])) {
 
 	  	$email = $_COOKIE['myrror'];
-
+    }
      	if($param == "today"){
 			$json = file_get_contents('../fileMyrror/today_' . $email . '.json');
 		}else{
@@ -17,12 +17,12 @@ function queryMyrror($param){
 		$result = json_decode($json,true);
 
 		return $result;
-
+/*
 	}else{
 		echo "<script>location.href='index.html';</script>";
 
 	}
-
+*/
 	
 
 }

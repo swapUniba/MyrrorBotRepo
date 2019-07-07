@@ -8,11 +8,11 @@ Viene effettuata una media di tutti e 3 i valori e viene restituito un array con
 le medie dei 3 valori , in caso non vengano trovati viene restituito un array di 0
 return array di valori con l'attività fisica media
 */
-function attivitaInterval($startDate,$endDate){
+function attivitaInterval($startDate,$endDate,$email){
 
  $activity = array(0,0,0);
  $param = "";
- $json_data = queryMyrror($param);
+ $json_data = queryMyrror($param,$email);
  $count =  array(0,0,0);
  $sum =  array(0,0,0);
 
@@ -85,11 +85,11 @@ riguardanti la data scelta verranno presi i dati dell'ultima data disponibile
 return array con i 3 valori riguardanti i minuti di attività fisica
 e la data corrispondente 
 */
-function attivitaData($data){
+function attivitaData($data,$email){
 
    $activity = array(0,0,0,"");
    $param = "";
-   $json_data = queryMyrror($param);
+   $json_data = queryMyrror($param,$email);
 
 
 foreach ($json_data as $key1 => $value1) {
@@ -208,7 +208,7 @@ costruita una risposta
 return risposta da stampare
 
 */
-function attivitaFisica($resp,$parameters,$text){
+function attivitaFisica($resp,$parameters,$text,$email){
 
 $answer = "";
 
@@ -216,10 +216,10 @@ if(isset($parameters['date-period']['startDate'])){
 	//dati periodo di tempo
 $startDate = substr($parameters['date-period']['startDate'],0,10);
 $endDate = substr($parameters['date-period']['endDate'],0,10);
-    $arr = attivitaInterval($startDate,$endDate);
+    $arr = attivitaInterval($startDate,$endDate,$email);
     if($arr[0] == 0 && $arr[1] == 0 && $arr[2] == 0){
 
-    	 $activity = attivitaData($startDate);
+    	 $activity = attivitaData($startDate,$email);
 
     if($activity[0] == 0 && $activity[1] == 0 && $activity[2] ==  0)
     	return "Sembra che tu non abbia svolto attività fisica 😅";
@@ -247,7 +247,7 @@ $endDate = substr($parameters['date-period']['endDate'],0,10);
 
 
 	$date = substr($parameters['date'],0,10);
-    $activity = attivitaData($date);
+    $activity = attivitaData($date,$email);
 
     if($activity[0] == 0 && $activity[1] == 0 && $activity[2] ==  0)
     	return "Sembra che tu non abbia svolto attività fisica 😅";
@@ -273,7 +273,7 @@ $endDate = substr($parameters['date-period']['endDate'],0,10);
 
 }else{
 	//ultimi dati trovati
-  $activity = attivitaData("");
+  $activity = attivitaData("",$email);
 
  
  $answer = "Gli ultimi dati disponibili sono del ".$activity[3].", quando hai svolto";
@@ -304,13 +304,13 @@ minuti costruendo così una risposta affermativa o negativa a seconda
 dei casi
 return risposta da stampare 
 */
-function attivitaFisicaBinary($resp,$parameters,$text){
+function attivitaFisicaBinary($resp,$parameters,$text,$email){
 
 if(isset($parameters['date-period']['startDate'])){
 
   $startDate = substr($parameters['date-period']['startDate'],0,10);
   $endDate = substr($parameters['date-period']['endDate'],0,10);
-  $arr = attivitaInterval($startDate,$endDate);
+  $arr = attivitaInterval($startDate,$endDate,$email);
   $sum = $arr[0] + $arr[1] + $arr[2];
 
   if(strpos($text, 'abbastanza')){
@@ -334,7 +334,7 @@ if(isset($parameters['date-period']['startDate'])){
 }elseif (isset($parameters['date'])) {
    
    $date = substr($parameters['date'],0,10);
-   $activity = attivitaData($date);
+   $activity = attivitaData($date,$email);
    $sum = $activity[0] + $activity[1] + $activity[2];
 
      if(strpos($text, 'abbastanza')){
@@ -376,10 +376,10 @@ vengono presi in considerzione tutti i dati presenti nel file.
 Viene effettuata così una media delle calorie bruciate
 return media calorie bruciate 
 */
-function caloriesInterval($startDate,$endDate){
+function caloriesInterval($startDate,$endDate,$email){
 
 $param = "";
-$json_data = queryMyrror($param);
+$json_data = queryMyrror($param,$email);
 $result = null;
 $sum = 0;
 $count = 0;
@@ -416,10 +416,10 @@ return $result;
 
 }
 
-function caloriesDay($data){
+function caloriesDay($data,$email){
 
 $param = "";
-$json_data = queryMyrror($param);
+$json_data = queryMyrror($param,$email);
 $result = null;
 
 
@@ -501,7 +501,7 @@ solo una singola data chiamiamo caloriesDay sostituendo in resp
 il valore corrispondente dei battiti.
 return risposta da stampare
 */
-function getCalories($resp,$parameters,$text){
+function getCalories($resp,$parameters,$text,$email){
 
 $answer = "";
 if(isset($parameters['date-period']['startDate'])){
@@ -509,7 +509,7 @@ if(isset($parameters['date-period']['startDate'])){
 $startDate = substr($parameters['date-period']['startDate'],0,10);
 $endDate = substr($parameters['date-period']['endDate'],0,10);
 
-$calAv = caloriesInterval($startDate,$endDate);
+$calAv = caloriesInterval($startDate,$endDate,$email);
 
 	$answer = "In media hai bruciato ".$calAv." calorie";
 
@@ -523,7 +523,7 @@ $calAv = caloriesInterval($startDate,$endDate);
 	$date = date('Y-m-d');
 }
 
-$cal = caloriesDay($date);
+$cal = caloriesDay($date,$email);
 
     $answer = str_replace('X', $cal, $resp);
 
@@ -548,7 +548,7 @@ energetico l'utente ha bruciato abbastanza calorie
 la risposta viene formulata di conseguenza.
 return risposta da stampare 
 */
-function getCaloriesBinary($resp,$parameters,$text){
+function getCaloriesBinary($resp,$parameters,$text,$email){
 
 $peso = 80;
 $eta = 22;
@@ -562,7 +562,7 @@ if(isset($parameters['date-period']['startDate'])){
 $startDate = substr($parameters['date-period']['startDate'],0,10);
 $endDate = substr($parameters['date-period']['endDate'],0,10);
 
-$calAv = caloriesInterval($startDate,$endDate);
+$calAv = caloriesInterval($startDate,$endDate,$email);
 
 if(strpos($text, 'abbastanza')){
 
@@ -591,7 +591,7 @@ if(strpos($text, 'abbastanza')){
 	$date = date('Y-m-d');
     }
 
-$cal = caloriesDay($date);
+$cal = caloriesDay($date,$email);
 
 
 
@@ -623,11 +623,11 @@ un determinato giorno e li restituisce in output.
 Se non vengono trovati i dati allora viene preso in 
 considerazioe l'ultimo giorno disponibile.
 */
-function stepsDay($day){
+function stepsDay($day,$email){
 
 $result = null;
 $param = "";
-$json_data = queryMyrror($param);
+$json_data = queryMyrror($param,$email);
 
 foreach ($json_data as $key1 => $value1) {
 	
@@ -697,11 +697,11 @@ Viene effettuata una media dei passi effettuati.
 return media passi
 
 */
-function stepsInterval($startDate,$endDate){
+function stepsInterval($startDate,$endDate,$email){
 
 $result = null;
 $param = "";
-$json_data = queryMyrror($param);
+$json_data = queryMyrror($param,$email);
 $sum = 0;
 $count = 0;
 
@@ -767,14 +767,14 @@ che restituisce i passi nel giorno selezionato in questo caso verrà
 utilizzata la risposta resp a cui verranno aggiunti i dati otteuti,
 return risposta da stampare
 */
-function getSteps($resp,$parameters,$text){
+function getSteps($resp,$parameters,$text,$email){
 
 if(isset($parameters['date-period']['startDate'])){
 
 $startDate = substr($parameters['date-period']['startDate'],0,10);
 $endDate = substr($parameters['date-period']['endDate'],0,10);
 
-$arr = stepsInterval($startDate,$endDate);
+$arr = stepsInterval($startDate,$endDate,$email);
 
 if($arr[0] == $startDate){
 	//risposta corretta
@@ -833,18 +833,18 @@ confrontato il numero di passi ottenuti con la media ricavata in precedenza,
 se questo valore è maggiore la risposta sarà affermativa.
 return risposta da stampare
 */
-function getStepsBinary($resp,$parameters,$text){
+function getStepsBinary($resp,$parameters,$text,$email){
 
 $answer = "";
 //media generale passi
-$average = stepsInterval("","");
+$average = stepsInterval("","",$email);
 
 if(isset($parameters['date-period']['startDate'])){
 
 $startDate = substr($parameters['date-period']['startDate'],0,10);
 $endDate = substr($parameters['date-period']['endDate'],0,10);
 
-$intAv = stepsInterval($startDate,$endDate);
+$intAv = stepsInterval($startDate,$endDate,$email);
 
 if($intAv[0] == $startDate){
 
@@ -869,7 +869,7 @@ $answer = "Secondo gli ultimi dati presenti hai ";
 }elseif(isset($parameters['date'])){
 
 $date = substr($parameters['date'], 0,10);
-$arr = stepsDay($date);
+$arr = stepsDay($date,$email);
 
 if($arr[1] >= $average[1]){
 
@@ -881,7 +881,7 @@ $answer = "No, non hai fatto abbastanza passi. Ne hai fatti ".$arr[1];
 }else{
 
 $date = date('Y-m-d');
-$arr = stepsDay($date);
+$arr = stepsDay($date,$email);
 $answer = "Gli ultimi dati disponibili risalgono al ".$arr[0]."<br>";	
 if($arr[1] >= $average[1]){
 $answer .= "Hai effettuato abbastanza passi ".$arr[1];
@@ -906,19 +906,19 @@ con la data di oggi, infine costruisce la risposta
 sostituendo i valori di sedentarietà ottenuti a resp, 
 return risposta
 */
-function getSedentary($resp,$parameters,$text){
+function getSedentary($resp,$parameters,$text,$email){
 
 
 $answer = "";
 $date = null;
 if(isset($parameters['date'])){
 $date = substr($parameters['date'], 0,10);
-$arr = SedentaryDay($date);
+$arr = SedentaryDay($date,$email);
 
 
 }else{
 	$date = date('Y-m-d');
-    $arr = SedentaryDay($date);
+    $arr = SedentaryDay($date,$email);
 }
 
 if($arr[0] == $date){
@@ -961,13 +961,13 @@ return risposta da stampare
 
 */
 
-function getSedentaryBinary($resp,$parameters,$text){
+function getSedentaryBinary($resp,$parameters,$text,$email){
 
 $answer = "";
 $startWeek = date("Y-m-d",strtotime("-7 days"));
 $endWeek = date('Y-m-d');
 
-$result = sedentaryInterval($startWeek,$endWeek);
+$result = sedentaryInterval($startWeek,$endWeek,$email);
 
 if($result == null){
  return "Sfortunatamente non sono stati trovati dati sufficienti per rispondere 😅";	
@@ -999,10 +999,10 @@ la funziona cerca tutti i dati sui minuti di sedentarietà
 nell' intervallo di tempo specificato, i minuti vengono
 sommati in result e vengono restituiti 
 */
-function sedentaryInterval($startDate,$endDate){
+function sedentaryInterval($startDate,$endDate,$email){
 
 $param = "";
-$json_data = queryMyrror($param);
+$json_data = queryMyrror($param,$email);
 $result = null;
 
 foreach ($json_data as $key1 => $value1) {
@@ -1033,11 +1033,11 @@ corrispondenti alla data passata come parametro se li
 trova li restituisce altrimenti restituisce i dati dell'ultima data
 disponibile
 */
-function SedentaryDay($date){
+function SedentaryDay($date,$email){
 
 
 $param = "";
-$json_data = queryMyrror($param);
+$json_data = queryMyrror($param,$email);
 $result = null;
 
 foreach ($json_data as $key1 => $value1) {
@@ -1102,12 +1102,12 @@ return array("",0);
 
 
 //Prendo gli ultimi dati sull'attività fisica
-function getLastAttivitaFisica($resp,$parameters,$text){
+function getLastAttivitaFisica($resp,$parameters,$text,$email){
 
   $valori = array(); //Array che contiene i valori sull'attività fisica
 
   //Ultimi dati trovati
-  $activity = attivitaData("2019-06-19");
+  $activity = attivitaData("2019-06-19",$email);
 
   $valori = [
     'abbastanzaAttiva' => $activity[0],

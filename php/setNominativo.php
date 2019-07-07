@@ -4,12 +4,13 @@
 
 include "readLocaljson.php";
 
-nominativo();	
+$mail = $_POST['mail'];
+nominativo($mail);	
 
-function nominativo(){
+function nominativo($mail){
 
 	$param = "";
-	$json_data = queryMyrror($param);
+	$json_data = queryMyrror($param,$mail);
 	$result = null;
 
 	foreach ($json_data as $key1 => $value1) {

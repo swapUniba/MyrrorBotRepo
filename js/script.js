@@ -67,10 +67,30 @@ $(".messages").animate({ scrollTop: $(document).height() }, "fast");
  function send(query) {
       var text = query;
       var citta = getCity();
-      $.ajax({
+      var name = "myrror";
+
+    var value = "; " + document.cookie;
+if (value.match(/myrror/)) {
+    var parts = value.split("; " + name + "=");   
+    var tempStr = null;
+   while(tempStr == null){
+    tempStr =  parts.pop().split(";").shift();
+     if(tempStr.match(/@/)){
+        //alert(tempStr);
+     }
+   }
+
+}else{
+  window.location.href = 'index.html';
+}
+  
+   
+    var email = tempStr;
+
+          $.ajax({
         type: "POST",
         url: "php/intentDetection.php",
-        data: {testo:text,city:citta},
+        data: {testo:text,city:citta,mail:email},
         success: function(data) {
           setResponse(data);
         }
@@ -271,16 +291,35 @@ function setResponse(val) {
     //Intent avviato all'inizio del dialogo per mostrare la frase di benvenuto e per impostare il nome dell'utente nella schermata
     function welcomeIntent(){
       send("aiuto");
-      setNominativo(); //Nome per la grafica del sito
+      var value = "; " + document.cookie;
+if (value.match(/myrror/)) {
+    var parts = value.split("; " + name + "=");   
+    var tempStr = null;
+   while(tempStr == null){
+    tempStr =  parts.pop().split(";").shift();
+     if(tempStr.match(/@/)){
+        //alert(tempStr);
+     }
+   }
+
+}else{
+  window.location.href = 'index.html';
+}
+
+
+  
+   
+      setNominativo(tempStr); //Nome per la grafica del sito
       
       
     }
 
     //Funzione usata per impostare il nome dell'utente nella schermata
-    function setNominativo() {
+    function setNominativo(tempStr) {
       $.ajax({
         type: "POST",
         url: "php/setNominativo.php",
+        data:{mail:tempStr},
         success: function(data) {
           console.log(data);
           $(".nomeUtente").append(data);

@@ -1,10 +1,10 @@
 <?php
 
 //Restuisce l'elenco dei maggiori interessi dell'utente. N.B. Non vengono presi in considerazione quelli che hanno la dicitura "Category:"
-function interessi($resp,$parameters){
+function interessi($resp,$parameters,$email){
 
 	$param = "";
-	$json_data = queryMyrror($param);
+	$json_data = queryMyrror($param,$email);
 
 	$categorieArray = array();
 
@@ -77,10 +77,10 @@ function interessiFrequenti($categorieArray){
 	return $top5;
 }
 
-function getInterestsList(){
+function getInterestsList($email){
 
 	$param = "";
-	$json_data = queryMyrror($param);
+	$json_data = queryMyrror($param,$email);
 
 	$categorieArray = array();
 

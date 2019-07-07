@@ -7,11 +7,48 @@
     require_once ('google-api-php-client/src/contrib/Google_YouTubeService.php');
 
 
-  function getVideoByEmotion($resp,$parameters,$text){
+function explainVideo($email){
+
+  $emotion = getLastEmotion($email);
+  $answer = "Ti ho consigliato questo video perchè ";
+    switch ($emotion) {
+      case 'gioia':
+        $answer .= "sei felice  &#x1f601";
+        break;
+
+      case 'paura':
+       $answer .= "sei spaventato &#x1f628";
+        break;
+
+      case 'rabbia':
+        $answer .= "sei arrabbiato &#x1f621";
+        break;
+
+      case 'disgusto':
+        $answer .= "sei disgustato &#x1f629";
+        break;
+
+      case 'tristezza':
+       $answer .= "sei triste &#x1f625";
+        break;
+
+      case 'sorpresa':
+        $answer .= "sei sorpreso &#x1f631";
+        break;
+      
+      default:
+       $answer .= "il tuo sato d'animo è neutro  &#x1f636";
+        break;
+    }
+
+    return $answer;
+}
+
+  function getVideoByEmotion($resp,$parameters,$text,$email){
     $DEVELOPER_KEY = "AIzaSyADh47AR3xdQPMT0oXTPJatZQ_Cbhw9YhM";
 
     $videos = array();
-    $emotion = getLastEmotion();
+    $emotion = getLastEmotion($email);
     $q = "";
     $searchResponse = "";
 
@@ -90,11 +127,11 @@
 
 
 
-  function getVideoBySearch($resp,$parameters,$text){
+  function getVideoBySearch($resp,$parameters,$text,$email){
     $DEVELOPER_KEY = "AIzaSyADh47AR3xdQPMT0oXTPJatZQ_Cbhw9YhM";
 
     $videos = array();
-    $emotion = getLastEmotion();
+    $emotion = getLastEmotion($email);
     $q = "";
     $searchResponse = "";
 

@@ -1,10 +1,10 @@
 <?php
 
 //IDENTITA' UTENTE
-function identitaUtente($resp,$parameters,$text){
+function identitaUtente($resp,$parameters,$text,$email){
 
 	$param = "";
-	$json_data = queryMyrror($param);
+	$json_data = queryMyrror($param,$email);
 	$result = null;
 
 	foreach ($json_data as $key1 => $value1) {
@@ -32,10 +32,10 @@ function identitaUtente($resp,$parameters,$text){
 
 
 //ETA'
-function getEta($resp,$parameters,$text){
+function getEta($resp,$parameters,$text,$email){
 
 	$param = "";
-	$json_data = queryMyrror($param);
+	$json_data = queryMyrror($param,$email);
 	$result = null;
 	$answer = "";
 
@@ -67,10 +67,10 @@ function getEta($resp,$parameters,$text){
 
 
 //LUOGO DI NASCITA
-function getCountry($resp,$parameters,$text){
+function getCountry($resp,$parameters,$text,$email){
 
 	$param = "";
-	$json_data = queryMyrror($param);
+	$json_data = queryMyrror($param,$email);
 	$result = null;
 
 	foreach ($json_data as $key1 => $value1) {
@@ -98,10 +98,10 @@ function getCountry($resp,$parameters,$text){
 
 
 //ALTEZZA
-function getHeight($resp,$parameters,$text){
+function getHeight($resp,$parameters,$text,$email){
 
 	$param = "";
-	$json_data = queryMyrror($param);
+	$json_data = queryMyrror($param,$email);
 	$result = null;
 
 	foreach ($json_data as $key1 => $value1) {
@@ -130,10 +130,10 @@ function getHeight($resp,$parameters,$text){
 
 
 //PESO
-function getWeight($resp,$parameters,$text){ 
+function getWeight($resp,$parameters,$text,$email){ 
 
 	$param = "";
-	$json_data = queryMyrror($param);
+	$json_data = queryMyrror($param,$email);
 	$result = null;
 
 	foreach ($json_data as $key1 => $value1) {
@@ -161,10 +161,10 @@ function getWeight($resp,$parameters,$text){
 
 
 //LAVORO
-function lavoro($resp,$parameters,$text){
+function lavoro($resp,$parameters,$text,$email){
 
 	$param = "";
-	$json_data = queryMyrror($param);
+	$json_data = queryMyrror($param,$email);
 	$result = null;
 
 	foreach ($json_data as $key1 => $value1) {
@@ -202,10 +202,10 @@ function lavoro($resp,$parameters,$text){
 
 
 //EMAIL
-function email($resp,$parameters,$text){
+function email($resp,$parameters,$text,$email){
 
 	$param = "";
-	$json_data = queryMyrror($param);
+	$json_data = queryMyrror($param,$email);
 	$result = null;
     
 

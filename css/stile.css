@@ -587,7 +587,7 @@ body {
 }
 #frame .content .messages ul li img {
   width: 22px;
-  border-radius: 50%;
+  border-radius: 0%;
   float: left;
 }
 #frame .content .messages ul li p {

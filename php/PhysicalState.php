@@ -10,10 +10,10 @@ individuati da dialogflow
 @data è la data da cercare nel file
 return data e battito cardiaco
 */
-function cardioToday($parameters,$data){
+function cardioToday($parameters,$data,$email){
 
 $param = "";
-$json_data = queryMyrror($param);
+$json_data = queryMyrror($param,$email);
 $result = null;
 $dateR = null;
 
@@ -82,10 +82,10 @@ date presenti nell'intervallo specificato, viene fatta così
 una media dei valori del battito cardiaco. 
 return media battito cardiaco al minuto 
 */
-function cardioInterval($startDate,$endDate){
+function cardioInterval($startDate,$endDate,$email){
 
 $param = "";
-$json_data = queryMyrror($param);
+$json_data = queryMyrror($param,$email);
 $count = 0;
 $sum = 0;
 
@@ -130,7 +130,7 @@ utilizzando gli ultimi dati disponibli.
 @return risposta da stampare a schermo
 
 */
-function getCardio($resp,$parameters,$text){
+function getCardio($resp,$parameters,$text,$email){
 
   $answer = "";
   $today = date("Y-m-d"); 
@@ -144,7 +144,7 @@ function getCardio($resp,$parameters,$text){
     if($today ==  $date1){
 
       //dati oggi
-      $arr = cardioToday($parameters,$today);
+      $arr = cardioToday($parameters,$today,$email);
       
       if($arr['date'] == $today){
         
@@ -164,7 +164,7 @@ function getCardio($resp,$parameters,$text){
     }elseif($yesterday ==  $date1){
 
       //dati ieri
-      $arr = cardioToday($parameters,$yesterday);
+      $arr = cardioToday($parameters,$yesterday,$email);
 
       if($arr['date'] == $yesterday){
         $answer = "Il tuo battito cardiaco era di ".$arr['heart']." bpm"; //risposta oggi
@@ -180,18 +180,18 @@ function getCardio($resp,$parameters,$text){
     //dati ultimo giorno trovato
     $startDate =  substr($parameters['date-period']['startDate'],0,10);
     $endDate =  substr($parameters['date-period']['endDate'],0,10);
-    $average = cardioInterval($startDate,$endDate);
+    $average = cardioInterval($startDate,$endDate,$email);
 
     if($average != 0){
       $answer = "In media, il tuo battito cardiaco è di ".$average." bpm.";
     }else{
-      $arr = cardioToday($parameters,"");
+      $arr = cardioToday($parameters,"",$email);
       $answer = "Gli ultimi dati in mio possesso sono relativi al ".$arr['date']
         ." ed il battito cardiaco era pari a ".$arr['heart']." bpm";
     }
 
     }else{
-       $arr = cardioToday($parameters,"");
+       $arr = cardioToday($parameters,"",$email);
        $answer = "Gli ultimi dati in mio possesso sono relativi al ".$arr['date']
         ." ed il battito cardiaco era pari a ".$arr['heart']." bpm";
     }
@@ -201,11 +201,11 @@ function getCardio($resp,$parameters,$text){
     //dati intervallo di tempo
     $startDate =  substr($parameters['date-period']['startDate'],0,10);
     $endDate =  substr($parameters['date-period']['endDate'],0,10);
-    $average = cardioInterval($startDate,$endDate);
+    $average = cardioInterval($startDate,$endDate,$email);
     if($average != 0){
       $answer = "In media, il tuo battito cardiaco è di ".$average." bpm.";
     }else{
-      $arr = cardioToday($parameters,"");
+      $arr = cardioToday($parameters,"",$email);
       $answer = "Gli ultimi dati in mio possesso sono relativi al ".$arr['date']
         ." ed il battito cardiaco era pari a ".$arr['heart']." bpm";
     }
@@ -213,7 +213,7 @@ function getCardio($resp,$parameters,$text){
   }else{
 
    //dati ultimo giorno trovato
-     $arr = cardioToday($parameters,"");
+     $arr = cardioToday($parameters,"",$email);
      $answer = "Gli ultimi dati in mio possesso sono relativi al ".$arr['date']
         ." ed il battito cardiaco era pari a ".$arr['heart']." bpm";
   }
@@ -238,7 +238,7 @@ dati nella data odierna verrà costruita una risposta utilizzando gli
 ultimi dati presenti nel file.
 @return risposta da stampare a schermo
 */
-function getCardioBinary($resp,$parameters,$text){
+function getCardioBinary($resp,$parameters,$text,$email){
 
     $answer = "";
     $today = date("Y-m-d");
@@ -250,7 +250,7 @@ function getCardioBinary($resp,$parameters,$text){
 
       $startDate =  substr($parameters['date-period']['startDate'],0,10);
       $endDate =  substr($parameters['date-period']['endDate'],0,10);
-      $average = cardioInterval($startDate,$endDate);
+      $average = cardioInterval($startDate,$endDate,$email);
 
       if($average == 0){
         $answer = "Non sono riuscito a recuperare i dati relativi al periodo che mi hai indicato &#x1F62D;"; 
@@ -281,7 +281,7 @@ function getCardioBinary($resp,$parameters,$text){
       switch ($date1) {
 
         case $today:
-          $arr = cardioToday($parameters,$today);
+          $arr = cardioToday($parameters,$today,$email);
 
           if(strpos($text, 'buono') || strpos($text, 'buone') || strpos($text, 'bene') || strpos($text, 'ottimo') 
             || strpos($text, 'nella norma') || strpos($text, 'buona')){
@@ -330,7 +330,7 @@ function getCardioBinary($resp,$parameters,$text){
             break;
         case $yesterday:
         
-          $arr = cardioToday($parameters,$yesterday);  
+          $arr = cardioToday($parameters,$yesterday,$email);  
           if(strpos($text, 'buono') || strpos($text, 'buone') || strpos($text, 'bene') || strpos($text, 'ottimo') || strpos($text, 'nella norma') || strpos($text, 'buona')){
 
           if($arr['date'] == $yesterday){
@@ -376,7 +376,7 @@ function getCardioBinary($resp,$parameters,$text){
         default:
 
              //ultima data disponibile
-             $arr = cardioToday($parameters,"");
+             $arr = cardioToday($parameters,"",$email);
             if($arr['heart'] >= 60 && $arr['heart'] <= 100){
                 $answer = "Gli ultimi dati in mio possesso sono relativi al ".$arr['date'].
                           ". Le tue pulsazioni erano nella norma, infatti ho rilevato ".$arr['heart']." bpm";
@@ -389,7 +389,7 @@ function getCardioBinary($resp,$parameters,$text){
       }
       
     }else{
-         $arr = cardioToday($parameters,$today);
+         $arr = cardioToday($parameters,$today,$email);
              if(strpos($text, 'buono') || strpos($text, 'buone') || strpos($text, 'bene') || strpos($text, 'ottimo') || strpos($text, 'nella norma') || strpos($text, 'buona')){
 
           if($arr['date'] == $today){
@@ -449,7 +449,7 @@ viene chiamata la funzione yestSleepBinary altrimenti viene chiamata la
 funzione pastSleepBinary che costruisce la risposta con i dati storici
 return risposta da stampare  
 */
-function getSleepBinary($resp,$parameters,$text){
+function getSleepBinary($resp,$parameters,$text,$email){
 
 
 $yesterday = date("Y-m-d",strtotime("-1 days")); 
@@ -459,23 +459,23 @@ $date1 = substr($parameters['date'],0,10);
 if($date1 >= $yesterday){
 //dati di ieri
   
- $answer = yestSleepBinary($resp,$parameters,$text,$yesterday);
+ $answer = yestSleepBinary($resp,$parameters,$text,$yesterday,$email);
 
 
 }else if($parameters['Passato']){
   //dati di ieri
   
-  $answer = yestSleepBinary($resp,$parameters,$text,$yesterday);
+  $answer = yestSleepBinary($resp,$parameters,$text,$yesterday,$email);
   //$answer = yestSleepBinary($resp,$parameters,$text,'2019-02-22');
 
 }else{
   //dati storici
-  $answer = pastSleepBinary($resp,$parameters,$text);
+  $answer = pastSleepBinary($resp,$parameters,$text,$email);
 }
 
 }else{
   //dati storici
-   $answer = pastSleepBinary($resp,$parameters,$text);
+   $answer = pastSleepBinary($resp,$parameters,$text,$email);
 }
 
 return $answer;
@@ -493,10 +493,10 @@ dall'utente e usando dei valori soglia (390 minuti di sonno) per
 rispondere in maniera positiva o negativa
 return risposta da stampare
 */
-function pastSleepBinary($resp,$parameters,$text){
+function pastSleepBinary($resp,$parameters,$text,$email){
 
   $param = "";
-  $json_data = queryMyrror($param);
+  $json_data = queryMyrror($param,$email);
   $result = "";
 
   $count = 0;
@@ -648,10 +648,10 @@ Viene costruita una risposta in base ai token rilevati nella frase
 rispondere in maniera positiva o negativa.
 return risposta da stampare
 */
-function yestSleepBinary($resp,$parameters,$text,$data){
+function yestSleepBinary($resp,$parameters,$text,$data,$email){
 
   $param = "";
-  $json_data = queryMyrror($param);
+  $json_data = queryMyrror($param,$email);
   $result = null;
 
   //serve a capire se vengono presi i dati della data corretta oppure gli ultimi presenti nel file
@@ -1000,10 +1000,10 @@ presi i dati dell'ultima data disponibile. I dati verranno quindi inseriti
 nella risposta restituita da dialogflow tramite la funzione str_replace.
 return risposta da stampare
 */
-function fetchYesterdaySleep($resp,$data){
+function fetchYesterdaySleep($resp,$data,$email){
 
   $param = "";
-  $json_data = queryMyrror($param);
+  $json_data = queryMyrror($param,$email);
   $result = null;
 
   //cerco data di ieri
@@ -1104,7 +1104,7 @@ sonno dell'ultima notte,altrimenti viene chiamata la
 funzione fetchPastSleep che costruisce la risposta con i dati storici
 return risposta da stampare  
 */
-function getSleep($resp,$parameters,$text){
+function getSleep($resp,$parameters,$text,$email){
 
   $yesterday = date("Y-m-d",strtotime("-1 days")); 
   $timestamp = strtotime($yesterday);
@@ -1117,7 +1117,7 @@ function getSleep($resp,$parameters,$text){
   //echo $yesterday;
   if($date1 == $yesterday){
     //dati di ieri 
-   $answer = fetchYesterdaySleep($resp,$yesterday);
+   $answer = fetchYesterdaySleep($resp,$yesterday,$email);
     //$answer = fetchYesterdaySleep($resp,'2019-02-22');
   }else if(isset($parameters['date-period']['endDate']) && isset($parameters['date-period']['startDate'])){
    
@@ -1132,23 +1132,23 @@ function getSleep($resp,$parameters,$text){
     
   }
 
-  $answer = fetchPastSleep($endDate,$startDate);
+  $answer = fetchPastSleep($endDate,$startDate,$email);
 
   }else if(isset($parameters['Passato'])){
   //dati di ieri
      
-  $answer = fetchYesterdaySleep($resp,$yesterday);
+  $answer = fetchYesterdaySleep($resp,$yesterday,$email);
 
   }else{
      
   //dati storici
-    $answer = fetchPastSleep("","");
+    $answer = fetchPastSleep("","",$email);
   }
 
   }else{
     
   //dati storici
-    $answer = fetchPastSleep("","");
+    $answer = fetchPastSleep("","",$email);
   }
 
   return $answer;
@@ -1164,10 +1164,10 @@ Se non vengono trovati dati viene effettuata una media su tutto il file
 
 return risposta da stampare  
 */
-function fetchPastSleep($endDate,$startDate){
+function fetchPastSleep($endDate,$startDate,$email){
 
   $param = "";
-  $json_data = queryMyrror($param);
+  $json_data = queryMyrror($param,$email);
   $result = "";
 
   $count = 0;
@@ -1208,7 +1208,7 @@ function fetchPastSleep($endDate,$startDate){
 
   if($count == 0){
     //non ci sono riferimenti per quel periodo
-    return fetchPastSleep("","");
+    return fetchPastSleep("","",$email);
   }
   $asleepAV = intval($sumAsleep/$count);
   $inBedAV =intval($sumInBed/$count);

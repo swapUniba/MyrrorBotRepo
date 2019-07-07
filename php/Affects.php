@@ -3,7 +3,7 @@
 /*Permette di fornire dati in relazione alla domanda richiesta
 Viene fornito un flag per determinare se ci si riferisce alle emozioni oppure alla personalità
 */ 
-function getSentiment($flag, $resp, $parameters){
+function getSentiment($flag, $resp, $parameters,$email){
 
     //flag 1 --> emozioni
     //flag 0 --> l'umore
@@ -25,10 +25,10 @@ function getSentiment($flag, $resp, $parameters){
 
         //Controllo se la data si riferisce a ieri/oggi
         if ($data == $ieri) {
-          $answer = getPast($ieri);
+          $answer = getPast($ieri,$email);
       
         }elseif ($data == $oggi) {
-          $answer = getToday($oggi);
+          $answer = getToday($oggi,$email);
         }
 
     
@@ -36,7 +36,7 @@ function getSentiment($flag, $resp, $parameters){
         
         //OGGI
         $oggi = date("Y/m/d");
-        $answer = getToday($oggi);
+        $answer = getToday($oggi,$email);
       }
 
   
@@ -57,10 +57,10 @@ function getSentiment($flag, $resp, $parameters){
 
         //Controllo se la data si riferisce a ieri/oggi
         if ($data == $ieri) {
-          $answer = getPastUmore($ieri);
+          $answer = getPastUmore($ieri,$email);
       
         }elseif ($data == $oggi) {
-          $answer = getTodayUmore($oggi);
+          $answer = getTodayUmore($oggi,$email);
         }
 
     
@@ -68,7 +68,7 @@ function getSentiment($flag, $resp, $parameters){
         
         //OGGI
         $oggi = date("Y/m/d");
-        $answer = getTodayUmore($oggi);
+        $answer = getTodayUmore($oggi,$email);
       }
     }
 
@@ -78,9 +78,9 @@ function getSentiment($flag, $resp, $parameters){
 
 
 //OGGI: determina l'umore in relazione ad oggi
-function getTodayUmore($oggi){
+function getTodayUmore($oggi,$email){
   $param = "past";
-  $json_data = queryMyrror($param);
+  $json_data = queryMyrror($param,$email);
   $result = null;
   $max = "";
   $emotion = "";
@@ -111,7 +111,7 @@ function getTodayUmore($oggi){
   }else{ //Se non sono presenti dati relativi ad oggi
 
       $param = "past";
-      $json_data = queryMyrror($param);
+      $json_data = queryMyrror($param,$email);
       $result = null;
       $max = "";
       $emotion = "";
@@ -144,9 +144,9 @@ function getTodayUmore($oggi){
 
 
 //IERI: determina l'umore in relazione a ieri
-function getPastUmore($ieri){
+function getPastUmore($ieri,$email){
   $param = "past";
-  $json_data = queryMyrror($param);
+  $json_data = queryMyrror($param,$email);
   $result = null;
   $max = "";
   $emotion = "";
@@ -177,7 +177,7 @@ function getPastUmore($ieri){
   }else{ //Se non sono presenti dati relativi a ieri
 
       $param = "past";
-      $json_data = queryMyrror($param);
+      $json_data = queryMyrror($param,$email);
       $result = null;
       $max = "";
       $emotion = "";
@@ -211,9 +211,9 @@ function getPastUmore($ieri){
 
 
 //IERI: determina l'emozione in relazione ad oggi
-function getPast($ieri){
+function getPast($ieri,$email){
   $param = "past";
-  $json_data = queryMyrror($param);
+  $json_data = queryMyrror($param,$email);
   $result = null;
   $max = "";
   $emotion = "";
@@ -230,7 +230,7 @@ function getPast($ieri){
 
   if(isset($result['emotion'] )){
 
-    $emotion = getEmotion($result);
+    $emotion = getEmotion($result,$email);
     $answer =  "Stavi provando " . $emotion ;
 
   }else{ //Se non sono presenti dati relativi a ieri
@@ -245,7 +245,7 @@ function getPast($ieri){
       }
     }
 
-    $emotion = getEmotion($result);
+    $emotion = getEmotion($result,$email);
     $answer = "Basandomi sugli ultimi dati rilevati stavi provando " . $emotion;
 
   }
@@ -255,9 +255,9 @@ function getPast($ieri){
 }
 
 //OGGI: determina l'emozione in relazione ad oggi
-function getToday($oggi){
+function getToday($oggi,$email){
   $param = "past";
-  $json_data = queryMyrror($param);
+  $json_data = queryMyrror($param,$email);
   $result = null;
   $max = "";
   $emotion = "";
@@ -274,7 +274,7 @@ function getToday($oggi){
 
   if(isset($result['emotion'] )){
 
-    $emotion = getEmotion($result);
+    $emotion = getEmotion($result,$email);
 
       switch (rand(1,2)) {
       case '1':
@@ -288,7 +288,7 @@ function getToday($oggi){
   }else{ //Se non sono presenti dati relativi ad oggi
 
       $param = "past";
-      $json_data = queryMyrror($param);
+      $json_data = queryMyrror($param,$email);
       $result = null;
       $max = "";
       $emotion = "";
@@ -303,7 +303,7 @@ function getToday($oggi){
       }
     }
 
-    $emotion = getEmotion($result);
+    $emotion = getEmotion($result,$email);
    $answer = "Basandomi sugli ultimi dati rilevati stavi provando " . $emotion;
   }
 
@@ -312,7 +312,7 @@ function getToday($oggi){
 }
 
 //EMOZIONE: ritorna l'emozione corrispondente
-function getEmotion($result){
+function getEmotion($result,$email){
 
     if (strpos($result['emotion'], 'joy') !== false) {
       $emotion = "gioia";
@@ -336,7 +336,7 @@ function getEmotion($result){
 
 
 //Funzione utilizzata per gestire le risposte binarie
-function getSentimentBinario($flag, $resp, $parameters){
+function getSentimentBinario($flag, $resp, $parameters,$email){
 
     //flag 1 --> emozioni
     //flag 0 --> l'umore
@@ -358,10 +358,10 @@ function getSentimentBinario($flag, $resp, $parameters){
 
         //Controllo se la data si riferisce a ieri/oggi
         if ($data == $ieri) {
-          $answer = getPastBinario($ieri, $parameters);
+          $answer = getPastBinario($ieri, $parameters,$email);
       
         }elseif ($data == $oggi) {
-          $answer = getTodayBinario($oggi, $parameters);
+          $answer = getTodayBinario($oggi, $parameters,$email);
         }
 
     
@@ -370,7 +370,7 @@ function getSentimentBinario($flag, $resp, $parameters){
         //OGGI
         $oggi = date("Y/m/d");
 
-        $answer = getTodayBinario($oggi, $parameters);
+        $answer = getTodayBinario($oggi, $parameters,$email);
       }
 
   
@@ -391,10 +391,10 @@ function getSentimentBinario($flag, $resp, $parameters){
 
         //Controllo se la data si riferisce a ieri/oggi
         if ($data == $ieri) {
-          $answer = getPastUmoreBinario($ieri, $parameters);
+          $answer = getPastUmoreBinario($ieri, $parameters,$email);
       
         }elseif ($data == $oggi) {
-          $answer = getTodayUmoreBinario($oggi, $parameters);
+          $answer = getTodayUmoreBinario($oggi, $parameters,$email);
         }
 
     
@@ -403,7 +403,7 @@ function getSentimentBinario($flag, $resp, $parameters){
         //OGGI
         $oggi = date("Y/m/d");
 
-        $answer = getTodayUmoreBinario($oggi, $parameters);
+        $answer = getTodayUmoreBinario($oggi, $parameters,$email);
       }
     }
 
@@ -413,9 +413,9 @@ function getSentimentBinario($flag, $resp, $parameters){
 
 
 //IERI: determina l'umore in relazione a ieri per le domande con risposta binaria
-function getPastUmoreBinario($ieri, $parameters){
+function getPastUmoreBinario($ieri, $parameters,$email){
   $param = "past";
-  $json_data = queryMyrror($param);
+  $json_data = queryMyrror($param,$email);
   $result = null;
   $max = "";
   $emotion = "";
@@ -506,9 +506,9 @@ function getPastUmoreBinario($ieri, $parameters){
 
 
 //OGGI: determina l'umore in relazione ad oggi per le domande con risposta binaria
-function getTodayUmoreBinario($oggi, $parameters){
+function getTodayUmoreBinario($oggi, $parameters,$email){
   $param = "past";
-  $json_data = queryMyrror($param);
+  $json_data = queryMyrror($param,$email);
   $result = null;
   $max = "";
   $emotion = "";
@@ -553,7 +553,7 @@ function getTodayUmoreBinario($oggi, $parameters){
   }else{ //Se non sono presenti dati relativi ad oggi
 
       $param = "past";
-      $json_data = queryMyrror($param);
+      $json_data = queryMyrror($param,$email);
       $result = null;
       $max = "";
       $emotion = "";
@@ -604,9 +604,9 @@ function getTodayUmoreBinario($oggi, $parameters){
 
    
 //IERI: determina l'emozione in relazione a ieri per le domande con risposta binaria
-function getPastBinario($ieri, $parameters){
+function getPastBinario($ieri, $parameters,$email){
   $param = "past";
-  $json_data = queryMyrror($param);
+  $json_data = queryMyrror($param,$email);
   $result = null;
   $max = "";
   $emotion = "";
@@ -623,7 +623,7 @@ function getPastBinario($ieri, $parameters){
 
   if(isset($result['emotion'] )){
 
-    $emotion = getEmotion($result);
+    $emotion = getEmotion($result,$email);
 
     switch ($emotion) {
       case 'gioia':
@@ -691,7 +691,7 @@ function getPastBinario($ieri, $parameters){
       }
     }
 
-    $emotion = getEmotion($result);
+    $emotion = getEmotion($result,$email);
 
 
     switch ($emotion) {
@@ -757,9 +757,9 @@ function getPastBinario($ieri, $parameters){
 }
 
 //OGGI: determina l'emozione in relazione ad oggi per le domande con risposta binaria
-function getTodayBinario($oggi, $parameters){
+function getTodayBinario($oggi, $parameters,$email){
   $param = "past";
-  $json_data = queryMyrror($param);
+  $json_data = queryMyrror($param,$email);
   $result = null;
   $max = "";
   $emotion = "";
@@ -775,7 +775,7 @@ function getTodayBinario($oggi, $parameters){
 
 
   if(isset($result['emotion'] )){
-    $emotion = getEmotion($result);
+    $emotion = getEmotion($result,$email);
 
     switch ($emotion) {
       case 'gioia':
@@ -834,7 +834,7 @@ function getTodayBinario($oggi, $parameters){
   }else{ //Se non sono presenti dati relativi ad oggi
 
       $param = "past";
-      $json_data = queryMyrror($param);
+      $json_data = queryMyrror($param,$email);
       $result = null;
       $max = "";
       $emotion = "";
@@ -849,7 +849,7 @@ function getTodayBinario($oggi, $parameters){
       }
     }
 
-    $emotion = getEmotion($result);
+    $emotion = getEmotion($result,$email);
 
      switch ($emotion) {
       case 'gioia':
@@ -913,9 +913,9 @@ function getTodayBinario($oggi, $parameters){
 }
 
 
-function getLastEmotion(){
+function getLastEmotion($email){
   $param = "past";
-  $json_data = queryMyrror($param);
+  $json_data = queryMyrror($param,$email);
   $result = null;
   $max = "";
   $emotion = "";
@@ -930,7 +930,7 @@ function getLastEmotion(){
     }
   }
 
-  $emotion = getEmotion($result);
+  $emotion = getEmotion($result,$email);
 
   return $emotion;
 }
