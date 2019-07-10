@@ -1237,7 +1237,8 @@ class Message
      */
     public function parseFromJsonStream($input)
     {
-        $array = json_decode($input->getData(), true, 512, JSON_BIGINT_AS_STRING);
+        $array = json_decode($input->getData(), true, 512);
+
         if ($this instanceof \Google\Protobuf\ListValue) {
             $array = ["values"=>$array];
         }

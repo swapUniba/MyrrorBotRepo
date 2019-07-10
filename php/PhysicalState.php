@@ -698,7 +698,7 @@ function yestSleepBinary($resp,$parameters,$text,$data,$email){
       }
     }
 
-    $data2 = date('Y-m-d',$timestamp/1000);
+    $data2 = date('d-m-Y',$timestamp/1000);
 
     if($result['minutesAsleep'] != null){
       $data = $data2;
@@ -718,7 +718,7 @@ function yestSleepBinary($resp,$parameters,$text,$data,$email){
   $minutes = ($minutesAsleep % 60);
 
 
-  if(strpos($text, 'abbastanza') ){
+  if(strpos($text, 'abbastanza') || strpos($text, 'bene')){
 
     if($minutesAsleep >= 390 ){
        
@@ -757,8 +757,10 @@ function yestSleepBinary($resp,$parameters,$text,$data,$email){
        }
 
     }
+/*
+  }
 
-  }elseif( strpos($text, 'bene')){
+  elseif( strpos($text, 'bene')){
 
       if($minutesAsleep >= 390 ){
        
@@ -799,7 +801,7 @@ function yestSleepBinary($resp,$parameters,$text,$data,$email){
        }
 
     }
-
+*/
   }elseif (strpos($text, 'tanto')) {
 
       if($minutesAsleep >= 390 ){
@@ -843,7 +845,9 @@ function yestSleepBinary($resp,$parameters,$text,$data,$email){
 
     }
     
-  }elseif(strpos($text, 'meno')){
+  }
+
+  elseif(strpos($text, 'meno')){
 
       if($minutesAsleep >= 480 ){
        
@@ -1060,7 +1064,7 @@ function fetchYesterdaySleep($resp,$data,$email){
       }
     }
 
-    $data2 = date('Y-m-d',$timestamp/1000);
+    $data2 = date('d-m-Y',$timestamp/1000);
     $answer = "Gli ultimi dati in mio possesso sono relativi al ".$data2."<br>";
 
     if($result['minutesAsleep'] != null){

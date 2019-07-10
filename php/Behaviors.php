@@ -337,20 +337,21 @@ if(isset($parameters['date-period']['startDate'])){
    $activity = attivitaData($date,$email);
    $sum = $activity[0] + $activity[1] + $activity[2];
 
+$answer = "Consultando i dati a mia disposizione, risulta che";
      if(strpos($text, 'abbastanza')){
         
         if($sum >= 30 ){
-           $answer ="Si, hai fatto abbastanza attività fisica. ".$sum." minuti.";
+           $answer .=" hai fatto abbastanza attività fisica. ".$sum." minuti.";
         }else{
-           $answer="No, non hai fatto abbastanza attività fisica. ".$sum." minuti.";
+           $answer .=" non hai fatto abbastanza attività fisica. ".$sum." minuti.";
         }
         
   }elseif(strpos($text,'dovrei fare')  || strpos($text,'fare di più') || strpos($text,'fare più')) {
   	
   	    if($sum >= 30 ){
-           $answer ="No, hai fatto abbastanza attività fisica. ".$sum." minuti.";
+           $answer .=" hai fatto abbastanza attività fisica. ".$sum." minuti.";
         }else{
-           $answer="Si, non hai fatto abbastanza attività fisica. ".$sum." minuti.";
+           $answer .=" non hai fatto abbastanza attività fisica. ".$sum." minuti.";
         }
         
   }

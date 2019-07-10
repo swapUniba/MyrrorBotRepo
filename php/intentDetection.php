@@ -1,9 +1,9 @@
 <?php
-
 namespace Google\Cloud\Samples\Dialogflow;
 use Google\Cloud\Dialogflow\V2\SessionsClient;
 use Google\Cloud\Dialogflow\V2\TextInput;
 use Google\Cloud\Dialogflow\V2\QueryInput;
+use Guzzle\Http\Exception\ClientErrorResponseException;
 
 require __DIR__.'/vendor/autoload.php';
 
@@ -22,7 +22,7 @@ include 'Meteo.php';
 
 $city = "Roma";
 header('Content-type: text/plain; charset=utf-8');
-
+ ini_set('display_errors', 1);
 //Controllo se la variabile 'testo' ricevuta è nulla
 if (isset($_POST{'testo'})) {
     $testo = $_POST{'testo'};
@@ -56,7 +56,7 @@ function detect_intent_texts($projectId,$city,$email, $text, $sessionId, $langua
     $response = $sessionsClient->detectIntent($session, $queryInput);
     $queryResult = $response->getQueryResult();
  
-    //entities
+
     $parameters=json_decode($queryResult->getParameters()->serializeToJsonString(), true);
     
     $queryText = $queryResult->getQueryText();
@@ -381,8 +381,14 @@ function selectIntent($email,$intent, $confidence,$text,$resp,$parameters,$city)
     }
 }
 
-date_default_timezone_set('Europe/Madrid'); //Imposto la stessa timezone di Dialogflow (per gli orari)
+//date_default_timezone_set('Europe/Madrid'); //Imposto la stessa timezone di Dialogflow (per gli orari)
 
-detect_intent_texts('myrrorbot-4f360',$city,$email,$testo,'123456');
+try {
+  detect_intent_texts('myrrorbot-4f360',$city,$email,$testo,'123456');
+} catch (ClientErrorResponseException $exception) {
+    $responseBody = $exception->getResponse()->getBody(true);
+    echo $responseBody;
+}
+
 
 

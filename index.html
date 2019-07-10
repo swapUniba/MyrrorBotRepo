@@ -39,7 +39,7 @@
 	
         $.ajax({  
           type: "POST",
-          url: "Login/login.php",  
+          url: "/Login/login.php",  
           data: "email=" + email + "&password=" + password,
           dataType: "html",
           success: function(risposta) {  
@@ -54,7 +54,7 @@
                 //Se le credenziali sono corrette, creo i file json per la lettura
                 $.ajax({
 					type:'POST',
-					url: 'php/json_creation.php',
+					url: '/php/json_creation.php',
 					data: "email=" + email + "&password=" + password + "&token=" + token,
 					dataType: "html",
 					success:function(response){
@@ -116,6 +116,11 @@
 						<button class="login100-form-btn" value="invia" id="invia" type="submit">
 							Login
 						</button>
+						<div>
+							<a class="txt2" href="guest.html">
+								Login come Guest
+							</a>
+						</div>
 					</div>
 
 					<div id="loader"></div>
@@ -172,7 +177,7 @@
 
 	function showPage() {
 	  document.getElementById("loader").style.display = "none";
-	  window.location.href = 'chatbot.html';
+	  window.location.href = '/chatbot.html';
 	}
 </script>
 

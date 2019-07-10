@@ -93,8 +93,8 @@ if (value.match(/myrror/)) {
 
           $.ajax({
         type: "POST",
-        url: "php/intentDetection.php",
-        data: {testo:text,city:citta,mail:email},
+        url: "php/intentGuest.php",
+        data: {testo:text,city:citta},
         success: function(data) {
           setResponse(data);
         }
@@ -113,11 +113,7 @@ function setResponse(val) {
       var canzoniPersonalizzateSpotify = "Ecco qui un brano consigliato che potrebbe piacerti";
       var video = "Ecco qui il video richiesto";
 
-      if (val["intentName"] == "Interessi" || val["intentName"] == "Contatti" || val["intentName"] == "Esercizio fisico" || val["intentName"] == "Personalita") {
-       
-         $(".chat").append('<li class="replies"><img src="immagini/chatbot.png" alt="" /><p>' + val["answer"] + '</p></li>');
-
-      }else if(val['intentName'] == "Canzone per nome"  || val['intentName'] == "Canzone per nome subintent"){
+      if(val['intentName'] == "Canzone per nome"  || val['intentName'] == "Canzone per nome subintent"){
         
         $(".chat").append('<li class="replies"><img src="immagini/chatbot.png" alt="" /><p>' + canzoneNomeSpotify + '&#x1F603;' +'<br>'+ '<iframe src="' + val['answer'] + '" width="250" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe></p></li>');
       
@@ -129,23 +125,11 @@ function setResponse(val) {
 
         $(".chat").append('<li class="replies"><img src="immagini/chatbot.png" alt="" /><p>' + canzoneGenereSpotify + '&#x1F603;' +'<br>'+ '<iframe src="' + val['answer'] + '" width="250" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe></p></li>');
 
-      }else if(val['intentName'] == "Playlist di canzoni in base alle emozioni" || val['intentName'] == "Playlist di canzoni in base alle emozioni subintent"){
-      
-        $(".chat").append('<li class="replies"><img src="immagini/chatbot.png" alt="" /><p>' + playlistEmozioniSpotify + '&#x1F603;' +'<br>'+ '<iframe src="' + val['answer'] + '" width="250" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe></p></li>');
-
-      }else if(val['intentName'] == "Canzoni in base alle emozioni" || val['intentName'] == "Canzoni in base alle emozioni subintent"){
-
-        $(".chat").append('<li class="replies"><img src="immagini/chatbot.png" alt="" /><p>' + canzoneEmozioniSpotify + '&#x1F603;' +'<br>'+ '<iframe src="' + val['answer'] + '" width="250" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe></p></li>');
-
-      }else if(val['intentName'] == "Canzoni personalizzate" || val['intentName'] == "Canzoni personalizzate subintent" ){
-        
-        $(".chat").append('<li class="replies"><img src="immagini/chatbot.png" alt="" /><p>' + canzoniPersonalizzateSpotify + '&#x1F603;' +'<br>'+ '<iframe src="' + val['answer'] + '" width="250" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe></p></li>');
-
-      }else if(val["intentName"] == "Notizie in base ad un argomento" || val["intentName"] == "Notizie in base agli interessi" || val["intentName"] == "Notizie odierne"  || val["intentName"] == "Ricerca articolo" ){
+      }else if(val["intentName"] == "Notizie in base ad un argomento" || val["intentName"] == "Notizie odierne"  || val["intentName"] == "Ricerca articolo" ){
                                     
         $(".chat").append('<li class="replies"><img src="immagini/chatbot.png" alt="" /><p><img style="width: 100%;height: 100%;" src= "'+val['answer']['image']+'"/><a href="'+val['answer']['url']+'">'+val["answer"]['title']+'</a></p></li>');
    
-      }else if(val["intentName"] == "Video in base alle emozioni" || val["intentName"] == "Ricerca Video"){
+      }else if(val["intentName"] == "Ricerca Video"){
 
           $(".chat").append('<li class="replies"><img src="immagini/chatbot.png" alt="" /><p>' + video + ' &#x1F603; <br>' +'<iframe id="ytplayer" type="text/html" width="260" height="260" src="' + val['answer'] + '" frameborder="0" allowfullscreen/></iframe></p></li>');
 
@@ -282,10 +266,16 @@ function setResponse(val) {
  
       
 
-      }else {
+      }else if(val['intentName'] == "Default Welcome Intent"){
 
+       
         $(".chat").append('<li class="replies"><img src="immagini/chatbot.png" alt="" /><p>' + val["answer"] + '</p></li>');
       
+      }else{
+         var answer = val['answer'] +" <a href='http://90.147.102.243:9090'>90.147.102.243</a>";
+      $(".chat").append('<li class="replies"><img src="immagini/chatbot.png" alt="" /><p>' + answer + '</p></li>');
+      
+
       }
 
       //Scroll verso il basso quando viene ricevuta una risposta
@@ -309,43 +299,17 @@ if (value.match(/myrror/)) {
 }else{
   window.location.href = 'index.html';
 }
-setProfileImg(tempStr);
 
-      setNominativo(tempStr); //Nome per la grafica del sito
       
       
     }
 
-      function setProfileImg(email){
-    
-
-
-          $.ajax({
-        type: "POST",
-        url: "php/getProfileImage.php",
-        data: {mail:email},
-        success: function(data) {
-          var imageURL = data;
-          $('#profile-img').attr('src',imageURL);
-        }
-      });
+      
 
      
 
-}
 
-    //Funzione usata per impostare il nome dell'utente nella schermata
-    function setNominativo(tempStr) {
-      $.ajax({
-        type: "POST",
-        url: "php/setNominativo.php",
-        data:{mail:tempStr},
-        success: function(data) {
-          console.log(data);
-          $(".nomeUtente").append(data);
-        }
-      });
-    }
 
+    
 
 
