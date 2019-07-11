@@ -53,7 +53,12 @@ $(".messages").animate({ scrollTop: $(document).height() }, "fast");
   //Quando viene cliccato il tasto sullo schermo per inviare
   $('.submit').click(function() {
     let query = newMessage();
-    send(query);
+    if (query == false) {
+      return false;
+    }else{
+      send(query);
+    }
+
   });
 
   //Quando viene premuto 'invio' sulla tastiera

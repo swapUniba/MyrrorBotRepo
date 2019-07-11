@@ -377,7 +377,8 @@ function selectIntent($email,$intent, $confidence,$text,$resp,$parameters,$city)
     if ($arr['intentName'] == 'Canzone per nome') {
         printf(json_encode($arr)); //JSON_UNESCAPED_UNICODE utilizzato per il formato UTF8
     }else{
-        printf(json_encode($arr,JSON_UNESCAPED_UNICODE)); //JSON_UNESCAPED_UNICODE utilizzato per il formato UTF8
+     echo json_encode($arr); //JSON_UNESCAPED_UNICODE utilizzato per il formato UTF8
+       // printf(json_encode($arr,JSON_UNESCAPED_UNICODE)); //JSON_UNESCAPED_UNICODE utilizzato per il formato UTF8
     }
 }
 

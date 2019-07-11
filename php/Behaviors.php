@@ -316,17 +316,17 @@ if(isset($parameters['date-period']['startDate'])){
   if(strpos($text, 'abbastanza')){
         
         if($sum >= 30 ){
-           $answer ="Si, fai abbastanza attività fisica. In media ".$sum." minuti.";
+           $answer ="Si, fai abbastanza attività fisica. In media ".$sum." minuti di attività.";
         }else{
-           $answer="No, non fai abbastanza attività fisica. In media ".$sum." minuti.";
+           $answer="No, non fai abbastanza attività fisica. In media ".$sum." minuti di attività.";
         }
         
   }elseif(strpos($text,'dovrei fare')  || strpos($text,'fare di più') || strpos($text,'fare più')) {
   	
   	    if($sum >= 30 ){
-           $answer ="No, fai abbastanza attività fisica. In media ".$sum." minuti.";
+           $answer ="No, fai abbastanza attività fisica. In media ".$sum." minuti di attività.";
         }else{
-           $answer="Si, non fai abbastanza attività fisica. In media ".$sum." minuti.";
+           $answer="Si, non fai abbastanza attività fisica. In media ".$sum." minuti di attività.";
         }
         
   }
@@ -341,17 +341,17 @@ $answer = "Consultando i dati a mia disposizione, risulta che";
      if(strpos($text, 'abbastanza')){
         
         if($sum >= 30 ){
-           $answer .=" hai fatto abbastanza attività fisica. ".$sum." minuti.";
+           $answer .=" hai fatto abbastanza attività fisica. Ovvero ".$sum." minuti di attività.";
         }else{
-           $answer .=" non hai fatto abbastanza attività fisica. ".$sum." minuti.";
+           $answer .=" non hai fatto abbastanza attività fisica. Ovvero ".$sum." minuti di attività.";
         }
         
   }elseif(strpos($text,'dovrei fare')  || strpos($text,'fare di più') || strpos($text,'fare più')) {
   	
   	    if($sum >= 30 ){
-           $answer .=" hai fatto abbastanza attività fisica. ".$sum." minuti.";
+           $answer .=" hai fatto abbastanza attività fisica. Ovvero ".$sum." minuti di attività.";
         }else{
-           $answer .=" non hai fatto abbastanza attività fisica. ".$sum." minuti.";
+           $answer .=" non hai fatto abbastanza attività fisica. Ovvero ".$sum." minuti di attività.";
         }
         
   }
