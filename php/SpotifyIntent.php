@@ -7,6 +7,158 @@ require_once  'Behaviors.php'; //Per i dati sull'attività fisica
 include 'connection_spotify.php';
 include 'spotifyFetch.php';
 
+/*Funzione principale
+	Controllo se è una canzone oppure una playlist (se non sono presenti le parole elencate, sarà presa una playlist)
+	Vedo se sono presenti le parole relative alle emozioni ecc
+	Controllo che se ci sono presenti parametri any oppure artist oppure generi
+	Se non viene trovata nessuna delle precedenti, si andrà a consigliare la canzone
+	explanation sarà valorizzata solo per musica personalizzata ed emozioni*/
+function getMusic($resp,$parameters,$text,$email){
+	
+	$flagBrano = false;
+	$flagRaccomandazioni = false;
+	$flagAny = false;
+	$flagArtist = false;
+	$flagGenere = false;
+	$flagEmozioni = false;
+
+	$spiegazione = "";
+	$param = "";
+	
+	$listaParoleBrano = array( 'brano', 'canzone', 'musica' );//brano
+	$listaParoleRaccomandazioni = array( 'musica adatta a me', 'consigliami', 'consigli', 'suggerisc', 'per me' , 'a me');//raccomandazioni
+	$listaParoleEmozioni = array( 'umore', 'emozioni','stato d\'animo');//emozioni
+
+	//Controllo se sono presenti le parole delle raccomandazioni allora vado nella sezione delle PLAYLIST RACCOMANDATE
+	foreach($listaParoleRaccomandazioni as $parola)  {  
+   		if (stripos($text, $parola) !== false) {
+    		//Contiene la parola
+   			$flagRaccomandazioni = true;
+   			break;
+		} 
+   	}
+
+	//Controllo se sono presenti le parole delle emozioni
+   	foreach($listaParoleEmozioni as $parola)  {  
+   		if (stripos($text, $parola) !== false) {
+    		//Contiene la parola
+   			$flagEmozioni = true;
+   			break;
+		} 
+   	}
+
+	//Controllo se sono presenti le parole del singolo brano
+   	foreach($listaParoleBrano as $parola)  {  
+   		if (stripos($text, $parola) !== false) {
+    		//Contiene la parola
+   			$flagBrano = true;
+   			break;
+		} 
+	}
+
+	if ($flagBrano == true && $flagEmozioni == true) {
+		//echo "canzone in base alle emozioni";
+		$answer = getMusicByEmotion($resp,$parameters,$text,$email);
+		$spiegazione = explainMusicEmotion($resp,$parameters,$text,$email);
+
+	}else if($flagEmozioni == true){
+		//echo "playlist in base alle emozioni";
+		$answer = getPlaylistByEmotion($resp,$parameters,$text,$email);
+		$spiegazione = explainMusicEmotion($resp,$parameters,$text,$email);
+
+	}else{
+		if ($flagRaccomandazioni == true) { //PLAYLIST RACCOMANDATE
+
+	   	 	if ($parameters['GeneriMusicali'] != "") {
+	   	 		$flagGenere = true;
+	   	 		//echo "playlist in base al genere richiesto";
+	   	 		$answer = getMusicByGenre($resp,$parameters,$text,$email);
+	   	 	}else if($flagEmozioni == true){
+	   	 		//echo "playlist in base alle emozioni";
+	   	 		$answer = getPlaylistByEmotion($resp,$parameters,$text,$email);
+	   	 		$spiegazione = explainMusicEmotion($resp,$parameters,$text,$email);
+	   	 	}else{
+	   	 		//echo "playlist raccomandata";
+	   	 		$answer = getMusicCustom($resp,$parameters,$text,$email);
+	   	 		$spiegazione = explainCustomMusic($resp,$parameters,$text,$email);
+	   	 	}
+
+   		} else{//Effettuo i controlli e verifico se si tratta di un brano oppure una playlist
+
+	   		//Vedo se è valorizzato il genere
+	   		if ($parameters['GeneriMusicali'] != "") {
+	   			$flagGenere = true;
+	   			//echo "playlist in base al genere richiesto";
+	   			$answer = getMusicByGenre($resp,$parameters,$text,$email);
+	   			$param = $parameters['GeneriMusicali'];
+	   		}else{
+
+	   			foreach($listaParoleBrano as $parola)  {  
+			   		if (stripos($text, $parola) !== false) {
+			    		//Contiene la parola
+			   			$flagBrano = true;
+			   			break;
+					} 
+				}
+
+				//Vedo se è valorizzato any
+				if ($parameters['any'] != "") {
+					$flagAny = true;
+					$flagBrano = true;
+				}
+
+				//Vedo se è valorizzato music-artist
+				if ($parameters['music-artist'] != "") {
+					$flagArtist = true;
+				}
+
+				if ($flagBrano == true || $flagAny == true) {//Brano
+
+		   			if ($flagAny == true) {//Prendo il titolo del brano
+		   				//echo "brano con il titolo";
+		   				$answer = getMusicByTrack($resp,$parameters,$text,$email);
+		   				$param = $parameters['any'];
+
+		   			}else{//Verifico se è presente il nome dell'artista
+
+		   				if ($flagArtist == true) {//Prendo il nome dell'artista del brano
+		   					//echo "brano con il nome dell'artista";
+		   					$answer = getMusicByArtist($resp,$parameters,$text,$email);
+		   					$param = $parameters['music-artist'];
+		   				}else{
+		   					//RACCOMANDO UNA PLAYLIST DI CANZONI
+		   					//echo "playlist raccomandata";
+		   					$answer = getMusicCustom($resp,$parameters,$text,$email);
+		   					$spiegazione = explainCustomMusic($resp,$parameters,$text,$email);
+		   				}
+
+		   			}
+
+		   		}else{ //Playlist
+
+		   			if ($flagAny == true) {//Prendo la playlist
+		   				//echo "playlist con il titolo"; -- NIENTE--
+		   			}else{//Verifico se è presente il nome dell'artista
+		   				if ($flagArtist == true) {//Prendo il nome dell'artista della playlist
+		   					//echo "playlist con il nome dell'artista";
+		   					$answer = getPlaylistByArtist($resp,$parameters,$text,$email);
+		   					$param = $parameters['music-artist'];
+		   				}else{
+		   					//RACCOMANDO UNA PLAYLIST DI CANZONI
+		   					//echo "playlist raccomandata";
+		   					$answer = getMusicCustom($resp,$parameters,$text,$email);
+		   					$spiegazione = explainCustomMusic($resp,$parameters,$text,$email);
+		   				}
+		   			}
+		   		} 	
+	   		}
+	   	}
+	}
+
+	return array("param" => $param, "url" => $answer,"explain" => $spiegazione);
+	
+}
+
 //Permette di ottenere il brano richiesto dall'utente e mostrarlo a schermo
 function getMusicByTrack($resp,$parameters,$text,$email){
 
@@ -139,9 +291,81 @@ function getMusicByGenre($resp,$parameters,$text,$email){
 
 }
 
+//Permette di ottenere una playlist in relazione ad un artista richiesto
+function getPlaylistByArtist($resp,$parameters,$text,$email){
+
+	$api = getApi(); //Api per Spotify
+
+	//Verifico se è presente il genere del brano
+	if ($parameters['music-artist'] != "") {
+		$artista = $parameters['music-artist']; //Genere del brano
+	}else{
+		$artista = "";
+		return "Scusami ma non sono riuscito ad identificare l'artista del brano. Prova a riscriverlo!";
+	}
+
+	$results = $api->search($artista, 'track');
+	//print_r($results);
+
+	//Cerco il nome dell'artista in $results e prendo il suo id
+	foreach ($results->tracks  as $track) {
+		if (is_array($track)) {
+			foreach ($track as $value) {
+				foreach ($value->album as $album) {
+					if (is_array($album)) {
+						foreach ($album as $value) {
+							if (isset($value->name)) {
+								if ($value->name == $parameters['music-artist']) {
+									$idArtist = $value->id;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		
+	}
+
+	if (isset($idArtist)) {
+		$brani = $api->getArtistTopTracks($idArtist,[
+    	'country' => 'it',
+		]);
+	}else{
+		return "Scusami ma non sono riuscito ad identificare l'artista richiesto Prova a riscriverlo!";
+	}
+
+	$arrayAlbum = array();
+	foreach ($brani->tracks as $track) {
+		foreach ($track as  $value) {
+			if (isset($value->external_urls)) {
+				foreach ($value->external_urls as $value2) {
+					array_push($arrayAlbum, $value2);
+				}
+			}
+		}
+	}
+
+	$i = rand(0,count($arrayAlbum) -1);
+	$url = $arrayAlbum[$i];	
+
+	/*
+	Aggiungo alla url di Spotify la parola embed/ altrimenti l'iframe non verrà visualizzato per problemi di Copyright
+	Esempio:
+	https://open.spotify.com/track/2J9TGb5CRT4omfAgnKmXn5 ----> https://open.spotify.com/embed/track/2J9TGb5CRT4omfAgnKmXn5
+	*/
+	$answer = substr_replace($url, "embed/", 25, 0);
+
+	return $answer;
+
+}
 
 //Permette di ottenere una playlist in relazione alle emozioni che si sta provando. Verranno rilevate le più recenti emozioni
 function getPlaylistByEmotion($resp,$parameters,$text,$email){
+
+	if ($email == '') {
+		return '';
+	}
 
 	$api = getApi(); //Api per Spotify
 
@@ -259,6 +483,11 @@ function getPlaylistByEmotion($resp,$parameters,$text,$email){
 
 function explainMusicEmotion($resp,$parameters,$text,$email){
 
+	if ($email == '') {
+		return '';
+	}
+
+
 $emotion = getLastEmotion($email); 
 
 $answer = "Ti ho consigliato questa canzone perchè ";
@@ -301,6 +530,11 @@ return $answer;
 
 //Permette di ottenere dei brani in relazione alle emozioni che si sta provando. Verranno rilevate le più recenti emozioni
 function getMusicByEmotion($resp,$parameters,$text,$email){
+
+	if ($email == '') {
+		return '';
+	}
+
 
 	$api = getApi(); //Api per Spotify
 
@@ -411,7 +645,7 @@ function getMusicByEmotion($resp,$parameters,$text,$email){
 			if (isset($value->external_urls)) {
 
 				foreach ($value->external_urls as $track) {
-					if (strpos($track, 'track')) {
+					if (stripos($track, 'track')) {
 						$listaBrani[] = $track;
 					}
 
@@ -436,6 +670,11 @@ function getMusicByEmotion($resp,$parameters,$text,$email){
 
 
 function  explainCustomMusic($resp,$parameters,$text,$email){
+
+	if ($email == '') {
+		return '';
+	}
+
 
 $eta = getEta($resp,$parameters,$text,$email); //Prendo la data dell'utente
 
@@ -465,6 +704,11 @@ $minutiEffettuati = $valori['abbastanzaAttiva'] + $valori['pocoAttiva'] + $valor
 
 //Permette di ottenere dei brani personalizzati
 function getMusicCustom($resp,$parameters,$text,$email){
+
+	if ($email == '') {
+		return '';
+	}
+
 
 	$api = getApi(); //Api per Spotify
 

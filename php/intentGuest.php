@@ -25,6 +25,8 @@ if(isset($_POST{'city'})){
     $city = $_POST{'city'};
 }
 
+//Email utente anonimo
+$email = "UtenteAnonimo";
 
 
 function detect_intent_texts($projectId,$city,$email, $text, $sessionId, $languageCode = 'it-IT')
@@ -84,21 +86,27 @@ function selectIntent($email,$intent, $confidence,$text,$resp,$parameters,$city)
 
         switch ($intent) {
 
-          
-                
-             case 'meteo binario':
+            case 'Meteo citta':
+        
+            $answer = getCityWeather($parameters,$text);
+            break;
+
+            case 'meteo binario':
              //$city = "Bari";
                 $answer = binaryWeather($city,$parameters,$text);
                 break; 
 
-             case 'Meteo odierno':
-             //$city = "Bari";
-                $answer = getTodayWeather($city,$parameters,$text);
-                break; 
-
-             case 'Previsioni meteo':
+            case 'Meteo':
                //$city = "Bari";
                 $answer = getWeather($city,$parameters,$text);
+                break;
+
+            case 'attiva debug':
+                $answer = $resp;
+                break;
+
+            case 'disattiva debug':
+                $answer = $resp;
                 break;
 
             case 'Default Welcome Intent':
@@ -119,49 +127,11 @@ function selectIntent($email,$intent, $confidence,$text,$resp,$parameters,$city)
     }
 
 
-    //SPOTIFY --> Valori soglia diversi
-    if(($confidence > 0.86 ||  str_word_count($text) >= 2) && $confidence >= 0.50 && ($intent == 'Canzone per nome' || $intent == 'Canzone per artista' || $intent == 'Canzoni in base al genere'
-        ||  $intent == 'Canzone per nome subintent'  || $intent == 'Canzone per artista subintent' || 
-        $intent == 'Canzoni in base al genere subintent' 
-      
-         )){
+     //SPOTIFY --> Valori soglia diversi
+    if(($confidence > 0.86 ||  str_word_count($text) >= 2) && $confidence >= 0.50 && ($intent == 'Musica')){
 
-        switch ($intent) {
-            case 'Canzone per nome':
-                $answer = getMusicByTrack($resp,$parameters,$text,$email);
-                break;
-
-            case 'Canzone per nome subintent':
-                $par = array('music-artist' => $resp);
-                $answer = getMusicByArtist($resp,$par,$text,$email);
-                break;
-
-            case 'Canzone per artista':
-                $answer = getMusicByArtist($resp,$parameters,$text,$email);
-                break;
-
-            case 'Canzone per artista subintent':
-                $par = array('music-artist' =>  $resp);  
-                $answer = getMusicByArtist($resp,$par,$text,$email);
-                break;
-           
-            case 'Canzoni in base al genere':
-                $answer = getMusicByGenre($resp,$parameters,$text,$email);
-                break;
-
-            case 'Canzoni in base al genere subintent':
-                $par  = array('GeneriMusicali' =>  $resp);
-                $answer = getMusicByGenre($resp,$par,$text,$email);
-                break;
-     
-
-            default:
-                  $answer = "Questa funzione è disponibile solo dopo aver effettuato il login a myrror ";
-
-                break;
-        }
+        $answer = getMusic($resp,$parameters,$text,$email);
     }
-
 
     //YOUTUBE --> Valori soglia diversi
     if(($confidence > 0.86 ||  str_word_count($text) >= 2) && $confidence >= 0.50 && ( $intent == 'Ricerca Video'     )){
@@ -178,32 +148,10 @@ function selectIntent($email,$intent, $confidence,$text,$resp,$parameters,$city)
         }
     }
     
-        //GOOGLE-NEWS--> Valori soglia diversi
-    if($confidence >= 0.50  && ($intent == 'Notizie in base ad un argomento' ||  $intent == 'Notizie odierne' || $intent == 'Ricerca articolo'  )){
+    //GOOGLE-NEWS--> Valori soglia diversi
+    if($confidence >= 0.50  && ($intent == 'News')){
 
-        switch ($intent) {
-             case 'Notizie in base ad un argomento':
-                $answer = getNewsTopic($parameters);
-                
-                break;
-
-        
-
-            case 'Notizie odierne':
-                $answer =getTodayNews();   
-              
-                break;
-
-            case 'Ricerca articolo':
-               $answer = cercaNews($parameters);   
-
-                break;  
-
-            default:
-                  $answer = "Questa funzione è disponibile solo dopo aver effettuato il login a myrror ";
-
-                break;
-        }
+        $answer = getNews($parameters,$email,$text);
 
     }
 

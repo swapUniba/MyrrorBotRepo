@@ -666,3 +666,37 @@ body {
 #frame .content .message-input .wrap button:focus {
   outline: none;
 }
+
+
+.rating-box{
+
+height: 80px;
+display: block;
+color: grey; 
+
+}
+
+.btn-yes{
+
+width: 100px;
+height: 50%;
+border-radius: 10px;
+}
+
+.btn-no{
+
+width: 100px;
+left: 100px;
+height: 50%;
+border-radius: 10px;
+}
+#toggle{
+margin-top: 50%;
+margin-left: 40px;
+width: 200px;
+background-color: red;
+height: 40px;
+font-size: 14px;
+border-radius: 8px;
+
+}

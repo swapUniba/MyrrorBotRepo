@@ -31,6 +31,8 @@ e li restituisce come risposta
 function getTodayWeather($city,$parameters,$text){
 
 $json_data = queryWeather($city);
+if($json_data['cod'] != 200)
+  return "";
 $today = date('Y-m-d');
 $result ="" ;
 foreach ($json_data['list'] as $key => $value) {
@@ -92,13 +94,28 @@ foreach ($json_data['list'] as $key => $value) {
           		break;
           }
       $result.= $data.";".$hour.":00;".$temp.";".$condition."<br>";
-       $result .= "<br>";
+      // $result .= "<br>";
      }
    
 	
 }
 
 return $result;
+
+}
+
+function getCityWeather($parameters,$text){
+
+if(isset($parameters['geo-city']) && $parameters['geo-city'] != ""){
+
+$city = $parameters['geo-city'];
+return getWeather($city,$parameters,$text);
+
+}else{
+  return "";
+}
+
+
 
 }
 
@@ -115,14 +132,19 @@ fascia oraria
 */
 function getWeather($city,$parameters,$text){
 
+if (isset($parameters['geo-city']) && $parameters['geo-city'] != "") {
+  $city = $parameters['geo-city'];
+}
+
 if(isset($parameters['date']) && $parameters['date'] != ""){
 $date = substr($parameters['date'],0,10);
-}elseif(isset($parameters['date-period']) && isset($parameters['date-period']) != ""){
+}elseif(isset($parameters['date-period']['startDate']) && isset($parameters['date-period']['startDate']) != ""){
 
 $date1 = substr($parameters['date-period']['startDate'],0,10);
 $date2 = substr($parameters['date-period']['endDate'],0,10);
 $json_data = queryWeather($city);
-
+if($json_data['cod'] != 200)
+  return "";
 $result ="" ;
 $i = 0;
 foreach ($json_data['list'] as $key => $value) {
@@ -192,17 +214,20 @@ foreach ($json_data['list'] as $key => $value) {
 }
 
 
-  return $result;
+  return array('res'=>$result,'city'=>$city);
  
 
-}else{
+}elseif(stripos($text,"odiern") !== false ){
 
-  //prendiamo la data di domani di default se non ci sono dati
+$date = date('Y-m-d');
+}else{
+//prendiamo la data di domani di default se non ci sono dati
 $date = date('Y-m-d',strtotime("+1days")); 
 }
 
 $json_data = queryWeather($city);
-
+if($json_data['cod'] != 200)
+  return "";
 $result ="" ;
 foreach ($json_data['list'] as $key => $value) {
     $data = substr($value['dt_txt'], 0,10);
@@ -259,7 +284,7 @@ foreach ($json_data['list'] as $key => $value) {
 	
 }
 
-return $result;
+return array('res'=>$result,'city'=>$city);
 
 
 }
@@ -286,6 +311,8 @@ $date = date('Y-m-d');
 }
 
 $json_data = queryWeather($city);
+if($json_data['cod'] != 200)
+  return "";
 $answer ="" ;
 $arr = array();
 

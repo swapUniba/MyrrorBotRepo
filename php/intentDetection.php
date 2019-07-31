@@ -78,6 +78,8 @@ function detect_intent_texts($projectId,$city,$email, $text, $sessionId, $langua
         $arr = array('intentName' => "Non identificato", 'confidence' => "0",'answer' => $answer);
         printf(json_encode($arr,JSON_UNESCAPED_UNICODE));  //JSON_UNESCAPED_UNICODE utilizzato per il formato UTF8
 
+
+
     }
     
     $sessionsClient->close();
@@ -215,9 +217,22 @@ function selectIntent($email,$intent, $confidence,$text,$resp,$parameters,$city)
                 $answer = getTodayWeather($city,$parameters,$text);
                 break; 
 
-             case 'Previsioni meteo':
+            case 'Meteo citta':
+            
+                $answer = getCityWeather($parameters,$text);
+                break;
+
+             case 'Meteo':
                //$city = "Bari";
                 $answer = getWeather($city,$parameters,$text);
+                break;
+
+            case 'attiva debug':
+                $answer = $resp;
+                break;
+
+            case 'disattiva debug':
+                $answer = $resp;
                 break;
 
             default:
@@ -236,83 +251,9 @@ function selectIntent($email,$intent, $confidence,$text,$resp,$parameters,$city)
 
 
     //SPOTIFY --> Valori soglia diversi
-    if(($confidence > 0.86 ||  str_word_count($text) >= 2) && $confidence >= 0.50 && ($intent == 'Canzone per nome' || $intent == 'Canzone per artista' || $intent == 'Canzoni in base al genere' || $intent == 'Playlist di canzoni in base alle emozioni' || $intent == 'Canzoni in base alle emozioni' || $intent == 'Canzoni personalizzate'  
-        ||  $intent == 'Canzone per nome subintent'  || $intent == 'Canzone per artista subintent' || 
-        $intent == 'Canzoni in base al genere subintent' || $intent=='Playlist di canzoni in base alle emozioni subintent'
-        || $intent == 'Canzoni in base alle emozioni subintent' || $intent == 'Canzoni personalizzate subintent' 
-        || $intent == 'Canzoni in base alle emozioni spiegazione' || $intent == 'Canzoni personalizzate spiegazione'
-        || $intent == 'Playlist di canzoni in base alle emozioni spiegazione'  )){
+    if(($confidence > 0.86 ||  str_word_count($text) >= 2) && $confidence >= 0.50 && ($intent == 'Musica')){
 
-        switch ($intent) {
-            case 'Canzone per nome':
-                $answer = getMusicByTrack($resp,$parameters,$text,$email);
-                break;
-
-            case 'Canzone per nome subintent':
-                $par = array('music-artist' => $resp);
-                $answer = getMusicByArtist($resp,$par,$text,$email);
-                break;
-
-            case 'Canzone per artista':
-                $answer = getMusicByArtist($resp,$parameters,$text,$email);
-                break;
-
-            case 'Canzone per artista subintent':
-                $par = array('music-artist' =>  $resp);  
-                $answer = getMusicByArtist($resp,$par,$text,$email);
-                break;
-           
-            case 'Canzoni in base al genere':
-                $answer = getMusicByGenre($resp,$parameters,$text,$email);
-                break;
-
-            case 'Canzoni in base al genere subintent':
-                $par  = array('GeneriMusicali' =>  $resp);
-                $answer = getMusicByGenre($resp,$par,$text,$email);
-                break;
-
-            case 'Playlist di canzoni in base alle emozioni':
-                $answer = getPlaylistByEmotion($resp,$parameters,$text,$email);
-                break;
-
-            case 'Playlist di canzoni in base alle emozioni spiegazione':
-                $answer = explainMusicEmotion($resp,$parameters,$text,$email);
-                break;
-
-
-            case 'Playlist di canzoni in base alle emozioni subintent':
-                $answer = getPlaylistByEmotion($resp,$parameters,$text,$email);
-                break;
-
-            case 'Canzoni in base alle emozioni':
-                $answer = getMusicByEmotion($resp,$parameters,$text,$email);
-                break;
-
-            case 'Canzoni in base alle emozioni spiegazione':
-                $answer =  explainMusicEmotion($resp,$parameters,$text,$email);
-                break;
-
-            case 'Canzoni in base alle emozioni subintent':
-                $answer = getMusicByEmotion($resp,$parameters,$text,$email);
-                break;
-
-            case 'Canzoni personalizzate':
-                $answer = getMusicCustom($resp,$parameters,$text,$email);
-                break;
-
-            case 'Canzoni personalizzate subintent':
-                $answer = getMusicCustom($resp,$parameters,$text,$email);
-                break;
-
-
-            case 'Canzoni personalizzate spiegazione':
-                $answer = explainCustomMusic($resp,$parameters,$text,$email);
-                break;
-
-            default:
-                $answer = "Purtroppo non ho capito la domanda. Prova a rifarla con altre parole! Devo ancora imparare molte cose &#x1F605;";
-                break;
-        }
+        $answer = getMusic($resp,$parameters,$text,$email);
     }
 
 
@@ -323,9 +264,7 @@ function selectIntent($email,$intent, $confidence,$text,$resp,$parameters,$city)
                 $answer = getVideoByEmotion($resp,$parameters,$text,$email);
                 break;
 
-             case 'Video in base alle emozioni subintent':
-                $answer = explainVideo($email);
-                break;
+         
 
             case 'Ricerca Video':
                 $answer = getVideoBySearch($resp,$parameters,$text,$email);
@@ -337,37 +276,10 @@ function selectIntent($email,$intent, $confidence,$text,$resp,$parameters,$city)
         }
     }
     
-        //GOOGLE-NEWS--> Valori soglia diversi
-    if($confidence >= 0.50  && ($intent == 'Notizie in base ad un argomento' || $intent == 'Notizie in base agli interessi' || $intent == 'Notizie odierne' || $intent == 'Ricerca articolo' || $intent == 'Notizie in base agli interessi subintent' )){
+    //GOOGLE-NEWS--> Valori soglia diversi
+    if($confidence >= 0.50  && ($intent == 'News')){
 
-        switch ($intent) {
-             case 'Notizie in base ad un argomento':
-                $answer = getNewsTopic($parameters);
-                
-                break;
-
-            case 'Notizie in base agli interessi':
-               $answer = getInterestsNews($email);
-                break;
-
-            case 'Notizie in base agli interessi subintent':
-               $answer = explainNews($email);
-                break;
-
-            case 'Notizie odierne':
-                $answer =getTodayNews();   
-              
-                break;
-
-            case 'Ricerca articolo':
-               $answer = cercaNews($parameters);   
-
-                break;  
-
-            default:
-                $answer = "Purtroppo non ho capito la domanda. Prova a rifarla con altre parole! Devo ancora imparare molte cose &#x1F605;";
-                break;
-        }
+        $answer = getNews($parameters,$email,$text);
 
     }
 
@@ -376,10 +288,13 @@ function selectIntent($email,$intent, $confidence,$text,$resp,$parameters,$city)
 
     if ($arr['intentName'] == 'Canzone per nome') {
         printf(json_encode($arr)); //JSON_UNESCAPED_UNICODE utilizzato per il formato UTF8
+
+
     }else{
      echo json_encode($arr); //JSON_UNESCAPED_UNICODE utilizzato per il formato UTF8
        // printf(json_encode($arr,JSON_UNESCAPED_UNICODE)); //JSON_UNESCAPED_UNICODE utilizzato per il formato UTF8
     }
+
 }
 
 //date_default_timezone_set('Europe/Madrid'); //Imposto la stessa timezone di Dialogflow (per gli orari)

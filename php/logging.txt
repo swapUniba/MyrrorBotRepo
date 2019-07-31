@@ -1,0 +1,68 @@
+﻿
+
+time: 1564132987
+user: cat@cat.it
+domanda: Come mi chiamo
+s:84:"  {"intentName":"Identita utente","confidence":1,"answer":"Ti chiami Cataldo Musto"}";
+rate:No
+
+time: 1564133008
+user: cat@cat.it
+domanda: Quali sono i miei interessi
+s:152:"  {"intentName":"Interessi","confidence":1,"answer":"I tuoi interessi sono relativi agli argomenti su recsys,  recsys2017,  holistic,  aiforum,  Milan"}";
+rate:Si
+
+time: 1564133023
+user: cat@cat.it
+domanda: Consigliami delle news
+s:430:"  {"intentName":"News","confidence":1,"answer":{"link":"https:\/\/newsapi.org\/v2\/everything?q=recsys&sortBy=publishedAt&apiKey=17c1953c3cc7450d958ff14f9e262c02","url":"https:\/\/nlppeople.com\/job\/research-scientist-language-technologies\/","image":"https:\/\/s0.wp.com\/i\/blank.jpg","title":"Research Scientist \u2013 Language Technologies","explain":"Ti ho consigliato questo articolo perch\u00e8 sei interessato a recsys"}}";
+rate:No
+
+time: 1564133142
+user: cat@cat.it
+domanda: Come mi chiamo
+s:93:"  {"intentName":"Identita utente","confidence":1,"answer":"Il tuo nome \u00e8 Cataldo Musto"}";
+rate:No
+
+time: 1564133151
+user: cat@cat.it
+domanda: Come mi chiamo
+s:84:"  {"intentName":"Identita utente","confidence":1,"answer":"Ti chiami Cataldo Musto"}";
+rate:Si
+
+time: 1564133790
+user: cat@cat.it
+domanda: Come mi chiamo
+s:84:"  {"intentName":"Identita utente","confidence":1,"answer":"Ti chiami Cataldo Musto"}";
+rate:Si
+
+time: 1564567158
+user: cat@cat.it
+domanda: Vorrei una playlist allegra
+s:166:""  {"intentName":"Musica","confidence":0.7774253,"answer":{"param":"Party","url":"https:\/\/open.spotify.com\/embed\/playlist\/37i9dQZF1DX0nBLMN0XzSQ","explain":""}}"";
+rate:si
+
+time: 1564567181
+user: cat@cat.it
+domanda: Sono una persona introversa?
+s:97:""  {"intentName":"Personalita binario","confidence":1,"answer":"No, sei estroverso ed energico"}"";
+rate:si
+
+time: 1564567282
+user: cat@cat.it
+domanda: Quanti anni ha mio padre
+s:185:""  {"intentName":"Eta","confidence":0.6427102,"answer":"Non sono riuscito a reperire le informazioni relative alla tua data di nascita 😭. Verifica che sia presente nel tuo account"}"";
+rate:no
+
+time: 1564567363
+user: cat@cat.it
+domanda: Sono un mammifero
+s:172:""  {"intentName":"Non identificato","confidence":"0","answer":"Purtroppo non ho capito la domanda. Prova a rifarla con altre parole! Devo ancora imparare molte cose 😅"}"";
+rate:no
+
+time: 1564567942
+user: cat@cat.it
+domanda: Come mi chiamo?
+s:95:""  {"intentName":"Identita utente","confidence":1,"answer":"Il tuo nome \u00e8 Cataldo Musto"}"";
+rate:si
+

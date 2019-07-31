@@ -1,9 +1,20 @@
 $(".messages").animate({ scrollTop: $(document).height() }, "fast");
+var timestamp;
+var imageURL;
+var email;
+
+function getEmail() {
+	return email;
+}
+
+function getTimestampStart(){
+  return timestampStart;
+}
 
   $("#profile-img").click(function() {
   	$("#status-options").toggleClass("active");
   });
-
+/*
   $(".expand-button").click(function() {
     $("#profile").toggleClass("expanded");
   	$("#contacts").toggleClass("expanded");
@@ -32,34 +43,61 @@ $(".messages").animate({ scrollTop: $(document).height() }, "fast");
   	$("#status-options").removeClass("active");
   });
 
+
+   $("#toggle").unbind().click(function(){
+
+var text = $(this).html();
+if (text == "Disattiva modalità di debug"){
+    $(this).css("background-color","red");
+  $(this).html("Attiva modalità di debug");
+  debug = false;
+}else{
+  $(this).css("background-color","green");
+  $(this).html("Disattiva modalità di debug");
+  debug = true;
+}
+//$(this).attr("disabled", true);
+
+});
+   */
+
   function newMessage() {
   	message = $(".message-input input").val();
   	if($.trim(message) == '') {
   		return false;
-  	}
+  	}else{
+  		 timestamp = new Date().getUTCMilliseconds();
+      
+      timestampStart = Date.now();//Utente invia il messaggio
 
-  	$('<li class="sent"><img src="immagini/user.png" alt="" /><p>' + message + '</p></li>').appendTo($('.messages ul'));
+  	$('<li class="sent"><img src="'+imageURL+'" alt="" /><p id="quest'+timestamp+'"">' + message + '</p></li>').appendTo($('.messages ul'));
   	$('.message-input input').val(null);
   	$('.contact.active .preview').html('<span>Tu: </span>' + message);
 
     //Scroll verso il basso quando viene inviata una domanda
-  	$(".messages").animate({ scrollTop:( $(document).height() * 10)}, "fast");
+  	$(".messages").animate({ scrollTop:( $(document).height() * 100)}, "fast");
 
     return message;
+  	}
+
+   
   };
 
    
 
-  //Quando viene cliccato il tasto sullo schermo per inviare
-  $('.submit').click(function() {
-    let query = newMessage();
+
+  $(document).on("click", "button.submit", function () {
+   //all the action
+   $('button.submit').off('click');
+     var  query = newMessage();
     if (query == false) {
       return false;
     }else{
       send(query);
+       return true;
     }
-
-  });
+   
+});
 
   //Quando viene premuto 'invio' sulla tastiera
   $(window).on('keydown', function(e) {
@@ -70,45 +108,73 @@ $(".messages").animate({ scrollTop: $(document).height() }, "fast");
       return false;
     }
   });
- 
+
  function send(query) {
       var text = query;
+
+      
       var citta = getCity();
       var name = "myrror";
 
-    var value = "; " + document.cookie;
+      var value = "; " + document.cookie;
 if (value.match(/myrror/)) {
-    var parts = value.split("; " + name + "=");   
-    var tempStr = null;
-   while(tempStr == null){
-    tempStr =  parts.pop().split(";").shift();
-     if(tempStr.match(/@/)){
-        //alert(tempStr);
-     }
-   }
+      var parts = value.split("; " + name + "=");   
+      var tempStr = null;
+      while(tempStr == null){
+        tempStr =  parts.pop().split(";").shift();
+        if(tempStr.match(/@/)){
+          //alert(tempStr);
+        }
+      }  
 
 }else{
   window.location.href = 'index.html';
 }
   
    
-    var email = tempStr;
+    email = tempStr;
+   
+    if(text.match(/perchè/) || text.match(/spiegami/)){
+         var testo = $("#spiegazione").val();
+          $(".chat").append('<li class="replies"><img src="immagini/chatbot.png" alt="" /><p >'+testo+'</p></li>');
+   
+    }else{
+       
   
 
+    if (text.match(/cambia/) || text.match(/cambio/) || text.match(/dammi un'altra/) || text.match(/leggi un'altra/) || text.match(/dammene un'altra/)
+      || text.match(/leggine un'altra/) || text.match(/leggi altra news/) || text.match(/altra canzone/) || text.match(/dimmi un'altra/) || text.match(/riproducine un'altra/)
+      || text.match(/cambia video/) || text.match(/fammi vedere un altro/) || text.match(/dammi un altro/) || text.match(/altro video/) || text.match(/altra canzone/) || text.match(/altra news/)) {
 
-          $.ajax({
-        type: "POST",
-        url: "php/intentDetection.php",
-        data: {testo:text,city:citta,mail:email},
-        success: function(data) {
-          setResponse(data);
-        }
-      });
+      text = $('#contesto').val();
+    }else{
+      $('#contesto').val(text);
+    }
+
+    $.ajax({
+              type: "POST",
+              url: "php/intentDetection.php",
+              data: {testo:text,city:citta,mail:email},
+              success: function(data) {
+                setResponse(data);
+              }
+            });
+    }
+         
   }
 
 function setResponse(val) {
+var string = val;
       console.log(val);
-      val = JSON.parse(val);
+    
+      if (/^[\],:{}\s]*$/.test(val.replace(/\\["\\\/bfnrtu]/g, '@').
+replace(/"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g, ']').
+replace(/(?:^|:|,)(?:\s*\[)+/g, ''))) {
+
+  //the json is ok
+ val = JSON.parse(val);
+    var musicaSpotify = "Ecco qui la tua richiesta!";
+      var spiegazione = "";
 
       var canzoneNomeSpotify = "Ecco qui la canzone richiesta!";
       var canzoneArtistaSpotify = "Ecco qui la canzone dell'artista richiesto!";
@@ -120,50 +186,60 @@ function setResponse(val) {
 
       if (val["intentName"] == "Interessi" || val["intentName"] == "Contatti" || val["intentName"] == "Esercizio fisico" || val["intentName"] == "Personalita") {
        
-         $(".chat").append('<li class="replies"><img src="immagini/chatbot.png" alt="" /><p>' + val["answer"] + '</p></li>');
+         $(".chat").append('<li class="replies"><img src="immagini/chatbot.png" alt="" /><p id="par'+timestamp+'">' + val["answer"] + '</p></li>');
 
-      }else if(val['intentName'] == "Canzone per nome"  || val['intentName'] == "Canzone per nome subintent"){
-        
-        $(".chat").append('<li class="replies"><img src="immagini/chatbot.png" alt="" /><p>' + canzoneNomeSpotify + '&#x1F603;' +'<br>'+ '<iframe src="' + val['answer'] + '" width="250" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe></p></li>');
-      
-      }else if(val['intentName'] == "Canzone per artista" || val['intentName'] == "Canzone per artista subintent"){
-
-        $(".chat").append('<li class="replies"><img src="immagini/chatbot.png" alt="" /><p>' + canzoneArtistaSpotify + '&#x1F603;' +'<br>'+ '<iframe src="' + val['answer'] + '" width="250" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe></p></li>');
-
-      }else if(val['intentName'] == "Canzoni in base al genere" || val['intentName'] == "Canzoni in base al genere subintent"){
-
-        $(".chat").append('<li class="replies"><img src="immagini/chatbot.png" alt="" /><p>' + canzoneGenereSpotify + '&#x1F603;' +'<br>'+ '<iframe src="' + val['answer'] + '" width="250" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe></p></li>');
-
-      }else if(val['intentName'] == "Playlist di canzoni in base alle emozioni" || val['intentName'] == "Playlist di canzoni in base alle emozioni subintent"){
-      
-        $(".chat").append('<li class="replies"><img src="immagini/chatbot.png" alt="" /><p>' + playlistEmozioniSpotify + '&#x1F603;' +'<br>'+ '<iframe src="' + val['answer'] + '" width="250" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe></p></li>');
-
-      }else if(val['intentName'] == "Canzoni in base alle emozioni" || val['intentName'] == "Canzoni in base alle emozioni subintent"){
-
-        $(".chat").append('<li class="replies"><img src="immagini/chatbot.png" alt="" /><p>' + canzoneEmozioniSpotify + '&#x1F603;' +'<br>'+ '<iframe src="' + val['answer'] + '" width="250" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe></p></li>');
-
-      }else if(val['intentName'] == "Canzoni personalizzate" || val['intentName'] == "Canzoni personalizzate subintent" ){
-        
-        $(".chat").append('<li class="replies"><img src="immagini/chatbot.png" alt="" /><p>' + canzoniPersonalizzateSpotify + '&#x1F603;' +'<br>'+ '<iframe src="' + val['answer'] + '" width="250" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe></p></li>');
-
-      }else if(val["intentName"] == "Notizie in base ad un argomento" || val["intentName"] == "Notizie in base agli interessi" || val["intentName"] == "Notizie odierne"  || val["intentName"] == "Ricerca articolo" ){
-                                    
-        $(".chat").append('<li class="replies"><img src="immagini/chatbot.png" alt="" /><p><img style="width: 100%;height: 100%;" src= "'+val['answer']['image']+'"/><a href="'+val['answer']['url']+'">'+val["answer"]['title']+'</a></p></li>');
+      }else if(val["intentName"] == "attiva debug"){
+        	setDebug(true);
+        	  $(".chat").append('<li class="replies"><img src="immagini/chatbot.png" alt="" /><p >'+val["answer"]+'</p></li>');
    
+      }else if(val["intentName"] == "disattiva debug"){
+            setDebug(false);
+              $(".chat").append('<li class="replies"><img src="immagini/chatbot.png" alt="" /><p >'+val["answer"]+'</p></li>');
+   
+      }else if(val['intentName'] == "Musica"){
+        
+        if (val['answer']['explain'] != ""){
+          spiegazione = val['answer']['explain'];
+          $("#spiegazione").val(spiegazione);
+          //$(".chat").append('<li class="replies"><img src="immagini/chatbot.png" alt="" /><p id="par'+timestamp+'"> "<br>"' + musicaSpotify + '&#x1F603;' +'<br>'+ '<iframe src="' + val['answer']['url'] + '" width="250" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe></p></li>');
+        }
+          $(".chat").append('<li class="replies"><img src="immagini/chatbot.png" alt="" /><p id="par'+timestamp+'">'+ musicaSpotify + '&#x1F603;' +'<br>'+ '<iframe src="' + val['answer']['url'] + '" width="250" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe></p></li>');
+        
+      }else if(val["intentName"] == "News" ){
+
+
+          if (val['answer'] == ""){
+              $(".chat").append('<li class="replies"><img src="immagini/chatbot.png" alt="" /><p> sfortunatamente non sono stati trovati articoli a riguardo</p></li>');
+         }else{
+            if (val['answer']['explain'] != undefined && val['answer']['explain'] != null){
+              spiegazione = val['answer']['explain'];
+              $("#spiegazione").val(spiegazione);
+             // $(".chat").append('<li class="replies"><img src="immagini/chatbot.png" alt="" /><p id="par'+timestamp+'"> ' + spiegazione + '<br><img style="width: 100%;height: 100%;" src= "'+val['answer']['image']+'"/><a href="'+val['answer']['url']+'">'+val["answer"]['title']+'</a></p></li>');
+
+            }
+              $(".chat").append('<li class="replies"><img src="immagini/chatbot.png" alt="" /><p id="par'+timestamp+'"><img style="width: 100%;height: 100%;" src= "'+val['answer']['image']+'"/><a href="'+val['answer']['url']+'">'+val["answer"]['title']+'</a></p></li>');
+            
+         }                 
+       
       }else if(val["intentName"] == "Video in base alle emozioni" || val["intentName"] == "Ricerca Video"){
 
-          $(".chat").append('<li class="replies"><img src="immagini/chatbot.png" alt="" /><p>' + video + ' &#x1F603; <br>' +'<iframe id="ytplayer" type="text/html" width="260" height="260" src="' + val['answer'] + '" frameborder="0" allowfullscreen/></iframe></p></li>');
 
-      }else if(val["intentName"] == "Meteo odierno" || val["intentName"] == "Previsioni meteo"){
-          var json = val['answer'];
-
+          $(".chat").append('<li class="replies"><img src="immagini/chatbot.png" alt="" /><p id="par'+timestamp+'">' + video + ' &#x1F603; <br>' +'<iframe id="ytplayer" type="text/html" width="260" height="260" src="' + val['answer']['ind'] + '" frameborder="0" allowfullscreen/></iframe></p></li>');
+           if (val['answer']['explain'] != undefined && val['answer']['explain'] != null){
+               $('#spiegazione').val(val['answer']['explain']);
+         
+           }
+          
+      }else if((val["intentName"] == "Meteo" ) && val['confidence'] > 0.60 ){
+        var json = val['answer']['res'];
+       
            if( json == ""){
-          $(".chat").append('<li class="replies"><img src="immagini/chatbot.png" alt="" /><p>sfortunatamente non sono disponibili dati riguardanti il periodo indicato</p></li>');
+          $(".chat").append('<li class="replies"><img src="immagini/chatbot.png" alt="" /><p >Sfortunatamente non sono disponibili dati riguardanti il periodo indicato</p></li>');
       
            }else{
               var res = json.split("<br>");
            var str = res[0].split(";");
-            var timestamp = new Date().getUTCMilliseconds();
+         
             var imglink = "";
 
             switch(str[3]){
@@ -213,10 +289,10 @@ function setResponse(val) {
             }
 
            $(".chat").append(//'<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>'+
-            '<li class="replies"><img src="immagini/chatbot.png" alt="" /><p><div class="container">'+
+            '<li id="par'+timestamp+'" class="replies"><img src="immagini/chatbot.png" alt="" /><p ><div class="container">'+
             '<div class="forecast-container" id= "f'+timestamp+'"><div class="today forecast">'+
             '<div class="forecast-header"><div class="day">'+str[0]+'</div></div>'+
-            '<div class="forecast-content"><div class="location">'+getCity()+' Ore '+str[1]+'</div><div class="degree">'+
+            '<div class="forecast-content"><div class="location">'+ val['answer']['city']+' Ore '+str[1]+'</div><div class="degree">'+
             '<div class="num">'+Math.trunc( str[2])+'<sup>o</sup>C</div><div class="forecast-icon">'+
             '<img src="immagini/icons/'+imglink+'" alt="" style="width:90px;"> </div></div>'+
             '</div></div></div> </p></div></li>'
@@ -278,23 +354,34 @@ function setResponse(val) {
               '</div><div class="forecast-content"> <div class="forecast-icon">'+
               '<img src="immagini/icons/'+imglink+'" alt="" style="width:40px;"></div>'+
               '<div class="degree">'+Math.trunc( str[2] )+'<sup>o</sup>C</div></div></div>');
-
              
-          } 
-           }
-                   
-    
- 
-      
-
-      }else {
-
-        $(".chat").append('<li class="replies"><img src="immagini/chatbot.png" alt="" /><p>' + val["answer"] + '</p></li>');
-      
+            } 
+          }
+        }else {
+          $(".chat").append('<li class="replies"><img src="immagini/chatbot.png" alt="" /><p id="par'+timestamp+'">' + val["answer"] + '</p></li>');
       }
 
+      if(val['intentName'] == "Default Welcome Intent"){
+      
+      }else if(isDebugEnabled()){
+         $('#par'+timestamp).append('<div class="rating-box"><h4>Sei soddisfatto della risposta?</h4><button id="yes'+timestamp+'" class="btn-yes">SI</button>'+
+        '<button id="no'+timestamp+'" class="btn-no">NO</button></div>');
+     
       //Scroll verso il basso quando viene ricevuta una risposta
-           $(".messages").animate({ scrollTop:( $(document).height() * 10)  }, "fast");
+        $(".chat").append('<p hidden id="hide'+timestamp+'" >"'+string+'"<p/>');
+      }
+
+}else{
+
+  //the json is not ok
+    $(".chat").append('<li class="replies"><img src="immagini/chatbot.png" alt="" /><p >Non ho capito cosa vuoi dire. Prova a riformulare la tua domanda!</p></li>');
+      
+
+}
+
+       $(".messages").animate({ scrollTop:( $(document).height() * 100)  }, "fast");
+      
+    //$(".chat").append('<p  id="hide'+timestamp+'" hidden> "'+quest+'"<p/>');
     }
 
     //Intent avviato all'inizio del dialogo per mostrare la frase di benvenuto e per impostare il nome dell'utente nella schermata
@@ -315,27 +402,22 @@ if (value.match(/myrror/)) {
   window.location.href = 'index.html';
 }
 setProfileImg(tempStr);
-
-      setNominativo(tempStr); //Nome per la grafica del sito
+setNominativo(tempStr); //Nome per la grafica del sito
       
       
     }
 
       function setProfileImg(email){
     
-
-
           $.ajax({
         type: "POST",
         url: "php/getProfileImage.php",
         data: {mail:email},
         success: function(data) {
-          var imageURL = data;
+          imageURL = data;
           $('#profile-img').attr('src',imageURL);
         }
       });
-
-     
 
 }
 
@@ -351,6 +433,5 @@ setProfileImg(tempStr);
         }
       });
     }
-
 
 

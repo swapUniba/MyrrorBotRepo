@@ -8,7 +8,8 @@ Se viene trovato almeno un articolo della categoria scelta il suo
 URL verrà restituito , altrimenti viene restituito un messaggio d'errore
 */
 function getNewsTopic($parameters){
-
+$arr  = array('','','');
+$list = array();
 $link = "https://newsapi.org/v2/top-headlines?country=it&category=";
 $apiKey = "&apiKey=17c1953c3cc7450d958ff14f9e262c02";
 $val = "";
@@ -32,7 +33,7 @@ if ($parameters['Sports'] != null) {
 	$val = $parameters['Business'];
 	$link .= "Business&q=".$val. $apiKey;
 }else{
-	return "nessun articolo trovato";
+	return "";
 }
 
 
@@ -41,17 +42,28 @@ $json = googleNewsQuery($link);
 $url = "";
 
 if(!isset($json['articles'] ))
-   return "nessun articolo trovato";
+   return "";
 
 foreach ($json['articles'] as $key => $value) {
 	$url = $value['url'];
 	$image = $value['urlToImage'];
 	$title = $value['title'];
-    if($url != "")
-	return array('url' => $url,'image' => $image, 'title' => $title );
+   if($url != ""){
+     $arr[0] = $url;
+	 $arr[1] = $image;
+	 $arr[2] = $title;
+	 array_push($list, $arr);
+	
+    }
+
+	    if (count($list) == 30) {
+    	$i = rand(0,9);
+    	$arr = $list[$i];
+    	return array('link' => $link,'url' => $arr[0],'image' => $arr[1], 'title' => $arr[2] );
+        }
 }
 
-if($url == ""){
+if(count($list) == 0){
 $every= "https://newsapi.org/v2/everything?q=".$val
 ."&language=it&sortBy=publishedAt&apiKey=17c1953c3cc7450d958ff14f9e262c02";
 $json = googleNewsQuery($every);
@@ -59,13 +71,28 @@ foreach ($json['articles'] as $key => $value) {
 	$url = $value['url'];
 	$image = $value['urlToImage'];
 	$title = $value['title'];
-    if($url != "")
-	return array('url' => $url,'image' => $image, 'title' => $title );
+      if($url != ""){
+     $arr[0] = $url;
+	 $arr[1] = $image;
+	 $arr[2] = $title;
+	 array_push($list, $arr);
+	
+    }
+
+	    if (count($list) == 30) {
+    	$i = rand(0,9);
+    	$arr = $list[$i];
+    	return array('link' => $link,'url' => $arr[0],'image' => $arr[1], 'title' => $arr[2] );
+        }
 }
 
-if($url = "")
-	return "sfortunatamente non sono stati trovati articoli";
+if($url == "")
+	return "";
 
+}else{
+	$i = rand(0,count($list)-1);
+    $arr = $list[$i];
+    	return array('link' => $link,'url' => $arr[0],'image' => $arr[1], 'title' => $arr[2] );
 }
 
 }
@@ -79,7 +106,8 @@ viene restituito l'url altrimenti un messaggio d'errore
 
 function getInterestsNews($email){
 
-
+$arr  = array('','','','');
+$articles = array();
 $list = getInterestsList($email);
 //echo $list[0];
 foreach ($list as $key => $value){
@@ -89,19 +117,40 @@ foreach ($list as $key => $value){
 	$json = googleNewsQuery($link);
 	
 	if(!isset($json['articles'] ))
-        return "nessun articolo trovato";
+        return "";
 
 
 	if($json['totalResults'] != 0){
-		foreach ($json['articles'] as $key => $value) {
+		foreach ($json['articles'] as $key2 => $value) {
 			$image = $value['urlToImage'];
 	        $title = $value['title'];
 		    $url =  $value['url'];
-			return array('url' => $url,'image' => $image, 'title' => $title );
-			
+	        if($url != ""){
+              $arr[0] = $url;
+	          $arr[1] = $image;
+	          $arr[2] = $title;
+	          $arr[3] = "Ti ho consigliato questo articolo perchè sei interessato a ".$key;
+	          array_push($articles, $arr);
+
+            }
+		    if (count($articles) == 10) {
+    	       $i = rand(0,9);
+    	       $arr = $articles[$i];
+        	   return array('link' => $link,'url' => $arr[0],'image' => $arr[1], 'title' => $arr[2],'explain' => $arr[3] );
+            }
 		}
 		
 	}
+if(count($articles) == 0){
+	return "";
+
+}else{
+	//print_r($articles);
+    $i = rand(0,count($articles)-1);
+    $arr = $articles[$i];
+    return array('link' => $link,'url' => $arr[0],'image' => $arr[1], 'title' => $arr[2],'explain' => $arr[3] );
+}
+
     
 }
 
@@ -158,23 +207,43 @@ in output
 
 function getTodayNews(){
 
-	$link = "https://newsapi.org/v2/top-headlines?country=it&apiKey=17c1953c3cc7450d958ff14f9e262c02";
-	$json = googleNewsQuery($link);
+$arr  = array('','','');
+$list = array();
+$link = "https://newsapi.org/v2/top-headlines?country=it&apiKey=17c1953c3cc7450d958ff14f9e262c02";
+$json = googleNewsQuery($link);
 $url = "";
 
 if(!isset($json['articles'] ))
-   return "nessun articolo trovato";
+   return "";
 
 foreach ($json['articles'] as $key => $value) {
 	$url = $value['url'];
 	$image = $value['urlToImage'];
 	$title = $value['title'];
-    if($url != "")
-	return array('url' => $url,'image' => $image, 'title' => $title );
+    if($url != ""){
+     $arr[0] = $url;
+	 $arr[1] = $image;
+	 $arr[2] = $title;
+	 array_push($list, $arr);
+
+	 
+    }
+	    if (count($list) == 30) {
+    	$i = rand(0,9);
+    	$arr = $list[$i];
+    	return array('link' => $link,'url' => $arr[0],'image' => $arr[1], 'title' => $arr[2] );
+    }
 }
 
-if($url = "")
-	return "nessun articolo trovato";
+if(count($list) == 0){
+	return "";
+
+}else{
+	
+    $i = rand(0,count($list)-1);
+    $arr = $list[$i];
+    return array('link' => $link,'url' => $arr[0],'image' => $arr[1], 'title' => $arr[2] );
+}
 
 }
 /*
@@ -187,6 +256,8 @@ metodo getTodayNews
 */
 function cercaNews($parameters){
 
+$arr  = array('','','');
+$list = array();
 if(isset($parameters['any'])){
 $val = $parameters['any'];	
 $val = str_replace(' ', '%20', $val);
@@ -195,17 +266,34 @@ $link = "https://newsapi.org/v2/everything?q=".$val.
 $json = googleNewsQuery($link);
 
 if(!isset($json['articles'] ))
-   return "nessun articolo trovato";
+   return "";
 
 foreach ($json['articles'] as $key => $value) {
 	$url = $value['url'];
 	$image = $value['urlToImage'];
 	$title = $value['title'];
-    if($url != "")
-	  return array('url' => $url,'image' => $image, 'title' => $title );
+	
+    if($url != ""){
+     $arr[0] = $url;
+	 $arr[1] = $image;
+	 $arr[2] = $title;
+	 array_push($list, $arr);
+	 
+    }
+
+    if (count($list) == 30) {
+    	$i = rand(0,9);
+    	$arr = $list[$i];
+    	 return array('link' => $link,'url' => $arr[0],'image' => $arr[1], 'title' => $arr[2] );
+    }
 }
-if($url = "")
+if(count($list) == 0){
 	return getTodayNews();
+}else{
+    $i = rand(0,count($list)-1);
+    $arr = $list[$i];
+    return array('link' => $link,'url' => $arr[0],'image' => $arr[1], 'title' => $arr[2] );
+}
 
 }else{
 	return getTodayNews();
@@ -230,6 +318,31 @@ $result = json_decode($server_output,true);
 curl_close ($ch);
 
 return $result;
+
+}
+
+function getNews($parameters,$email,$text){
+
+if ($parameters['Sports'] != null || $parameters['Health'] != null || $parameters['Science'] != null ||
+ $parameters['Entertainment'] != null || $parameters['Technology'] != null || $parameters['Business'] != null ) {	
+	$answer = getNewsTopic($parameters);
+}elseif($parameters['any'] != null ){
+    $answer = cercaNews($parameters);
+}elseif (stripos($text, 'oggi') !== false || stripos($text, 'odierne') !== false || stripos($text, 'quotidiane')  ||
+ stripos($text, 'ultime')  !== false ){
+	$answer = getTodayNews();
+}elseif (stripos($text, 'interessi') !== false || stripos($text, 'consigliami') !== false || 
+	stripos($text, 'interessano') !== false || stripos($text, 'interessano') !== false) {
+
+	if ($email == '') {
+		return '';
+	}
+	$answer = getInterestsNews($email);
+}else{
+      $answer = getTodayNews();
+}
+
+return $answer;
 
 }
 

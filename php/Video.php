@@ -108,9 +108,10 @@ function explainVideo($email){
         }
 
        $ind = rand(0,sizeof($videos) -1);
+       $spiegazione = explainVideo($email);
   
-       return $videos[$ind];
-
+      return array("ind" => $videos[$ind], "explain" => $spiegazione);
+      
         
       } catch (Google_ServiceException $e) {
         $htmlBody .= sprintf('<p>A service error occurred: <code>%s</code></p>',
@@ -168,10 +169,9 @@ function explainVideo($email){
         }
 
        $ind = rand(0,sizeof($videos) -1);
-
-       //echo $videos[$ind];
+       $spiegazione = explainVideo($email);
   
-       return $videos[$ind];
+      return array("ind" => $videos[$ind], "explain" => "");
 
 
   }
