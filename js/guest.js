@@ -4,6 +4,7 @@ $(".messages").animate({ scrollTop: $(document).height() }, "fast");
 var timestamp;
 var imageURL;
 var email;
+var flagcitta= false;
 
 var timestampStart = 0;//Quando l'utente invia la domanda
 var timestampEnd = 0;//Quando l'utente clicca su Si/No
@@ -69,7 +70,12 @@ function getTimestampStart(){
 
  function send(query) {
       var text = query;
-
+  if(flagcitta == true){
+        flagcitta = false;
+      temp = $('#contesto').val();
+      temp += " "+ text;
+      text = temp;
+      }
       
       var citta = getCity();
       var name = "myrror";
@@ -81,7 +87,10 @@ function getTimestampStart(){
 
       text = $('#contesto').val();
     }else{
-      $('#contesto').val(text);
+       if(flagcitta == false){
+        $('#contesto').val(text);
+       }
+   
     }
 
     $.ajax({
@@ -163,6 +172,13 @@ replace(/(?:^|:|,)(?:\s*\[)+/g, ''))) {
            }
           
       }else if((val["intentName"] == "Meteo" ) && val['confidence'] > 0.60 ){
+
+           if(getCity() == "" && val['answer']['city'] == undefined ){
+           $(".chat").append('<li class="replies"><img src="immagini/chatbot.png" alt="" /><p >Inserisci la città</p></li>');
+           flagcitta = true;
+        }
+
+        
         var json = val['answer']['res'];
        
            if( json == ""){
@@ -291,17 +307,34 @@ replace(/(?:^|:|,)(?:\s*\[)+/g, ''))) {
           }
 
         }else {
-          var answer = val['answer'] +" <a href='http://90.147.102.243:9090'>90.147.102.243</a>";
+          var answer = val['answer'] +"Per poter sfruttare le latre funzioni, occore registrarsi a Myrror al seguente indirizzo  <a href='http://90.147.102.243:9090'>90.147.102.243</a>";
           $(".chat").append('<li class="replies"><img src="immagini/chatbot.png" alt="" /><p>' + answer + '</p></li>');
       }
 
       if(val['intentName'] == "Default Welcome Intent"){
+
       }else if(isDebugEnabled()){
-         $('#par'+timestamp).append('<div class="rating-box"><h4>Sei soddisfatto della risposta?</h4><button id="yes'+timestamp+'" class="btn-yes">SI</button>'+
+        var risposta = val['answer'];
+        risposta = risposta.toString().toLowerCase();
+        if(val['confidence'] < 0.6  || risposta.includes('riprova') || risposta.includes('sfortunatamente')
+          || risposta.includes('purtroppo') || risposta == "" ){   
+             
+            
+      
+            var testo  = $("#hide"+timestamp).text();
+            var mail = getEmail();
+            var question = $( "#quest"+timestamp ).text();
+            //var timestampStart = getTimestampStart();
+            var timestampEnd = Date.now();
+            rating(testo,question,'no',mail,timestampStart,timestampEnd,"");
+        }else{
+           $('#par'+timestamp).append('<div class="rating-box"><h4>Sei soddisfatto della risposta?</h4><button id="yes'+timestamp+'" class="btn-yes">SI</button>'+
         '<button id="no'+timestamp+'" class="btn-no">NO</button></div>');
-     
-      //Scroll verso il basso quando viene ricevuta una risposta
-        $(".chat").append('<p hidden id="hide'+timestamp+'" >"'+string+'"<p/>');
+        
+        }
+
+
+       $(".chat").append('<p hidden id="hide'+timestamp+'" >'+string+'<p/>');
       }
 
 }else{

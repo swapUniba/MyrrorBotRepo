@@ -20,12 +20,21 @@ include 'Video.php';
 include 'News.php';
 include 'Meteo.php';
 
-$city = "Roma";
+$city = "Bari";
 header('Content-type: text/plain; charset=utf-8');
  ini_set('display_errors', 1);
 //Controllo se la variabile 'testo' ricevuta è nulla
 if (isset($_POST{'testo'})) {
     $testo = $_POST{'testo'};
+    if( stripos($testo, 'weekend') !== false  
+        && stripos($testo, 'prossimo') == false ){
+      $pos = stripos($testo, 'weekend');
+  $testo = substr_replace($testo, ' prossimo ', $pos, 0);
+
+    }elseif ( stripos($testo, 'fine settimana') !== false  && stripos($testo, 'prossimo') == false) {
+        $pos = stripos($testo, 'fine settimana');
+        $testo = substr_replace($testo, ' prossimo ', $pos, 0);
+    }
 }
 
 if(isset($_POST{'city'})){

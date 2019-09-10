@@ -791,7 +791,7 @@ if($arr[0] == $startDate){
 if(isset($parameters['date'])){
 
 $date = substr($parameters['date'],0,10);
-$arr = stepsDay($date);
+$arr = stepsDay($date,$email);
 
 if($arr[0] == $date){
 	$answer = str_replace('X', $arr[1], $resp);
@@ -803,7 +803,7 @@ if($arr[0] == $date){
 }else{
 
 $today = date('Y-m-d');
-$arr = stepsDay($today);
+$arr = stepsDay($today,$email);
 
 if($arr[0] == $date){
 	$answer = str_replace('X', $arr[1], $resp);

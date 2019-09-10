@@ -1,68 +1,167 @@
 ﻿
 
-time: 1564132987
 user: cat@cat.it
-domanda: Come mi chiamo
-s:84:"  {"intentName":"Identita utente","confidence":1,"answer":"Ti chiami Cataldo Musto"}";
-rate:No
+timestampStart: 1565799620164
+timestampEnd: 1565799623366
+message: come mi chiamo
+intent: Identita utente
+confidence: 1
+answer: Ti chiami Cataldo Musto
+feedback:si
 
-time: 1564133008
 user: cat@cat.it
-domanda: Quali sono i miei interessi
-s:152:"  {"intentName":"Interessi","confidence":1,"answer":"I tuoi interessi sono relativi agli argomenti su recsys,  recsys2017,  holistic,  aiforum,  Milan"}";
-rate:Si
+timestampStart: 1565799635180
+timestampEnd: 1565799638605
+message: cosa mi interessa?
+intent: Interessi
+confidence: 1
+answer: Ecco qui i tuoi interessi 😊!  Gli argomenti principali sono relativi a recsys,  recsys2017,  holistic,  aiforum,  Milan
+feedback:si
 
-time: 1564133023
 user: cat@cat.it
-domanda: Consigliami delle news
-s:430:"  {"intentName":"News","confidence":1,"answer":{"link":"https:\/\/newsapi.org\/v2\/everything?q=recsys&sortBy=publishedAt&apiKey=17c1953c3cc7450d958ff14f9e262c02","url":"https:\/\/nlppeople.com\/job\/research-scientist-language-technologies\/","image":"https:\/\/s0.wp.com\/i\/blank.jpg","title":"Research Scientist \u2013 Language Technologies","explain":"Ti ho consigliato questo articolo perch\u00e8 sei interessato a recsys"}}";
-rate:No
+timestampStart: 1565799696144
+timestampEnd: 1565799699332
+message: come mi chiamo
+intent: Identita utente
+confidence: 1
+answer: Ti chiami Cataldo Musto
+feedback:si
 
-time: 1564133142
 user: cat@cat.it
-domanda: Come mi chiamo
-s:93:"  {"intentName":"Identita utente","confidence":1,"answer":"Il tuo nome \u00e8 Cataldo Musto"}";
-rate:No
+timestampStart: 1565799751025
+timestampEnd: 1565799754378
+message: Come mi chiamo
+intent: Identita utente
+confidence: 1
+answer: Ti chiami Cataldo Musto
+feedback:si
 
-time: 1564133151
 user: cat@cat.it
-domanda: Come mi chiamo
-s:84:"  {"intentName":"Identita utente","confidence":1,"answer":"Ti chiami Cataldo Musto"}";
-rate:Si
+timestampStart: 1565800738714
+timestampEnd: 1565800748292
+message: consigliami della musica jazz
+intent: Musica
+confidence: 0.8515043
+answer: param: 
+url: https://open.spotify.com/embed/playlist/37i9dQZF1DXdwTUxmGKrdN
+explain: 
+feedback:si
 
-time: 1564133790
 user: cat@cat.it
-domanda: Come mi chiamo
-s:84:"  {"intentName":"Identita utente","confidence":1,"answer":"Ti chiami Cataldo Musto"}";
-rate:Si
+timestampStart: 1565800777334
+timestampEnd: 1565800784570
+message: cambia
+intent: Musica
+confidence: 0.8515043
+answer: param: 
+url: https://open.spotify.com/embed/playlist/37i9dQZF1DX5YTAi6JhwZm
+explain: 
+feedback:si
 
-time: 1564567158
 user: cat@cat.it
-domanda: Vorrei una playlist allegra
-s:166:""  {"intentName":"Musica","confidence":0.7774253,"answer":{"param":"Party","url":"https:\/\/open.spotify.com\/embed\/playlist\/37i9dQZF1DX0nBLMN0XzSQ","explain":""}}"";
-rate:si
+timestampStart: 1565801102853
+timestampEnd: 1565801104586
+message: come mi chiamo
+intent: Identita utente
+confidence: 1
+answer: Ti chiami Cataldo Musto
+feedback:si
 
-time: 1564567181
 user: cat@cat.it
-domanda: Sono una persona introversa?
-s:97:""  {"intentName":"Personalita binario","confidence":1,"answer":"No, sei estroverso ed energico"}"";
-rate:si
+timestampStart: 1565801148652
+timestampEnd: 1565801150302
+message: come mi chiamo
+intent: Identita utente
+confidence: 1
+answer: Il tuo nome è Cataldo Musto
+feedback:si
 
-time: 1564567282
 user: cat@cat.it
-domanda: Quanti anni ha mio padre
-s:185:""  {"intentName":"Eta","confidence":0.6427102,"answer":"Non sono riuscito a reperire le informazioni relative alla tua data di nascita 😭. Verifica che sia presente nel tuo account"}"";
-rate:no
+timestampStart: 1565801254753
+timestampEnd: 1565801256435
+message: come mi chiamo
+intent: Identita utente
+confidence: 1
+answer: Il tuo nome è Cataldo Musto
+feedback:si
 
-time: 1564567363
 user: cat@cat.it
-domanda: Sono un mammifero
-s:172:""  {"intentName":"Non identificato","confidence":"0","answer":"Purtroppo non ho capito la domanda. Prova a rifarla con altre parole! Devo ancora imparare molte cose 😅"}"";
-rate:no
+timestampStart: 1565801267245
+timestampEnd: 1565801284186
+message: consigliami della musica rap
+intent: Musica
+confidence: 0.8090703
+answer: param: 
+url: https://open.spotify.com/embed/playlist/37i9dQZF1DX3gMzHdAU8vS
+explain: 
+feedback:no
 
-time: 1564567942
 user: cat@cat.it
-domanda: Come mi chiamo?
-s:95:""  {"intentName":"Identita utente","confidence":1,"answer":"Il tuo nome \u00e8 Cataldo Musto"}"";
-rate:si
+timestampStart: 1565801382306
+timestampEnd: 1565801387122
+message: consigliami del rap
+intent: Musica
+confidence: 1
+answer: param: 
+url: https://open.spotify.com/embed/playlist/37i9dQZF1DX6PKX5dyBKeq
+explain: 
+feedback:si
+
+user: cat@cat.it
+timestampStart: 1565890938428
+timestampEnd: 1565890942958
+message: riproduci fabri fibra
+intent: Musica
+confidence: 1
+answer: param: Fabri Fibra
+url: https://open.spotify.com/embed/album/29ppT5JZzykgZd8pPhYxwY
+explain: 
+feedback:si
+
+user: cat@cat.it
+timestampStart: 1565890938428
+timestampEnd: 1565891012046
+message: consigliami una canzone
+intent: Musica
+confidence: 1
+answer: param: 
+url: https://open.spotify.com/embed/track/13qqdlSeF8FcxsRyapDMZ0
+explain: Ti ho consigliato questa playlist perchè sei giovane e sedentario
+feedback:si
+
+user: cat@cat.it
+timestampStart: 1567673414789
+timestampEnd: 1567673416268
+message: notizie su claudio borghi
+intent: 
+confidence: 
+answer: 
+feedback:no
+
+user: cat@cat.it
+timestampStart: 1567673424877
+timestampEnd: 1567673426564
+message: cambia
+intent: 
+confidence: 
+answer: 
+feedback:no
+
+user: cat@cat.it
+timestampStart: 1567673546438
+timestampEnd: 1567673547296
+message: video berrettini
+intent: 
+confidence: 
+answer: 
+feedback:no
+
+user: cat@cat.it
+timestampStart: 1567673812125
+timestampEnd: 1567673812984
+message: come sto?
+intent: 
+confidence: 
+answer: 
+feedback:no
 

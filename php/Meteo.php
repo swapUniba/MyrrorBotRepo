@@ -305,12 +305,21 @@ function binaryWeather($city,$parameters,$text){
 
 
 if(isset($parameters['date'])){
-$date = substr($parameters['date'],0,10);
+  $date = substr($parameters['date'],0,10);
 }else{
-$date = date('Y-m-d'); 
+  $date = date('Y-m-d'); 
 }
 
-$json_data = queryWeather($city);
+if (isset($parameters['geo-city'])) {
+  $json_data = queryWeather($parameters['geo-city']);
+}else{
+  $json_data = queryWeather($city);
+}
+
+if(isset($parameters['date-period']['startDate']) && isset($parameters['date-period']['startDate']) != ""){
+  $date = substr($parameters['date-period']['startDate'], 0,10);
+}
+
 if($json_data['cod'] != 200)
   return "";
 $answer ="" ;
@@ -365,7 +374,7 @@ foreach ($json_data['list'] as $key => $value) {
    	}
 
    	
-   }elseif(strpos($text, 'sole') !== false || strpos($text, 'buono') !== false || strpos($text, 'bello') !== false){
+   }elseif(strpos($text, 'sole') !== false || strpos($text, 'buono') !== false || strpos($text, 'bel') !== false){
 
    	 if(isset($result['Cloud']) && $result['Cloud'] >= 3 ){
    		$answer = "No sarà nuvoloso";
@@ -377,7 +386,7 @@ foreach ($json_data['list'] as $key => $value) {
 
    }
 	
-return $answer;
+return array('res'=>$answer,'city'=>$city);
 
 
 

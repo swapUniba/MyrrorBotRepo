@@ -2,6 +2,7 @@ $(".messages").animate({ scrollTop: $(document).height() }, "fast");
 var timestamp;
 var imageURL;
 var email;
+var flagcitta= false;
 
 function getEmail() {
 	return email;
@@ -61,6 +62,11 @@ if (text == "Disattiva modalità di debug"){
 });
    */
 
+   $("#logout").click(function(){
+    $.cookie("myrror"+getEmail(), null, { path: '/' });
+     $.removeCookie('myrror'+getEmail(), { path: '/' });
+   });
+
   function newMessage() {
   	message = $(".message-input input").val();
   	if($.trim(message) == '') {
@@ -112,7 +118,12 @@ if (text == "Disattiva modalità di debug"){
  function send(query) {
       var text = query;
 
-      
+      if(flagcitta == true){
+         flagcitta = false;
+         temp = $('#contesto').val();
+         temp += " a "+ text;
+         text = temp;
+      }
       var citta = getCity();
       var name = "myrror";
 
@@ -148,9 +159,11 @@ if (value.match(/myrror/)) {
 
       text = $('#contesto').val();
     }else{
-      $('#contesto').val(text);
+       if(flagcitta == false){
+        $('#contesto').val(text);
+       }
+      
     }
-
     $.ajax({
               type: "POST",
               url: "php/intentDetection.php",
@@ -217,8 +230,8 @@ replace(/(?:^|:|,)(?:\s*\[)+/g, ''))) {
              // $(".chat").append('<li class="replies"><img src="immagini/chatbot.png" alt="" /><p id="par'+timestamp+'"> ' + spiegazione + '<br><img style="width: 100%;height: 100%;" src= "'+val['answer']['image']+'"/><a href="'+val['answer']['url']+'">'+val["answer"]['title']+'</a></p></li>');
 
             }
-              $(".chat").append('<li class="replies"><img src="immagini/chatbot.png" alt="" /><p id="par'+timestamp+'"><img style="width: 100%;height: 100%;" src= "'+val['answer']['image']+'"/><a href="'+val['answer']['url']+'">'+val["answer"]['title']+'</a></p></li>');
-            
+              $(".chat").append('<li class="replies"><img src="immagini/chatbot.png" alt="" /><p id="par'+timestamp+'"><img style="width: 100%;height: 100%;" src= "'+val['answer']['image']+'"/><a id="nw'+timestamp+'" class="news" target="_blank" href="'+val['answer']['url']+'">"'+val["answer"]['title']+'"</a></p></li>');
+              $(".chat").append('<input value="false" type="hidden" id= "flagNews'+timestamp+'" >')
          }                 
        
       }else if(val["intentName"] == "Video in base alle emozioni" || val["intentName"] == "Ricerca Video"){
@@ -230,11 +243,26 @@ replace(/(?:^|:|,)(?:\s*\[)+/g, ''))) {
          
            }
           
+      }else if (val["intentName"] == "meteo binario" ) {
+
+        if(getCity() == "" && val['answer']['city'] == undefined ){
+           $(".chat").append('<li class="replies"><img src="immagini/chatbot.png" alt="" /><p >Inserisci la città</p></li>');
+           flagcitta = true;
+        }else{
+          $(".chat").append('<li class="replies"><img src="immagini/chatbot.png" alt="" /><p >'+ val['answer']['res']+'</p></li>');
+        }
+
+
       }else if((val["intentName"] == "Meteo" ) && val['confidence'] > 0.60 ){
-        var json = val['answer']['res'];
+
+        if(getCity() == "" && val['answer']['city'] == undefined ){
+           $(".chat").append('<li class="replies"><img src="immagini/chatbot.png" alt="" /><p >Inserisci la città</p></li>');
+           flagcitta = true;
+        }
+           var json = val['answer']['res'];
        
            if( json == ""){
-          $(".chat").append('<li class="replies"><img src="immagini/chatbot.png" alt="" /><p >Sfortunatamente non sono disponibili dati riguardanti il periodo indicato</p></li>');
+            $(".chat").append('<li class="replies"><img src="immagini/chatbot.png" alt="" /><p >Sfortunatamente non sono disponibili dati riguardanti il periodo indicato</p></li>');
       
            }else{
               var res = json.split("<br>");
@@ -289,13 +317,13 @@ replace(/(?:^|:|,)(?:\s*\[)+/g, ''))) {
             }
 
            $(".chat").append(//'<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>'+
-            '<li id="par'+timestamp+'" class="replies"><img src="immagini/chatbot.png" alt="" /><p ><div class="container">'+
+            '<li id="par'+timestamp+'" class="replies"><img src="immagini/chatbot.png" alt="" /><div class="container">'+
             '<div class="forecast-container" id= "f'+timestamp+'"><div class="today forecast">'+
             '<div class="forecast-header"><div class="day">'+str[0]+'</div></div>'+
             '<div class="forecast-content"><div class="location">'+ val['answer']['city']+' Ore '+str[1]+'</div><div class="degree">'+
             '<div class="num">'+Math.trunc( str[2])+'<sup>o</sup>C</div><div class="forecast-icon">'+
             '<img src="immagini/icons/'+imglink+'" alt="" style="width:90px;"> </div></div>'+
-            '</div></div></div> </p></div></li>'
+            '</div></div></div></div></li>'
             //+'<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>'
             );
 
@@ -364,11 +392,27 @@ replace(/(?:^|:|,)(?:\s*\[)+/g, ''))) {
       if(val['intentName'] == "Default Welcome Intent"){
       
       }else if(isDebugEnabled()){
-         $('#par'+timestamp).append('<div class="rating-box"><h4>Sei soddisfatto della risposta?</h4><button id="yes'+timestamp+'" class="btn-yes">SI</button>'+
+        var risposta = val['answer'];
+        risposta = risposta.toString().toLowerCase();
+        if(val['confidence'] < 0.6  || risposta.includes('riprova') || risposta.includes('sfortunatamente')
+          || risposta.includes('purtroppo') || risposta == "" ){   
+             
+            
+      
+            var testo  = $("#hide"+timestamp).text();
+            var mail = getEmail();
+            var question = $( "#quest"+timestamp ).text();
+            //var timestampStart = getTimestampStart();
+            var timestampEnd = Date.now();
+            rating(testo,question,'no',mail,timestampStart,timestampEnd,"");
+        }else{
+           $('#par'+timestamp).append('<div class="rating-box"><h4>Sei soddisfatto della risposta?</h4><button id="yes'+timestamp+'" class="btn-yes">SI</button>'+
         '<button id="no'+timestamp+'" class="btn-no">NO</button></div>');
-     
-      //Scroll verso il basso quando viene ricevuta una risposta
-        $(".chat").append('<p hidden id="hide'+timestamp+'" >"'+string+'"<p/>');
+        
+        }
+
+
+       $(".chat").append('<p hidden id="hide'+timestamp+'" >'+string+'<p/>');
       }
 
 }else{
@@ -435,3 +479,16 @@ setNominativo(tempStr); //Nome per la grafica del sito
     }
 
 
+$("ul.chat").on("click","a.news",function(evnt) {
+ 
+    var id = $(this).attr("id");
+    id = id.substr(2,timestamp.length);
+
+    $("#flagNews"+id).val("true");
+    //alert("clicked");
+    //return false;
+});
+
+$("#logout").click(function(){
+  window.location.href = 'index.html';
+});

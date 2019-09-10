@@ -91,6 +91,7 @@ function personalita($resp,$parameters,$email){
 //Funzione che permette di fornire risposte binarie relative a domande sulla personalità
 function personalitaBinario($resp,$parameters,$email){
 
+    $answer = "non sono riuscito a stabilirlo, riprova con altre parole";
 	$param = "";
 	$json_data = queryMyrror($param,$email);
 	$result = null;
