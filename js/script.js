@@ -63,8 +63,10 @@ if (text == "Disattiva modalità di debug"){
    */
 
    $("#logout").click(function(){
-    $.cookie("myrror"+getEmail(), null, { path: '/' });
+     $.cookie("myrror"+getEmail(), null, { path: '/' });
      $.removeCookie('myrror'+getEmail(), { path: '/' });
+
+  
    });
 
   function newMessage() {

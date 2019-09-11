@@ -14,13 +14,13 @@
     $credenziali = "email=" . $email . "&password=" . $password;
 
 	$response = queryMyrror("", $credenziali);
-	$fp = fopen('../fileMyrror/past_'. $email . ".json", 'w');
+	$fp = fopen('../fileMyrror/past_'. $email . ".json", 'w+');
 	fwrite($fp, json_encode($response));
 	fclose($fp);
 
 	$today = date('Y-m-d');
 	$response = queryMyrror("?fromDate=".$today,  $credenziali);
-	$fp = fopen('../fileMyrror/today_'. $email . ".json", 'w');
+	$fp = fopen('../fileMyrror/today_'. $email . ".json", 'w+');
 	fwrite($fp, json_encode($response));
 	fclose($fp);
 

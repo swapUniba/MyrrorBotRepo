@@ -58,6 +58,7 @@
 					data: "email=" + email + "&password=" + password + "&token=" + token,
 					dataType: "html",
 					success:function(response){
+						alert(response);
 						document.cookie ="myrror="+email;
 						if (response.localeCompare("ok") == 1) {
 							showPage(); //Termino il caricmaneto e mostro la pagina
@@ -67,13 +68,13 @@
                 
 
             }else{
-           		window.alert("Incorrect email or password");
+           		window.alert("Email o password errata");
             }
 
             
           },
           error: function(){
-            alert("Failed call!");
+            alert("Chiamata fallita!");
           } 
         }); 
         return false;  
@@ -118,7 +119,7 @@
 						</button>
 						<div>
 							<a class="txt2" href="guest.html">
-								Login as Guest
+								Login come Guest
 							</a>
 						</div>
 					</div>
@@ -177,7 +178,7 @@
 
 	function showPage() {
 	  document.getElementById("loader").style.display = "none";
-	  window.location.href = 'chatbot.html';
+	  window.location.href = '/chatbot.html';
 	}
 </script>
 

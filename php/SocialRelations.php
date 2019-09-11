@@ -29,7 +29,7 @@ function contatti($resp,$parameters,$text,$email){
     				return $answer;
     			}else{
     				//print_r("Non sono presenti contatti sul social network richiesto");
-    				$answer = "C'è stato un problema durante il caricamento dei contatti. Riprova!";
+    				$answer = "C'è stato un problema durante il caricamento dei contatti. Effettua nuovamente il login!";
     				return $answer;
     			}
 
@@ -62,7 +62,7 @@ function contatti($resp,$parameters,$text,$email){
     				return $answer;
     			}else{
     				//print_r("Non sono presenti contatti sul social network richiesto");
-    				$answer = "C'è stato un problema durante il caricamento dei contatti. Riprova!";
+    				$answer = "C'è stato un problema durante il caricamento dei contatti. Effettua nuovamente il login!";
     				return $answer;
     			}
 
@@ -95,7 +95,7 @@ function contatti($resp,$parameters,$text,$email){
     				return $answer;
     			}else{
     				//print_r("Non sono presenti contatti sul social network richiesto");
-    				$answer = "C'è stato un problema durante il caricamento dei contatti. Riprova!";
+    				$answer = "C'è stato un problema durante il caricamento dei contatti. Effettua nuovamente il login!";
     				return $answer;
     			}
 
