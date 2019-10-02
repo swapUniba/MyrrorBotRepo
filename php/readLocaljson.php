@@ -1,6 +1,5 @@
 <?php
 
-
 function queryMyrror($param,$email){
 
 	$json = null;

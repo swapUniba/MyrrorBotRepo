@@ -31,7 +31,8 @@ if ($parameters['Sports'] != null) {
 	$link .= "Technology".$apiKey;
 }elseif ($parameters['Business'] != null) {
 	$val = $parameters['Business'];
-	$link .= "Business&q=".$val. $apiKey;
+	//$link .= "Business&q=".$val. $apiKey;
+    $link .= "Business". $apiKey;
 }else{
 	return "";
 }
@@ -41,8 +42,37 @@ if ($parameters['Sports'] != null) {
 $json = googleNewsQuery($link);
 $url = "";
 
-if(!isset($json['articles'] ))
-   return "";
+if(!isset($json['articles'] )){
+
+if ($parameters['Sports'] != null) {
+	$val = $parameters['Sports'];
+	$link .= "Sports". $apiKey;
+}elseif ($parameters['Health'] != null) {
+	$val = $parameters['Health'];
+	$link .= "Health". $apiKey;
+}elseif ($parameters['Science'] != null) {
+	$val = $parameters['Science'];
+	$link .= "Science".$apiKey;
+}elseif ($parameters['Entertainment'] != null) {
+	$val = $parameters['Entertainment'];
+	$link .= "Entertainment". $apiKey;
+}elseif ($parameters['Technology'] != null) {
+	$val = $parameters['Technology'];
+	$link .= "Technology".$apiKey;
+}elseif ($parameters['Business'] != null) {
+	$val = $parameters['Business'];
+	//$link .= "Business&q=".$val. $apiKey;
+    $link .= "Business". $apiKey;
+}else{
+	return "";
+}
+
+$json = googleNewsQuery($link);
+$url = "";
+  
+}
+
+
 
 foreach ($json['articles'] as $key => $value) {
 	$url = $value['url'];
@@ -87,7 +117,8 @@ foreach ($json['articles'] as $key => $value) {
 }
 
 if($url == "")
-	return "";
+	return getTodayNews();
+
 
 }else{
 	$i = rand(0,count($list)-1);

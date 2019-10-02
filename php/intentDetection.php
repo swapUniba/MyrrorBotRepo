@@ -98,7 +98,7 @@ function detect_intent_texts($projectId,$city,$email, $text, $sessionId, $langua
 
 function selectIntent($email,$intent, $confidence,$text,$resp,$parameters,$city){
 
-    if(($confidence > 0.86 ||  str_word_count($text) >= 2) && $confidence >= 0.60){              
+    if(($confidence > 0.86 ||  str_word_count($text) >= 2) && $confidence >= 0.50){              
 
         $answer = null;
 

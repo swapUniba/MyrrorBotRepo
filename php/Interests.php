@@ -79,6 +79,7 @@ function interessiFrequenti($categorieArray){
 
 function getInterestsList($email){
 
+    $top30 = array();
 	$param = "";
 	$json_data = queryMyrror($param,$email);
 

@@ -225,8 +225,8 @@ $endDate = substr($parameters['date-period']['endDate'],0,10);
     	return "Sembra che tu non abbia svolto attività fisica 😅";
 	
 	
-		$answer = "Gli ultimi dati disponibili sono del ".$activity[3].", quando hai svolto";
-		$answer .=  $activity[2] ."minuti di attività molto attiva <br> ".
+		$answer = "Gli ultimi dati disponibili sono del ".$activity[3].", quando hai svolto ";
+		$answer .=  $activity[2] ." minuti di attività molto attiva <br> ".
          $activity[1] ." minuti di attività poco attiva e ";
 
         $answer .=  $activity[0]." minuti di attività abbastanza attiva<br><br>";
@@ -255,14 +255,14 @@ $endDate = substr($parameters['date-period']['endDate'],0,10);
 	if($date  == $activity[3]){
         $answer = "Ti sei allenato facendo ";
      
-    $answer .=  $activity[2] ."minuti di attività molto attiva <br> ".
+    $answer .=  $activity[2] ." minuti di attività molto attiva <br> ".
          $activity[1] ." minuti di attività poco attiva e ";
 
         $answer .=  $activity[0]." minuti di attività abbastanza attiva<br><br>";
 
 	}else{
-	$answer = "Gli ultimi dati disponibili sono relativi al ".$activity[3].", quando hai svolto";
-    $answer .=  $activity[2] ."minuti di attività molto attiva <br> ".
+	$answer = "Gli ultimi dati disponibili sono relativi al ".$activity[3].", quando hai svolto ";
+    $answer .=  $activity[2] ." minuti di attività molto attiva <br> ".
          $activity[1] ." minuti di attività poco attiva e ";
 
         $answer .=  $activity[0]." minuti di attività abbastanza attiva<br><br>";
@@ -276,8 +276,8 @@ $endDate = substr($parameters['date-period']['endDate'],0,10);
   $activity = attivitaData("",$email);
 
  
- $answer = "Gli ultimi dati disponibili sono del ".$activity[3].", quando hai svolto";
-    $answer .=  $activity[2] ."minuti di attività molto attiva <br> ".
+ $answer = "Gli ultimi dati disponibili sono del ".$activity[3].", quando hai svolto ";
+    $answer .=  $activity[2] ." minuti di attività molto attiva <br> ".
          $activity[1] ." minuti di attività poco attiva e ";
 
         $answer .=  $activity[0]." minuti di attività abbastanza attiva<br><br>";
@@ -321,7 +321,7 @@ if(isset($parameters['date-period']['startDate'])){
            $answer="No, non fai abbastanza attività fisica. In media ".$sum." minuti di attività.";
         }
         
-  }elseif(strpos($text,'dovrei fare')  || strpos($text,'fare di più') || strpos($text,'fare più')) {
+  }elseif(strpos($text,'dovrei fare')  || strpos($text,'fare di più') || strpos($text,'fare più') || strpos($text,'più')) {
   	
   	    if($sum >= 30 ){
            $answer ="No, fai abbastanza attività fisica. In media ".$sum." minuti di attività.";
@@ -346,7 +346,7 @@ $answer = "Consultando i dati a mia disposizione, risulta che";
            $answer .=" non hai fatto abbastanza attività fisica. Ovvero ".$sum." minuti di attività.";
         }
         
-  }elseif(strpos($text,'dovrei fare')  || strpos($text,'fare di più') || strpos($text,'fare più')) {
+  }elseif(strpos($text,'dovrei fare')  || strpos($text,'fare di più') || strpos($text,'fare più') || strpos($text,'più')) {
   	
   	    if($sum >= 30 ){
            $answer .=" hai fatto abbastanza attività fisica. Ovvero ".$sum." minuti di attività.";

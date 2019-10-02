@@ -247,9 +247,10 @@ replace(/(?:^|:|,)(?:\s*\[)+/g, ''))) {
           
       }else if (val["intentName"] == "meteo binario" ) {
 
-        if(getCity() == "" && val['answer']['city'] == undefined ){
+        if( val['answer']['city'] == undefined ){
            $(".chat").append('<li class="replies"><img src="immagini/chatbot.png" alt="" /><p >Inserisci la città</p></li>');
            flagcitta = true;
+            $(".messages").animate({ scrollTop:( $(document).height() * 100)  }, "fast");
         }else{
           $(".chat").append('<li class="replies"><img src="immagini/chatbot.png" alt="" /><p >'+ val['answer']['res']+'</p></li>');
         }
@@ -257,9 +258,10 @@ replace(/(?:^|:|,)(?:\s*\[)+/g, ''))) {
 
       }else if((val["intentName"] == "Meteo" ) && val['confidence'] > 0.60 ){
 
-        if(getCity() == "" && val['answer']['city'] == undefined ){
+        if( val['answer']['city'] == undefined ){
            $(".chat").append('<li class="replies"><img src="immagini/chatbot.png" alt="" /><p >Inserisci la città</p></li>');
            flagcitta = true;
+            $(".messages").animate({ scrollTop:( $(document).height() * 100)  }, "fast");
         }
            var json = val['answer']['res'];
        
@@ -394,9 +396,11 @@ replace(/(?:^|:|,)(?:\s*\[)+/g, ''))) {
       if(val['intentName'] == "Default Welcome Intent"){
       
       }else if(isDebugEnabled()){
+       
         var risposta = val['answer'];
         risposta = risposta.toString().toLowerCase();
-        if(val['confidence'] < 0.6  || risposta.includes('riprova') || risposta.includes('sfortunatamente')
+        /*
+        if(val['confidence'] < 0.5  || risposta.includes('riprova') || risposta.includes('sfortunatamente')
           || risposta.includes('purtroppo') || risposta == "" ){   
              
             
@@ -407,11 +411,11 @@ replace(/(?:^|:|,)(?:\s*\[)+/g, ''))) {
             //var timestampStart = getTimestampStart();
             var timestampEnd = Date.now();
             rating(testo,question,'no',mail,timestampStart,timestampEnd,"");
-        }else{
+        }else{*/
            $('#par'+timestamp).append('<div class="rating-box"><h4>Sei soddisfatto della risposta?</h4><button id="yes'+timestamp+'" class="btn-yes">SI</button>'+
         '<button id="no'+timestamp+'" class="btn-no">NO</button></div>');
         
-        }
+       // }
 
 
        $(".chat").append('<p hidden id="hide'+timestamp+'" >'+string+'<p/>');

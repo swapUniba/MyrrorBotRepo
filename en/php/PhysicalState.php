@@ -697,7 +697,11 @@ function yestSleepBinary($resp,$parameters,$text,$data,$email){
       }
     }
 
-    $data2 = date('d-m-Y',$timestamp/1000);
+    if (isset($timestamp)) {
+      $data2 = date('d-m-Y',$timestamp/1000);
+    }else{
+      return "I was unable to retrieve data related to your sleep &#x1F62D; Check if they are present in your profile!";
+    }
 
     if($result['minutesAsleep'] != null){
       $data = $data2;
@@ -705,7 +709,7 @@ function yestSleepBinary($resp,$parameters,$text,$data,$email){
       $timeinbed = $result['timeInBed'];
 
     }else{
-      return "I was unable to retrieve data related to your sleep &#x1F62D;";
+      return "I was unable to retrieve data related to your sleep &#x1F62D; Check if they are present in your profile!";
     }
   }
 
@@ -1018,7 +1022,12 @@ function fetchYesterdaySleep($resp,$data,$email){
       }
     }
 
-    $data2 = date('d-m-Y',$timestamp/1000);
+     if (isset($timestamp)) {
+      $data2 = date('d-m-Y',$timestamp/1000);
+    }else{
+      return "I was unable to retrieve data related to your sleep &#x1F62D; Check if they are present in your profile!";
+    }
+
     $answer = "The latest data in my possession relates to ".$data2."<br>";
 
     if($result['minutesAsleep'] != null){
