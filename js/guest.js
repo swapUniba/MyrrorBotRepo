@@ -307,7 +307,7 @@ replace(/(?:^|:|,)(?:\s*\[)+/g, ''))) {
           }
 
         }else {
-          var answer = val['answer'] +"Per poter sfruttare le latre funzioni, occore registrarsi a Myrror al seguente indirizzo  <a href='http://90.147.102.243:9090'>90.147.102.243</a>";
+          var answer = val['answer'] +"Per poter sfruttare le altre funzioni, occorre registrarsi a Myrror al seguente indirizzo  <a href='http://90.147.102.243:9090'>90.147.102.243</a>";
           $(".chat").append('<li class="replies"><img src="immagini/chatbot.png" alt="" /><p>' + answer + '</p></li>');
       }
 
@@ -365,7 +365,7 @@ if (value.match(/myrror/)) {
    }
 
 }else{
-  window.location.href = 'index.html';
+ // window.location.href = 'index.html';
 }
 
       

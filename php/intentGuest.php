@@ -113,6 +113,10 @@ function selectIntent($email,$intent, $confidence,$text,$resp,$parameters,$city)
                 $answer = $resp;
                 break;
 
+            case '':
+                $answer = $resp;
+                break; 
+
             default:
                
                     $answer = "Questa funzione è disponibile solo dopo aver effettuato il login a myrror";
