@@ -3,7 +3,7 @@
 /*Permette di fornire dati in relazione alla domanda richiesta
 Viene fornito un flag per determinare se ci si riferisce alle emozioni oppure alla personalità
 */ 
-function getSentiment($flag, $resp, $parameters,$email){
+function getSentiment($flag, $resp, $parameters, $email){
 
     //flag 1 --> emozioni
     //flag 0 --> l'umore
@@ -136,7 +136,7 @@ function getTodayUmore($oggi,$email){
       $response = "il tuo umore era neutro";
     }
     
-    $answer = "Nel tuo profilo non sono presenti dati della giornata odierna, in base agli ultimi dati relativi al giorno " .$date . ", ". $response;
+    $answer = "In base agli ultimi dati rilevati " . $response;
   }
 
   return $answer;
@@ -202,8 +202,7 @@ function getPastUmore($ieri,$email){
       $response = "il tuo umore era neutro";
     }
     
-  $answer = "Nel tuo profilo non sono presenti dati della giornata di ieri, in base agli ultimi dati relativi al giorno " .$date . ", ". $response;
-
+   $answer = "Secondo gli ultimi dati rilevati " . $response;
   }
 
   return $answer;
@@ -247,7 +246,7 @@ function getPast($ieri,$email){
     }
 
     $emotion = getEmotion($result,$email);
-    $answer = "Basandomi sugli ultimi dati rilevati il giorno " .$date . ", stavi provando " . $emotion;
+    $answer = "Basandomi sugli ultimi dati rilevati stavi provando " . $emotion;
 
   }
 
@@ -305,7 +304,7 @@ function getToday($oggi,$email){
     }
 
     $emotion = getEmotion($result,$email);
-    $answer = "Basandomi sugli ultimi dati rilevati il giorno " .$date . ", stavi provando " . $emotion;
+   $answer = "Basandomi sugli ultimi dati rilevati stavi provando " . $emotion;
   }
 
   return $answer;
@@ -497,7 +496,7 @@ function getPastUmoreBinario($ieri, $parameters,$email){
         $risposta = "il tuo umore era negativo";
      }
 
-       $answer = "Basandomi sugli ultimi dati rilevati il giorno " .$date . ", " . $risposta;
+       $answer = "Basandomi sugli ultimi dati rilevati " . $risposta;
 
   }
 
@@ -596,7 +595,7 @@ function getTodayUmoreBinario($oggi, $parameters,$email){
      }
 
 
-        $answer = "Basandomi sugli ultimi dati rilevati il giorno " . $date . ", " . $risposta;
+        $answer = "Basandomi sugli ultimi dati rilevati " . $risposta;
   }
 
   return $answer;
@@ -749,7 +748,7 @@ function getPastBinario($ieri, $parameters,$email){
         break;
     }
 
-    $answer = "Basandomi sugli ultimi dati presenti il giorno " . $date . ", " . $risposta;
+    $answer = "Basandomi sugli ultimi dati presenti <br>" . $risposta;
 
   }
 
@@ -906,7 +905,7 @@ function getTodayBinario($oggi, $parameters,$email){
         break;
     }
 
-    $answer = "Basandomi sugli ultimi dati presenti il giorno " . $date . ", " . $risposta;
+    $answer = "Basandomi sugli ultimi dati presenti <br>" . $risposta;
   }
 
   return $answer;

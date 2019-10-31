@@ -12,6 +12,7 @@ include 'SpotifyIntent.php';
 include 'Video.php';
 include 'News.php';
 include 'Meteo.php';
+include 'Food.php';
 
 $city = "Roma";
 header('Content-type: text/plain; charset=utf-8');
@@ -113,10 +114,6 @@ function selectIntent($email,$intent, $confidence,$text,$resp,$parameters,$city)
                 $answer = $resp;
                 break;
 
-            case '':
-                $answer = $resp;
-                break; 
-
             default:
                
                     $answer = "Questa funzione è disponibile solo dopo aver effettuato il login a myrror";
@@ -156,6 +153,46 @@ function selectIntent($email,$intent, $confidence,$text,$resp,$parameters,$city)
     if($confidence >= 0.50  && ($intent == 'News')){
 
         $answer = getNews($parameters,$email,$text);
+
+    }
+    
+    //CIBO
+    if($intent == 'Cibo'){
+        $listaHealthy = array(' salutare', ' sana', ' sano');
+        $listaLight = array(' leggera', ' light', ' leggero');
+        $listaParoleIngredient = array(' a base di ', ' con ', 'contenente ');
+        $flagHealthy = false;
+        $flagLight = false;
+        $ingredient = "";
+
+        
+        //Controllo se sono presenti le parole della lista healty allora setto a vero il flag healty
+        foreach($listaHealthy as $parola)  {  
+            if (stripos($text, $parola) !== false) {
+                //Contiene la parola
+                $flagHealthy = true;
+                break;
+            } 
+        }
+
+        //Controllo se sono presenti le parole della lista light allora setto a vero il flag light
+        foreach($listaLight as $parola)  {  
+            if (stripos($text, $parola) !== false) {
+                //Contiene la parola
+                $flagLight = true;
+                break;
+            } 
+        }
+        //Controllo se sono presenti le parole della lista ingredienti allora setto a vero il flag ingredienti
+        foreach($listaParoleIngredient as $parola)  {  
+            if (stripos($text, $parola) !== false) {
+                //Contiene la parola
+                $ingredient = explode($parola, $text)[1];
+                break;
+            } 
+        }
+        
+        $answer = getRecipeByIngredient($resp,$parameters,$text,$email, $ingredient, $flagHealthy, $flagLight);
 
     }
 

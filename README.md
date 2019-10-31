@@ -34,4 +34,10 @@ IntentDetection.php include tutti gli altri moduli, ogni modulo gestisce le funz
 di una sfaccettatura es.Affects.php o di un servizio es.spotifyIntent.php.
 L'intentDetection tramite la funzione detect_intent_texts si collega a dialogflow che come risposta
 restituisce il nome dell'intent ed eventuali entità riconosciute all'interno della frase. 
- 
+
+FOOD RECOMMENDER
+Nella cartella foodwebapp è presente lo script per avviare il foodrecommender (start_server.sh).
+Il foodrecommender è scritto in python e necessita di pandas e flask.
+
+WEBAPP
+La webapp si trova nella cartella foodrecsys.

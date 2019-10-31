@@ -29,8 +29,6 @@ function getMusic($resp,$parameters,$text,$email){
 	$listaParoleRaccomandazioni = array( 'musica adatta a me', 'consigliami', 'consigli', 'suggerisc', 'per me' , 'a me');//raccomandazioni
 	$listaParoleEmozioni = array( 'umore', 'emozioni','stato d\'animo');//emozioni
 
-    
-
 	//Controllo se sono presenti le parole delle raccomandazioni allora vado nella sezione delle PLAYLIST RACCOMANDATE
 	foreach($listaParoleRaccomandazioni as $parola)  {  
    		if (stripos($text, $parola) !== false) {
@@ -159,33 +157,6 @@ function getMusic($resp,$parameters,$text,$email){
 
 	return array("param" => $param, "url" => $answer,"explain" => $spiegazione);
 	
-}
-function getRandomMusic(){
-	$api = getApi(); //Api per Spotify
-    $results  = $api->getNewReleases([
-    'country' => 'se',
-]);
-
-	//Prendo il primo risultato nel formato di Spotify
-		foreach ($results->albums->items as $track) {
-    		$trackName = $track->name; //Nome canzone Spotify
-    		$url = $track->external_urls->spotify; //Url canzone Spotify
-    		break;
-		}
-
-		if (isset($url)) {
-			/*
-			Aggiungo alla url di Spotify la parola embed/ altrimenti l'iframe non verrà visualizzato per problemi di Copyright
-			Esempio:
-			https://open.spotify.com/track/2J9TGb5CRT4omfAgnKmXn5 ----> https://open.spotify.com/embed/track/2J9TGb5CRT4omfAgnKmXn5
-			*/
-			$answer = substr_replace($url, "embed/", 25, 0);
-		}else{
-			$answer = "Scusami ma non sono riuscito a capire la canzone da riprodurre. Prova a riscriverla con altre parole";
-		}
-
-		return $answer;
-
 }
 
 //Permette di ottenere il brano richiesto dall'utente e mostrarlo a schermo
@@ -393,9 +364,7 @@ function getPlaylistByArtist($resp,$parameters,$text,$email){
 function getPlaylistByEmotion($resp,$parameters,$text,$email){
 
 	if ($email == '') {
-			
-		$answer = getRandomMusic();
-    	return  $answer;
+		return '';
 	}
 
 	$api = getApi(); //Api per Spotify
@@ -515,9 +484,7 @@ function getPlaylistByEmotion($resp,$parameters,$text,$email){
 function explainMusicEmotion($resp,$parameters,$text,$email){
 
 	if ($email == '') {
-			
-		$answer = getRandomMusic();
-    	return  $answer;
+		return '';
 	}
 
 
@@ -565,9 +532,7 @@ return $answer;
 function getMusicByEmotion($resp,$parameters,$text,$email){
 
 	if ($email == '') {
-			
-		$answer = getRandomMusic();
-    	return  $answer;
+		return '';
 	}
 
 
@@ -741,9 +706,7 @@ $minutiEffettuati = $valori['abbastanzaAttiva'] + $valori['pocoAttiva'] + $valor
 function getMusicCustom($resp,$parameters,$text,$email){
 
 	if ($email == '') {
-			
-		$answer = getRandomMusic();
-    	return  $answer;
+		return '';
 	}
 
 

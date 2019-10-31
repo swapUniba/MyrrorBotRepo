@@ -19,6 +19,8 @@ include 'SpotifyIntent.php';
 include 'Video.php';
 include 'News.php';
 include 'Meteo.php';
+include 'Food.php';
+
 
 
 header('Content-type: text/plain; charset=utf-8');
@@ -292,6 +294,13 @@ function selectIntent($email,$intent, $confidence,$text,$resp,$parameters,$city)
     if($confidence >= 0.50  && ($intent == 'News')){
 
         $answer = getNews($parameters,$email,$text);
+
+    }
+
+	//CIBO
+	if($intent == 'Cibo'){
+
+        $answer = getRecipe($resp,$parameters,$text,$email);
 
     }
 

@@ -19,6 +19,7 @@ include 'SpotifyIntent.php';
 include 'Video.php';
 include 'News.php';
 include 'Meteo.php';
+include 'Food.php';
 
 $city = "Bari";
 header('Content-type: text/plain; charset=utf-8');
@@ -109,6 +110,7 @@ function selectIntent($email,$intent, $confidence,$text,$resp,$parameters,$city)
                 break;
 
             case 'Attivita fisica binario':
+				print_r($parameters);
                 $answer = attivitaFisicaBinary($resp,$parameters,$text,$email);
                 break;
     
@@ -243,7 +245,12 @@ function selectIntent($email,$intent, $confidence,$text,$resp,$parameters,$city)
             case 'disattiva debug':
                 $answer = $resp;
                 break;
-
+				
+			/*case 'Cibo':
+				$answer = getRecipe($resp,$city,$parameters,$text);
+				break;
+			*/
+			
             default:
                 if ($resp != "") { //Small Talk
                     $answer = $resp;
@@ -289,6 +296,13 @@ function selectIntent($email,$intent, $confidence,$text,$resp,$parameters,$city)
     if($confidence >= 0.50  && ($intent == 'News')){
 
         $answer = getNews($parameters,$email,$text);
+
+    }
+	
+	//CIBO
+	if($intent == 'Cibo'){
+
+        $answer = getRecipe($resp,$parameters,$text,$email);
 
     }
 
