@@ -160,7 +160,7 @@ function send(query) {
 		$(".chat").append('<li class="replies"><img src="immagini/chatbot.png" alt="" /><p >' + testo + '</p></li>');
 
 	}
-    else if($('#intent').val() == 'Cibo' && (text.includes("un'altra ricetta") || text.includes("un altra ricetta") || text.includes("un'altra") ||text.includes("un altra") || text.includes("un altro")){
+    else if($('#intent').val() == 'Cibo' && (text.includes("un'altra ricetta") || text.includes("un altra ricetta") || text.includes("un'altra") ||text.includes("un altra") || text.includes("un altro"))){
         count = $("#count_ric").val();
         val = JSON.parse(decodeURIComponent($("#ric").val()));
         max = Object.keys( val.answer.recipes ).length

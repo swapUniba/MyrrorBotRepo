@@ -283,18 +283,28 @@
         
         if(isset($_POST['Q2']))
             $answers = $answers . $_POST['Q2'] . ',';
+         else if($dish !== "main")
+             $answers = $answers . ',';
 
         if(isset($_POST['Q3']))
             $answers = $answers . $_POST['Q3'] . ',';
+         else if($dish !== "main")
+             $answers = $answers . ',';
 
         if(isset($_POST['Q4']))
-            $answers = $answers . $_POST['Q4'] . ',';        
+            $answers = $answers . $_POST['Q4'] . ',';
+         else if($dish !== "main")
+             $answers = $answers . ',';
 
         if(isset($_POST['Q5']))
             $answers = $answers . $_POST['Q5'] . ',';
+         else if($dish !== "main")
+             $answers = $answers . ',';
                                          
         if(isset($_POST['Q6']))
             $answers = $answers . $_POST['Q6'] . ',';
+         else if($dish !== "main")
+             $answers = $answers . ',';
 
         if(isset($_POST['Q7']))
             $answers = $answers . str_replace(",", " ", $_POST['Q7']) . ',';
@@ -401,20 +411,21 @@
                                     <div class="form-group row">
                                         <label for="Q1" class="col-sm-6 col-form-label">Which recipe do you prefer?</label>
                                         <div class="col-sm-5">
-                                            <select class="form-control" id="Q1" name="Q1" required>
+                                            <select class="form-control" id="Q1" name="Q1" required onchange="dynamicForm()">
                                                 <!--<option hidden disabled selected value></option>-->
+                                                <option hidden selected></option>
                                                 <option >Left side recipe</option>
-                                                <option selected>Indifferent</option>
+                                                <option>None of these two</option>
                                                 <option >Right side recipe</option>
                                             </select>
                                         </div>
                                     </div>
                                     
-                                    <div class="form-group row">
-                                        <label class="col-sm-12 col-form-label">Why did you choose this recipe? - Remember: 1 Star means completely disagree, 5 Stars mean completely agree</label>
+                                    <div class="form-group row" id="labelPreQuest">
+                                        <label class="col-sm-12 col-form-label">Why did you choose this recipe? - Remember: <u><i>1 Star means completely disagree, 5 Stars mean completely agree</i></u></label>
                                     </div>
                                     
-                                    <div class="form-group row">    
+                                    <div class="form-group row" id="Q2div"> <!-- style="display: none;"-->
                                         <label for="Q2" class="col-sm-6 col-form-label">It seems savory and tastier</label>
                                         <fieldset class="rating">					 			    
                                             <input type="radio" id="star5Q2" name="Q2" value="5" required/>
@@ -434,7 +445,7 @@
                                         </fieldset>
                                     </div>
                                     
-                                    <div class="form-group row">    
+                                    <div class="form-group row" id="Q3div">    
                                         <label for="Q3" class="col-sm-6 col-form-label">It helps me to eat more healthily</label>
                                         <fieldset class="rating">					 			    
                                             <input type="radio" id="star5Q3" name="Q3" value="5" required/>
@@ -454,7 +465,7 @@
                                         </fieldset>
                                     </div>
                                     
-                                    <div class="form-group row">    
+                                    <div class="form-group row" id="Q4div">    
                                         <label for="Q4" class="col-sm-6 col-form-label">It would help me to lose/gain weight</label>
                                         <fieldset class="rating">					 			    
                                             <input type="radio" id="star5Q4" name="Q4" value="5" required/>
@@ -474,7 +485,7 @@
                                         </fieldset>
                                     </div>
                                     
-                                    <div class="form-group row">    
+                                    <div class="form-group row" id="Q5div">    
                                         <label for="Q5" class="col-sm-6 col-form-label">It seems easier to prepare</label>
                                         <fieldset class="rating">					 			    
                                             <input type="radio" id="star5Q5" name="Q5" value="5" required/>
@@ -494,7 +505,7 @@
                                         </fieldset>
                                     </div>
                                     
-                                    <div class="form-group row ">
+                                    <div class="form-group row " id="Q6div">
                                         <label for="Q6" class="col-sm-8 radio control-label">I chose it because there was no other choice. I would not have chosen any of these</label>
                                         <div class="col-sm-3">
                                             <div class="form-check form-check-inline">
@@ -508,7 +519,7 @@
                                         </div>
                                    </div>
                                     
-                                    <div class="form-group row">    
+                                    <div class="form-group row" id="Q7div">    
                                         <label for="Q7" class="col-sm-6 col-form-label">Other: </label>
                                         <div class="col-sm-5">
                                             <textarea class="form-control" id="Q7" name="Q7" rows="2"></textarea>
@@ -531,7 +542,8 @@
                 <div class="inner container">
                     <div class="row">
                         <div class="col-md-6 d-flex">
-                            <span> &copy; 2019 <a href="http://www.di.uniba.it/~swap/" target="_blank"> SWAP Research Group </a></span>
+                            <span> &copy; 2019 <a href="http://www.di.uniba.it/~swap/" target="_blank"> SWAP Research Group </a>,</span>
+                            <span>&nbsp;<a href="privacy.html" target="_blank">Privacy Policy </a></span>
                         </div>
                         <div class="col-md-6 d-flex flex-row-reverse  ">
                             <span>Developed by <a href="https://github.com/itkkk" target="_blank">Antonio Pellicani</a> &amp; <a href="https://github.com/astarrr" target="_blank">Angelo Sparapano</a></span>
@@ -547,6 +559,85 @@
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
         
         <!-- Main JS -->
+        <script>
+            function dynamicForm(){
+                var e = document.getElementById("Q1");
+                var value = e.options[e.selectedIndex].text;
+                if(value == "None of these two"){
+                   document.getElementById( 'Q2div' ).style.display = 'none';
+                   document.getElementById( 'Q3div' ).style.display = 'none';
+                   document.getElementById( 'Q4div' ).style.display = 'none';
+                   document.getElementById( 'Q5div' ).style.display = 'none';
+                   document.getElementById( 'Q6div' ).style.display = 'none';
+                   document.getElementById( 'Q7div' ).style.display = 'none';
+                   document.getElementById( 'labelPreQuest' ).style.display = 'none';
+                   
+                   document.getElementById( 'star5Q2' ).required = false;
+                   document.getElementById( 'star4Q2' ).required = false;
+                   document.getElementById( 'star3Q2' ).required = false;
+                   document.getElementById( 'star2Q2' ).required = false;
+                   document.getElementById( 'star1Q2' ).required = false;
+                    
+                   document.getElementById( 'star5Q3' ).required = false;
+                   document.getElementById( 'star4Q3' ).required = false;
+                   document.getElementById( 'star3Q3' ).required = false;
+                   document.getElementById( 'star2Q3' ).required = false;
+                   document.getElementById( 'star1Q3' ).required = false;
+                    
+                   document.getElementById( 'star5Q4' ).required = false;
+                   document.getElementById( 'star4Q4' ).required = false;
+                   document.getElementById( 'star3Q4' ).required = false;
+                   document.getElementById( 'star2Q4' ).required = false;
+                   document.getElementById( 'star1Q4' ).required = false;
+                
+                   document.getElementById( 'star5Q5' ).required = false;
+                   document.getElementById( 'star4Q5' ).required = false;
+                   document.getElementById( 'star3Q5' ).required = false;
+                   document.getElementById( 'star2Q5' ).required = false;
+                   document.getElementById( 'star1Q5' ).required = false;
+                    
+                   document.getElementById( 'y' ).required = false;
+                   document.getElementById( 'n' ).required = false;
+                   }
+                else{
+                   document.getElementById( 'Q2div' ).style.display = '';
+                   document.getElementById( 'Q3div' ).style.display = '';
+                   document.getElementById( 'Q4div' ).style.display = '';
+                   document.getElementById( 'Q5div' ).style.display = '';
+                   document.getElementById( 'Q6div' ).style.display = '';
+                   document.getElementById( 'Q7div' ).style.display = '';
+                   document.getElementById( 'labelPreQuest' ).style.display = '';
+                
+                   document.getElementById( 'star5Q2' ).required = true;
+                   document.getElementById( 'star4Q2' ).required = true;
+                   document.getElementById( 'star3Q2' ).required = true;
+                   document.getElementById( 'star2Q2' ).required = true;
+                   document.getElementById( 'star1Q2' ).required = true;
+                    
+                   document.getElementById( 'star5Q3' ).required = true;
+                   document.getElementById( 'star4Q3' ).required = true;
+                   document.getElementById( 'star3Q3' ).required = true;
+                   document.getElementById( 'star2Q3' ).required = true;
+                   document.getElementById( 'star1Q3' ).required = true;
+                    
+                   document.getElementById( 'star5Q4' ).required = true;
+                   document.getElementById( 'star4Q4' ).required = true;
+                   document.getElementById( 'star3Q4' ).required = true;
+                   document.getElementById( 'star2Q4' ).required = true;
+                   document.getElementById( 'star1Q4' ).required = true;
+                
+                   document.getElementById( 'star5Q5' ).required = true;
+                   document.getElementById( 'star4Q5' ).required = true;
+                   document.getElementById( 'star3Q5' ).required = true;
+                   document.getElementById( 'star2Q5' ).required = true;
+                   document.getElementById( 'star1Q5' ).required = true;
+                    
+                   document.getElementById( 'y' ).required = true;
+                   document.getElementById( 'n' ).required = true;    
+
+                   }
+            }
+        </script>
         <!-- <script src="js/app.min.js "></script> -->
         <!-- <script src="//localhost:35729/livereload.js"></script> -->
     </body>

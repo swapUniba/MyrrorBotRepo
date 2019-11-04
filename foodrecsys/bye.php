@@ -33,18 +33,28 @@
         
         if(isset($_POST['Q2']))
             $answers = $answers . $_POST['Q2'] . ',';
+         else 
+             $answers = $answers . ',';
 
         if(isset($_POST['Q3']))
             $answers = $answers . $_POST['Q3'] . ',';
+        else 
+             $answers = $answers . ',';
 
         if(isset($_POST['Q4']))
-            $answers = $answers . $_POST['Q4'] . ',';        
+            $answers = $answers . $_POST['Q4'] . ',';
+        else 
+             $answers = $answers . ',';
 
         if(isset($_POST['Q5']))
             $answers = $answers . $_POST['Q5'] . ',';
+         else 
+             $answers = $answers . ',';
                                          
         if(isset($_POST['Q6']))
             $answers = $answers . $_POST['Q6'] . ',';
+         else 
+             $answers = $answers . ',';
 
         if(isset($_POST['Q7']))
             $answers = $answers . str_replace(",", " ", $_POST['Q7']);
@@ -88,7 +98,8 @@
                 <div class="inner container">
                     <div class="row">
                         <div class="col-md-6 d-flex">
-                            <span> &copy; 2019 <a href="http://www.di.uniba.it/~swap/" target="_blank"> SWAP Research Group </a></span>
+                            <span> &copy; 2019 <a href="http://www.di.uniba.it/~swap/" target="_blank"> SWAP Research Group </a>,</span>
+                            <span>&nbsp;<a href="privacy.html" target="_blank">Privacy Policy </a></span>
                         </div>
                         <div class="col-md-6 d-flex flex-row-reverse  ">
                             <span>Developed by <a href="https://github.com/itkkk" target="_blank">Antonio Pellicani</a> &amp; <a href="https://github.com/astarrr" target="_blank">Angelo Sparapano</a></span>
