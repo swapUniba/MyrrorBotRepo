@@ -11,7 +11,7 @@ SE SI VUOLE ESEGUIRE IL SITO IN LOCALE
 window.location.href = 'index.html';
 
 2)impostare in script js la variabile email staticamente
-es. var email = "cat@cat.it"
+var email = "cat@cat.it" alla riga 6 e alla riga 149.
 
 3)In readLocalJson.php impostare staticamente la mail
 Es.  $email = "cat@cat.it"; 
