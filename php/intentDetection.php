@@ -20,6 +20,13 @@ include 'Video.php';
 include 'News.php';
 include 'Meteo.php';
 include 'Food.php';
+include 'Workout.php';
+
+include 'GetValuesFunctions.php';
+
+include 'Tv.php';
+
+
 
 $city = "Bari";
 header('Content-type: text/plain; charset=utf-8');
@@ -235,7 +242,7 @@ function selectIntent($email,$intent, $confidence,$text,$resp,$parameters,$city)
 
              case 'Meteo':
                //$city = "Bari";
-                $answer = getWeather($city,$parameters,$text);
+                $answer = getWeather($city,$parameters,$text,$email); //email aggiunta per sperimentazione
                 break;
 
             case 'attiva debug':
@@ -245,11 +252,23 @@ function selectIntent($email,$intent, $confidence,$text,$resp,$parameters,$city)
             case 'disattiva debug':
                 $answer = $resp;
                 break;
-				
-			/*case 'Cibo':
-				$answer = getRecipe($resp,$city,$parameters,$text);
-				break;
-			*/
+
+            case 'Allenamento personalizzato':
+                 $answer = recommendWorkout($resp, $parameters, $text, $email);
+                 break;
+             
+            case 'Allenamento generico':
+                 $answer = retriveWorkout($resp, $parameters, $text, $email);
+                 break;
+
+            case 'Ritrovamento programma':
+            	$answer = retriveTV($resp,$parameters,$text,$email);
+            	break;
+
+            case 'Raccomandazione programma':
+            	$answer = recommendTV($resp,$parameters,$text,$email);
+            	break;         
+                
 			
             default:
                 if ($resp != "") { //Small Talk
@@ -280,8 +299,6 @@ function selectIntent($email,$intent, $confidence,$text,$resp,$parameters,$city)
                 $answer = getVideoByEmotion($resp,$parameters,$text,$email);
                 break;
 
-         
-
             case 'Ricerca Video':
                 $answer = getVideoBySearch($resp,$parameters,$text,$email);
                 break;
@@ -299,8 +316,8 @@ function selectIntent($email,$intent, $confidence,$text,$resp,$parameters,$city)
 
     }
 	
-	//CIBO
-	if($intent == 'Cibo'){
+//CIBO
+if($intent == 'Cibo'){
 
         $answer = getRecipe($resp,$parameters,$text,$email);
 

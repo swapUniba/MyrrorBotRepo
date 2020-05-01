@@ -3,6 +3,9 @@
 function queryMyrror($param,$email){
 
 	$json = null;
+	//$email = 'dav@dav.it';
+	$email = 'cat@cat.it';
+	 //$email = 'mirko@mirko.it';	
 
 	if (isset($_COOKIE['myrror'])) {
 

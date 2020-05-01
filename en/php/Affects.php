@@ -577,6 +577,7 @@ function getTodayUmoreBinario($oggi, $parameters,$email){
      }else if ($mood == 0 && $parameters['UmoreBuono'] != ""){
         $risposta = "your mood was neutral";
      }
+	 else $risposta = "your mood is neutral";
 
     if ($mood == -1 && $parameters['UmoreCattivo'] != "") {
         $risposta = "you were in a terrible mood";
@@ -585,15 +586,16 @@ function getTodayUmoreBinario($oggi, $parameters,$email){
      }else if ($mood == 0 && $parameters['UmoreCattivo'] != ""){
         $risposta = "your mood was neutral";
      }
-
+	else $risposta = "your mood is neutral";
+	
       if ($mood == 0 && $parameters['UmoreNeutro'] != "") {
         $risposta = "you had a neutral mood";
      }else if ($mood == 1 && $parameters['UmoreNeutro'] != ""){
-        $risposta = "your mood was positive";
+        $risposta = "your mood is positive";
      }else if ($mood == -1 && $parameters['UmoreNeutro'] != ""){
-        $risposta = "your mood was bad";
+        $risposta = "your mood is bad";
      }
-
+	else $risposta = "your mood is neutral";
 
         $answer = "Based on the latest data collected " . $risposta;
   }

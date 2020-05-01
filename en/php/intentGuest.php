@@ -14,6 +14,10 @@ include 'News.php';
 include 'Meteo.php';
 include 'Food.php';
 
+include 'Workout.php';
+
+include 'Tv.php';
+
 $city = "Roma";
 header('Content-type: text/plain; charset=utf-8');
  ini_set('display_errors', 1);
@@ -70,7 +74,9 @@ function detect_intent_texts($projectId,$city,$email, $text, $sessionId, $langua
 
         //Stampo la risposta relativa all'intent non identificato
         $arr = array('intentName' => "Non identificato", 'confidence' => "0",'answer' => $answer);
-        printf(json_encode($arr,'UTF8'));  //JSON_UNESCAPED_UNICODE utilizzato per il formato UTF8
+        //printf(json_encode($arr,'UTF8'));  //JSON_UNESCAPED_UNICODE utilizzato per il formato UTF8
+	printf(json_encode($arr,JSON_UNESCAPED_UNICODE));  //JSON_UNESCAPED_UNICODE utilizzato per il formato UTF8
+
 
     }
     
@@ -113,6 +119,14 @@ function selectIntent($email,$intent, $confidence,$text,$resp,$parameters,$city)
             case 'Default Welcome Intent':
                 $answer = $resp;
                 break;
+
+            case 'Allenamento generico':
+                $answer = retriveWorkout($resp, $parameters, $text, null);
+                break;
+
+            case 'Ritrovamento programma':
+                $answer = retriveTV($resp,$parameters,$text,null);
+                break;        
 
             default:
                
@@ -164,7 +178,10 @@ function selectIntent($email,$intent, $confidence,$text,$resp,$parameters,$city)
         $flagHealthy = false;
         $flagLight = false;
         $ingredient = "";
-
+	$flagVeg = false;
+	$flagLac = false;
+	$flagNick = false;
+	$flagGluten = false;
         
         //Controllo se sono presenti le parole della lista healty allora setto a vero il flag healty
         foreach($listaHealthy as $parola)  {  
@@ -192,17 +209,21 @@ function selectIntent($email,$intent, $confidence,$text,$resp,$parameters,$city)
             } 
         }
         
-        $answer = getRecipeByIngredient($resp,$parameters,$text,$email, $ingredient, $flagHealthy, $flagLight);
+        //$answer = getRecipeByIngredient($resp,$parameters,$text,$email, $ingredient, $flagHealthy, $flagLight);
+	$answer = getRecipeByIngredient($resp,$parameters,$text,$email, $ingredient, $flagHealthy, $flagLight, $flagVeg, $flagLac, $flagNick, $flagGluten);
 
     }
 
     //Stampo la risposta
     $arr = array('intentName' => $intent, 'confidence' => $confidence,'answer' => $answer);
 
+    //print_r($answer);
+
     if ($arr['intentName'] == 'Canzone per nome') {
-        printf(json_encode($arr)); //JSON_UNESCAPED_UNICODE utilizzato per il formato UTF8
+        printf("%s",json_encode($arr)); //JSON_UNESCAPED_UNICODE utilizzato per il formato UTF8
     }else{
-        printf(json_encode($arr,JSON_UNESCAPED_UNICODE)); //JSON_UNESCAPED_UNICODE utilizzato per il formato UTF8
+	//print_r($arr);
+        printf("%s",json_encode($arr,JSON_UNESCAPED_UNICODE)); //JSON_UNESCAPED_UNICODE utilizzato per il formato UTF8
     }
 }
 

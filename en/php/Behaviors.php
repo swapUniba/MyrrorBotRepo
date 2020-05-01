@@ -225,7 +225,7 @@ $endDate = substr($parameters['date-period']['endDate'],0,10);
     	return "It looks like you haven't done any physical activity 😅";
 	
 	
-		$answer = "The latest data available is from ".$activity[3].", when you did";
+		$answer = "The latest data available is from ".$activity[3].", when you did ";
 		$answer .=  $activity[2] ." minutes of very active activity <br> ".
          $activity[1] ." minutes of inactive activity and ";
 
@@ -261,7 +261,7 @@ $endDate = substr($parameters['date-period']['endDate'],0,10);
         $answer .=  $activity[0]." minutes of fairly active activity<br><br>";
 
 	}else{
-	$answer = "The latest data available is from ".$activity[3].", when you did";
+	$answer = "The latest data available is from ".$activity[3].", when you did ";
     $answer .=  $activity[2] ."minutes of very active activity <br> ".
          $activity[1] ." minutes of inactive activity and ";
 
@@ -276,7 +276,7 @@ $endDate = substr($parameters['date-period']['endDate'],0,10);
   $activity = attivitaData("",$email);
 
  
- $answer = "The latest data available is from ".$activity[3].", when you did";
+ $answer = "The latest data available is from ".$activity[3].", when you did ";
     $answer .=  $activity[2] ."minutes of very active activity  <br> ".
          $activity[1] ." minutes of inactive activity and ";
 

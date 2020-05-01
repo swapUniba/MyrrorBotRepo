@@ -74,6 +74,7 @@ $(window).on('keydown', function(e) {
 
 function send(query) {
     var text = query;
+	
     if (flagcitta == true) {
         flagcitta = false;
         temp = $('#contesto').val();
@@ -133,16 +134,16 @@ function setResponse(val) {
 
         //the json is ok
         val = JSON.parse(val);
-        var musicaSpotify = "Here is your request!";
-        var spiegazione = "";
+        var musicaSpotify = "I'm playing...";
+        var spiegazione = "fragola";
 
         var canzoneNomeSpotify = "Here is the song requested!";
         var canzoneArtistaSpotify = "Here is the song of the requested artist!";
-        var canzoneGenereSpotify = "Here is a playlist of songs of the required genre!";
-        var playlistEmozioniSpotify = "Here is a playlist of songs recommended based on your mood";
+        var canzoneGenereSpotify = "This is a playlist you might like";
+        var playlistEmozioniSpotify = "This is a playlist based on your mood";
         var canzoneEmozioniSpotify = "Here is a suggested song based on your mood";
         var canzoniPersonalizzateSpotify = "Here is a recommended song you might like";
-        var video = "Here is the video requested";
+        var video = "This is a video you might like ";
 
         if (val["intentName"] == "attiva debug") {
             setDebug(true);
@@ -189,7 +190,28 @@ function setResponse(val) {
 
             }
 
-        } else if ((val["intentName"] == "Meteo") && val['confidence'] > 0.60) {
+        }else if (val.intentName == "Allenamento generico"){
+
+
+        	$(".chat").append(
+        	    '<li class="replies">' + 
+        	        '<img src="immagini/chatbot.png" alt=""/>' +
+        	            '<p>' +
+        	                '<a href="javascript:window.open(\''+val.answer.url+'\')">Here is the workout you asked:</a><br>' +
+
+        	                '<a href="javascript:window.open(\''+val.answer.url+'\')"><img style="width: 100%;height: 100%;" src="'+val.answer.imgUrl+'"></a>' +
+
+
+        	            '<br><br><b></b></p>'+
+        	    '</li>');
+
+
+
+        }else if(val.intentName == 'Ritrovamento programma'){
+
+                $(".chat").append('<li class="replies"><img src="immagini/chatbot.png" alt="" /><p id="par' + timestamp + '">' + val["answer"] + '</p></li>'); 
+
+            }else if ((val["intentName"] == "Meteo") && val['confidence'] > 0.60) {
 
             if (getCity() == "" && val['answer']['city'] == undefined) {
                 $(".chat").append('<li class="replies"><img src="immagini/chatbot.png" alt="" /><p >Enter the city</p></li>');
@@ -324,42 +346,47 @@ function setResponse(val) {
                 }
             }
 
-        } else if (val["intentName"] == "Cibo") {
-
+        }else if (val["intentName"] == "Cibo") {
             $("#intent").val("Cibo");
-
-            if (typeof val['answer']['procedure'] !== 'undefined') {
-                procedimento = val['answer']['procedure'];
-                $("#procedimento").val(procedimento);
-                
-                ingredients = val['answer']['ingredients'];
-                ingredients = ingredients.replace('[', '');
-                ingredients = ingredients.replace(']', '');
-                ingredients = ingredients.replace(/, /g, '<br>');
-
-                spiegazione = val['answer']['explain'];
-                $("#spiegazione").val(spiegazione);
-
+            $("#count_ric").val(1);
+            
+			if(typeof val['answer']['name'] !== 'undefined'){
                 $(".chat").append(
 					'<li class="replies">' + 
 						'<img src="immagini/chatbot.png" alt=""/>' +
-							'<p>I suggest: <br>' +
-								'<b><a href="' + val['answer']['url'] + '" target="_blank">' + val['answer']['name'] + '</a></b><br>' +
-								val['answer']['description'] + '<br>' +
-								'<img style="width: 100%;height: 100%;" src="' + val['answer']['imgURL'] + '">' +
-							'<br><br><b>Ingredients:</b><br>' + ingredients +
-							'<br><br>Wanna read the recipe?' +
+							'<p>' + val['answer']['name'] +
 							'</p>'+
 					'</li>');
-            } else {
-                $(".chat").append(
-                    '<li class="replies">' +
-                    '<img src="immagini/chatbot.png" alt=""/>' +
-                    '<p>' + val['answer']['name'] +
-                    '</p>' +
-                    '</li>');
             }
-
+            else{
+                $("#ric").val(encodeURIComponent(JSON.stringify(val)));
+                
+				procedimento = val.answer.recipes[0][26];
+				$("#procedimento").val(procedimento);
+				
+				ingredients = val.answer.recipes[0][24];
+				ingredients = ingredients.replace('[', '');
+				ingredients = ingredients.replace(']', '');
+				ingredients = ingredients.replace(/, /g, '<br>');
+                
+                spiegazione = val.answer.explain;
+                $("#spiegazione").val(spiegazione);
+				
+				$(".chat").append(
+					'<li class="replies">' + 
+						'<img src="immagini/chatbot.png" alt=""/>' +
+							'<p>I suggest: <br>' +
+								'<b><a href="' + val.answer.recipes[0][0] + '" target="_blank">' + val.answer.recipes[0][1] + '</a></b><br>' +
+								val.answer.recipes[0][5] + '<br>' +
+								'<img style="width: 100%;height: 100%;" src="' + val.answer.recipes[0][4] + '">' +
+							'<br><br><b>Ingredients:</b><br>' + ingredients +
+							'<br><br>Do you want to take a look to the instructions or search for another recipe?' +
+							'</p>'+
+					'</li>');
+                
+                
+			}
+			
         }else {
             var answer = val['answer'] + "To use all the features, you need to register to Myrror at the following address <a href='http://90.147.102.243:9090'>90.147.102.243</a>";
             $(".chat").append('<li class="replies"><img src="immagini/chatbot.png" alt="" /><p>' + answer + '</p></li>');
@@ -403,7 +430,7 @@ function setResponse(val) {
         scrollTop: ($(document).height() * 100)
     }, "fast");
 
-    //$(".chat").append('<p  id="hide'+timestamp+'" hidden> "'+quest+'"<p/>');
+    
 }
 
 //Intent avviato all'inizio del dialogo per mostrare la frase di benvenuto e per impostare il nome dell'utente nella schermata
@@ -416,7 +443,7 @@ function welcomeIntent() {
         while (tempStr == null) {
             tempStr = parts.pop().split(";").shift();
             if (tempStr.match(/@/)) {
-                //alert(tempStr);
+                
             }
         }
 

@@ -118,7 +118,7 @@ function getHeight($resp,$parameters,$text,$email){
 	if (isset($result)) {
 
 
-		$answer = str_replace("X",$result,$resp);
+		$answer = str_replace("X",$result['value'],$resp);
 
 
 	}else{
@@ -146,10 +146,11 @@ function getWeight($resp,$parameters,$text,$email){
         	}	
 		}
 	}
+	//print_r($result);
 
 	if (isset($result)) {
 
-		$answer = str_replace("X",$result,$resp);
+		$answer = str_replace("X",$result['value'],$resp); //prima era solo $result, io ho messo $result['value']
 
 	}else{
 		$answer = "Non sono riuscito a reperire le informazioni relative al tuo peso &#x1F62D;. Verifica che sia presente nel tuo account";
@@ -157,6 +158,37 @@ function getWeight($resp,$parameters,$text,$email){
 
 	return $answer;
 }
+
+
+//Ultima location per meteo sperimentazione
+function citta($email)
+{
+		$param = "";
+		$json_data = queryMyrror($param,$email);
+		$result = null;
+		$città = null;
+		//echo"la mail e".$email;
+		foreach ($json_data as $key1 => $value1) {
+			if(isset($value1['location'])){
+
+				foreach ($value1['location'] as $key2 => $value2) {
+					if ($key2 == "value") {
+						$result = $value2;
+					} 	
+	        	}	
+			}
+		}
+
+		if(isset($result['value'])){
+			$città = $result['value'];
+		}
+		return $città;
+
+}
+
+
+
+
 
 
 

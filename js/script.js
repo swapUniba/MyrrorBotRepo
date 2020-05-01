@@ -17,51 +17,7 @@ function getTimestampStart() {
 $("#profile-img").click(function() {
     $("#status-options").toggleClass("active");
 });
-/*
-  $(".expand-button").click(function() {
-    $("#profile").toggleClass("expanded");
-  	$("#contacts").toggleClass("expanded");
-  });
 
-  $("#status-options ul li").click(function() {
-  	$("#profile-img").removeClass();
-  	$("#status-online").removeClass("active");
-  	$("#status-away").removeClass("active");
-  	$("#status-busy").removeClass("active");
-  	$("#status-offline").removeClass("active");
-  	$(this).addClass("active");
-
-  	if($("#status-online").hasClass("active")) {
-  		$("#profile-img").addClass("online");
-  	} else if ($("#status-away").hasClass("active")) {
-  		$("#profile-img").addClass("away");
-  	} else if ($("#status-busy").hasClass("active")) {
-  		$("#profile-img").addClass("busy");
-  	} else if ($("#status-offline").hasClass("active")) {
-  		$("#profile-img").addClass("offline");
-  	} else {
-  		$("#profile-img").removeClass();
-  	};
-
-  	$("#status-options").removeClass("active");
-  });
-
-   $("#toggle").unbind().click(function(){
-
-var text = $(this).html();
-if (text == "Disattiva modalità di debug"){
-    $(this).css("background-color","red");
-  $(this).html("Attiva modalità di debug");
-  debug = false;
-}else{
-  $(this).css("background-color","green");
-  $(this).html("Disattiva modalità di debug");
-  debug = true;
-}
-//$(this).attr("disabled", true);
-
-});
-   */
 
 $("#logout").click(function() {
     $.cookie("myrror" + getEmail(), null, {
@@ -143,12 +99,14 @@ function send(query) {
         }
 
     } else {
-        window.location.href = 'index.html';
+     window.location.href = 'index.html';
     }
 
     email = tempStr;
+    //email = 'dav@dav.it';  
+	
 
-    if (text.match(/perchè/) || text.match(/spiegami/)) {
+    if (text.match(/perchè/) || text.match(/spiegami/) || text.match(/Perchè/) || text.match(/Perchè?/) || text.match(/perchè?/) ) {
         var testo = $("#spiegazione").val();
         $(".chat").append('<li class="replies"><img src="immagini/chatbot.png" alt="" /><p >' + testo + '</p></li>');
 
@@ -244,7 +202,7 @@ function setResponse(val) {
         val = JSON.parse(val);
 
         var musicaSpotify = "Ecco qui la tua richiesta!";
-        var spiegazione = "";
+        var spiegazione = "FRAGOLA";
 		var procedimento = "";
         var canzoneNomeSpotify = "Ecco qui la canzone richiesta!";
         var canzoneArtistaSpotify = "Ecco qui la canzone dell'artista richiesto!";
@@ -255,7 +213,10 @@ function setResponse(val) {
         var video = "Ecco qui il video richiesto";
         var ricetta = "Ecco una ricetta per te";
 
-        if (val["intentName"] == "Interessi" || val["intentName"] == "Contatti" || val["intentName"] == "Esercizio fisico" || val["intentName"] == "Personalita") {
+
+
+
+        if (val["intentName"] == "Interessi" || val["intentName"] == "Contatti" || val["intentName"] == "Esercizio fisico" || val["intentName"] == "Personalita")  {
 
             $(".chat").append('<li class="replies"><img src="immagini/chatbot.png" alt="" /><p id="par' + timestamp + '">' + val["answer"] + '</p></li>');
 
@@ -300,7 +261,94 @@ function setResponse(val) {
 
             }
 
-        } else if (val["intentName"] == "meteo binario") {
+        }else if(val["intentName"] == "Allenamento personalizzato"){
+
+            var localExplain;
+            if (val.answer.explain != undefined && val['answer']['explain'] != null) {
+                    spiegazione = val['answer']['explain'];
+                    localExplain = spiegazione;
+                    $("#spiegazione").val(spiegazione);
+
+             }
+
+
+            if(val.answer.url != undefined && val.answer.imgUrl != undefined){
+
+
+                   $(".chat").append(
+                       '<li class="replies">' + 
+                       '<img src="immagini/chatbot.png" alt=""/>' +
+                               '<p>' +
+                                   '<a href="javascript:window.open(\''+val.answer.url+'\')">Ti conisiglio:</a><br>' +
+
+                                   '<a href="javascript:window.open(\''+val.answer.url+'\')"><img style="width: 100%;height: 100%;" src="'+val.answer.imgUrl+'"></a>' +
+
+                                '</p></li><li class="replies">'+
+                                '<img src="immagini/chatbot_hidden.png" alt=""/>'+
+                                '<p id="par' + timestamp + '" </p></li>');
+
+            }else{
+                $(".chat").append('<li class="replies"><img src="immagini/chatbot.png" alt="" /><p id="par' + timestamp + '">' + localExplain + '</p></li>');
+            }
+
+
+
+
+
+
+        
+            }else if (val.intentName == "Allenamento generico"){
+
+
+                
+
+
+                $(".chat").append(
+                    '<li class="replies">' + 
+                        '<img src="immagini/chatbot.png" alt=""/>' +
+                            '<p>' +
+                                '<a href="javascript:window.open(\''+val.answer.url+'\')">Ecco l\'allenamento che mi hai chiesto:</a><br>' +
+
+                                '<a href="javascript:window.open(\''+val.answer.url+'\')"><img style="width: 100%;height: 100%;" src="'+val.answer.imgUrl+'"></a>' +
+
+
+                       '</p></li><li class="replies">'+
+               '<img src="immagini/chatbot_hidden.png" alt=""/>'+
+               '<p id="par' + timestamp + '" </p></li>');
+
+
+            }else if(val.intentName == 'Ritrovamento programma'){
+
+
+
+                $(".chat").append('<li class="replies"><img src="immagini/chatbot.png" alt="" /><p id="par' + timestamp + '">' + val["answer"] + '</p></li>'); 
+
+            }else if (val.intentName == 'Raccomandazione programma'){
+
+                var localExplain;
+
+                if (val.answer.explain != undefined && val['answer']['explain'] != null) {
+                        spiegazione = val['answer']['explain'];
+                        localExplain = spiegazione;
+                        $("#spiegazione").val(spiegazione);
+
+                 }
+
+
+                 if(val.answer.result != undefined){
+
+                    $(".chat").append('<li class="replies"><img src="immagini/chatbot.png" alt="" /><p id="par' + timestamp + '">' + val.answer.result + '</p></li>'); 
+
+
+                 }else{
+                    $(".chat").append('<li class="replies"><img src="immagini/chatbot.png" alt="" /><p id="par' + timestamp + '">' + localExplain + '</p></li>');
+                 }
+
+
+
+
+
+            }else if (val["intentName"] == "meteo binario") {
 
             if (val['answer']['city'] == undefined) {
                 $(".chat").append('<li class="replies"><img src="immagini/chatbot.png" alt="" /><p >Inserisci la città</p></li>');
@@ -481,7 +529,9 @@ function setResponse(val) {
 							'<br><br><b>Ingredienti:</b><br>' + ingredients +
 							"<br><br>Vuoi consultare il procedimento o guardare un'altra ricetta?" +
 							'</p>'+
-					'</li>');
+					'</li><li class="replies">'+
+                                '<img src="immagini/chatbot_hidden.png" alt=""/>'+
+                                '<p id="par' + timestamp + '" </p></li>');
                 
                 
 			}
@@ -492,9 +542,16 @@ function setResponse(val) {
 
         if (val['intentName'] == "Default Welcome Intent") {
 
-        } else if (isDebugEnabled()) {
+        }else if (isDebugEnabled()) {
             var risposta = val['answer'];
-            risposta = risposta.toString().toLowerCase();
+
+            if(val.intentName == 'Raccomandazione allenamento'){
+                risposta = 'immagine';
+            }else{
+                risposta = risposta.toString().toLowerCase();
+            }
+  
+            
             if (val['confidence'] < 0.6 || risposta.includes('riprova') || risposta.includes('sfortunatamente') || risposta.includes('purtroppo') || risposta == "") {
 
                 var testo = $("#hide" + timestamp).text();
@@ -539,7 +596,7 @@ function welcomeIntent() {
         }
 
     } else {
-        window.location.href = 'index.html';
+       window.location.href = 'index.html';
     }
     setProfileImg(tempStr);
     setNominativo(tempStr); //Nome per la grafica del sito
@@ -588,5 +645,5 @@ $("ul.chat").on("click", "a.news", function(evnt) {
 });
 
 $("#logout").click(function() {
-    window.location.href = 'index.html';
+  window.location.href = 'index.html';
 });

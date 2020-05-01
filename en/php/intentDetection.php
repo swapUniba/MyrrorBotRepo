@@ -21,6 +21,12 @@ include 'News.php';
 include 'Meteo.php';
 include 'Food.php';
 
+include 'Workout.php';
+
+include 'GetValuesFunctions.php';
+
+include 'Tv.php';
+
 
 
 header('Content-type: text/plain; charset=utf-8');
@@ -248,6 +254,24 @@ function selectIntent($email,$intent, $confidence,$text,$resp,$parameters,$city)
             case 'disattiva debug':
                 $answer = $resp;
                 break;
+
+            case 'Allenamento personalizzato':
+                 $answer = recommendWorkout($resp, $parameters, $text, $email);
+                 break;
+             
+            case 'Allenamento generico':
+                 $answer = retriveWorkout($resp, $parameters, $text, $email);
+                 break;
+
+
+            case 'Ritrovamento programma':
+                $answer = retriveTV($resp,$parameters,$text,$email);
+                break;
+
+            case 'Raccomandazione programma':
+                $answer = recommendTV($resp,$parameters,$text,$email);
+                break;             
+
 
             default:
                 if ($resp != "") { //Small Talk

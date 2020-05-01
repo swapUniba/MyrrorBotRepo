@@ -14,6 +14,18 @@ include 'News.php';
 include 'Meteo.php';
 include 'Food.php';
 
+include 'Workout.php';
+
+include 'Tv.php';
+
+//require './Workout.php';
+//include 'GetValuesFunctions.php';
+//include 'FetchWorkoutFunctions.php';
+
+//require($_SERVER['DOCUMENT_ROOT'].'/php/WorkoutRecSys/Workout.php');
+//require($_SERVER['DOCUMENT_ROOT'].'/php/WorkoutRecSys/GetValuesFunctions.php');
+//require($_SERVER['DOCUMENT_ROOT'].'/php/WorkoutRecSys/FetchWorkoutFunctions.php');
+
 $city = "Roma";
 header('Content-type: text/plain; charset=utf-8');
  ini_set('display_errors', 1);
@@ -98,8 +110,19 @@ function selectIntent($email,$intent, $confidence,$text,$resp,$parameters,$city)
                 break; 
 
             case 'Meteo':
-               //$city = "Bari";
-                $answer = getWeather($city,$parameters,$text);
+                //Per sperimentazione, Bari o Milano, random
+                $n = rand(0,1);
+                switch ($n) {
+                    case '0':
+                        $city = 'Bari';
+                        break;
+                    
+                    default:
+                        $city = 'Milano';
+                        break;
+                }
+                //$city = "Bari";
+                $answer = getWeather($city,$parameters,$text,null);
                 break;
 
             case 'attiva debug':
@@ -113,6 +136,24 @@ function selectIntent($email,$intent, $confidence,$text,$resp,$parameters,$city)
             case 'Default Welcome Intent':
                 $answer = $resp;
                 break;
+
+            case 'Allenamento generico':
+                $answer = retriveWorkout($resp, $parameters, $text, null);
+                break;
+
+            case 'Allenamento personalizzato':
+                $answer = recommendWorkoutGuest($resp, $parameters, $text, null);
+                break;    
+
+
+            case 'Ritrovamento programma':
+                $answer = retriveTV($resp,$parameters,$text,null);
+                break;
+
+            case 'Raccomandazione programma':
+                $answer = recommendTVGuest($resp,$parameters,$text,null);
+                break;    
+                       
 
             default:
                
@@ -131,7 +172,7 @@ function selectIntent($email,$intent, $confidence,$text,$resp,$parameters,$city)
      //SPOTIFY --> Valori soglia diversi
     if(($confidence > 0.86 ||  str_word_count($text) >= 2) && $confidence >= 0.50 && ($intent == 'Musica')){
 
-        $answer = getMusic($resp,$parameters,$text,$email);
+        $answer = getMusicGuest($resp,$parameters,$text,$email);
     }
 
     //YOUTUBE --> Valori soglia diversi
@@ -152,7 +193,7 @@ function selectIntent($email,$intent, $confidence,$text,$resp,$parameters,$city)
     //GOOGLE-NEWS--> Valori soglia diversi
     if($confidence >= 0.50  && ($intent == 'News')){
 
-        $answer = getNews($parameters,$email,$text);
+        $answer = getNews($parameters,'UtenteAnonimo',$text);
 
     }
     
@@ -162,7 +203,11 @@ function selectIntent($email,$intent, $confidence,$text,$resp,$parameters,$city)
         $listaLight = array(' leggera', ' light', ' leggero');
         $listaParoleIngredient = array(' a base di ', ' con ', 'contenente ');
         $flagHealthy = false;
-        $flagLight = false;
+        $flagLight = true;
+        $flagVeg = false;
+        $flagLac = false;
+        $flagNick = false;
+        $flagGluten = false;
         $ingredient = "";
 
         
@@ -183,27 +228,91 @@ function selectIntent($email,$intent, $confidence,$text,$resp,$parameters,$city)
                 break;
             } 
         }
+       
         //Controllo se sono presenti le parole della lista ingredienti allora setto a vero il flag ingredienti
+        /*
         foreach($listaParoleIngredient as $parola)  {  
             if (stripos($text, $parola) !== false) {
                 //Contiene la parola
                 $ingredient = explode($parola, $text)[1];
                 break;
             } 
+        }*/
+
+        //pre sperimentazione
+       //$answer = getRecipeByIngredient($resp,$parameters,$text,$email, 'pesce', $flagHealthy, $flagLight, $flagVeg, $flagLac, $flagNick, $flagGluten);
+
+        if($flagHealthy == false && $flagNick == false && $flagLight == false && $flagVeg == false && $flagLac == false && $flagGluten == false){
+           /* 
+           Se sono tutti false, per la simulazione, gli avvaloriamo randomicamente.
+
+           flagHealthy = 0
+           flagNick = 1
+           flagLight = 2
+           flagVeg = 3
+           flagLac = 4 
+           flagGluten = 5
+           
+           */ 
+         //  echo"tutti a false";
+
+           $intero = rand(0,5);
+          // echo$intero;
+
+           switch ($intero) {
+               case 0:
+                   $flagHealthy =true;
+                   break;
+
+                case 1:
+                    $flagNick = true;
+                    break;
+
+                case 2:
+                    $flagLight = true;
+                    break;
+
+                case 3:
+                    $flagVeg = true;
+                    break;
+
+                 case 4:
+                    $flagLac = true;
+                    break;
+
+                 case 5:
+                    $flagGluten = true;  
+                    break;
+               
+           }
+
+
+
         }
-        
-        $answer = getRecipeByIngredient($resp,$parameters,$text,$email, $ingredient, $flagHealthy, $flagLight);
+
+        //print("healty")
+
+        //$answer = getStandardRecipe($resp,$parameters,$text,$email,true, $flagLight, $flagVeg, $flagLac, $flagNick, $flagGluten);
+        $answer = getStandardRecipe($resp,$parameters,$text,$email, $flagHealthy, $flagLight, $flagVeg, $flagLac, $flagNick, $flagGluten);
+       // $answer = getRecipeSperimentazione($resp,$parameters,$text,$email);
+
+        //print_r($answer);
 
     }
 
     //Stampo la risposta
     $arr = array('intentName' => $intent, 'confidence' => $confidence,'answer' => $answer);
 
+  
+
     if ($arr['intentName'] == 'Canzone per nome') {
         printf(json_encode($arr)); //JSON_UNESCAPED_UNICODE utilizzato per il formato UTF8
     }else{
-        printf(json_encode($arr,JSON_UNESCAPED_UNICODE)); //JSON_UNESCAPED_UNICODE utilizzato per il formato UTF8
-    }
+    //printf(json_encode($arr))
+      printf(json_encode($arr , JSON_UNESCAPED_UNICODE)); //JSON_UNESCAPED_UNICODE utilizzato per il formato UTF8
+    //echo json_encode($arr);
+  }
+    
 }
 
 //date_default_timezone_set('Europe/Madrid'); //Imposto la stessa timezone di Dialogflow (per gli orari)

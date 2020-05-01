@@ -77,7 +77,7 @@ function send(query) {
     if (flagcitta == true) {
         flagcitta = false;
         temp = $('#contesto').val();
-        temp += " " + text;
+        temp += " a " + text;
         text = temp;
     }
 
@@ -90,14 +90,14 @@ function send(query) {
         $(".chat").append('<li class="replies"><img src="immagini/chatbot.png" alt="" /><p >' + testo + '</p></li>');
 
     } else if($('#intent').val() == 'Cibo' && (text == 'si' || text.match == 'va bene' || text == 'ok'
-			|| text == 'ovvio' || text == 'certamente' || text == 'certo')){
-		$("#intent").val("");
-		
-		
-		var testo = $("#procedimento").val();
-		$(".chat").append('<li class="replies"><img src="immagini/chatbot.png" alt="" /><p >' + testo + '</p></li>');
+            || text == 'ovvio' || text == 'certamente' || text == 'certo')){
+        $("#intent").val("");
+        
+        
+        var testo = $("#procedimento").val();
+        $(".chat").append('<li class="replies"><img src="immagini/chatbot.png" alt="" /><p >' + testo + '</p></li>');
 
-	}
+    }
     else{
         if (text.match(/cambia/) || text.match(/cambio/) || text.match(/dammi un'altra/) || text.match(/leggi un'altra/) || text.match(/dammene un'altra/) ||
             text.match(/leggine un'altra/) || text.match(/leggi altra news/) || text.match(/altra canzone/) || text.match(/dimmi un'altra/) || text.match(/riproducine un'altra/) ||
@@ -191,7 +191,51 @@ function setResponse(val) {
 
             }
 
-        } else if ((val["intentName"] == "Meteo") && val['confidence'] > 0.60) {
+        }else if (val.intentName == "Allenamento generico"){
+
+           $(".chat").append(
+               '<li class="replies">' + 
+                   '<img src="immagini/chatbot.png" alt=""/>' +
+                       '<p>' +
+                           '<a href="javascript:window.open(\''+val.answer.url+'\')">Ecco l\'allenamento che mi hai chiesto:</a><br>' +
+
+                           '<a href="javascript:window.open(\''+val.answer.url+'\')"><img style="width: 100%;height: 100%;" src="'+val.answer.imgUrl+'"></a>' +
+
+
+                       '</p></li><li class="replies">'+
+               '<img src="immagini/chatbot_hidden.png" alt=""/>'+
+               '<p id="par' + timestamp + '" </p></li>');
+
+     
+
+
+
+
+            }else if(val.intentName == 'Allenamento personalizzato'){
+                
+                $(".chat").append(
+                    '<li class="replies">' + 
+                        '<img src="immagini/chatbot.png" alt=""/>' +
+                            '<p>' +
+                                '<a href="javascript:window.open(\''+val.answer.url+'\')">Ti conisiglio:</a><br>' +
+
+                                '<a href="javascript:window.open(\''+val.answer.url+'\')"><img style="width: 100%;height: 100%;" src="'+val.answer.imgUrl+'"></a>' +
+                                '</p></li><li class="replies">'+
+                                '<img src="immagini/chatbot_hidden.png" alt=""/>'+
+                                '<p id="par' + timestamp + '" </p></li>');
+
+
+                            //'</p><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><p id="par' + timestamp + '"></p>'+
+                    //'</li>');
+
+
+            }else if(val.intentName == 'Ritrovamento programma'){
+
+                $(".chat").append('<li class="replies"><img src="immagini/chatbot.png" alt="" /><p id="par' + timestamp + '">' + val["answer"] + '</p></li>'); 
+
+            }else if(val.intentName == 'Raccomandazione programma'){
+                $(".chat").append('<li class="replies"><img src="immagini/chatbot.png" alt="" /><p id="par' + timestamp + '">' + val.answer+ '</p></li>');
+            }else if ((val["intentName"] == "Meteo") && val['confidence'] > 0.60) {
 
             if (getCity() == "" && val['answer']['city'] == undefined) {
                 $(".chat").append('<li class="replies"><img src="immagini/chatbot.png" alt="" /><p >Inserisci la città</p></li>');
@@ -326,46 +370,58 @@ function setResponse(val) {
                 }
             }
 
-        } else if (val["intentName"] == "Cibo") {
-
-            $("#intent").val("Cibo");
-
-            if (typeof val['answer']['procedure'] !== 'undefined') {
-                procedimento = val['answer']['procedure'];
+        }else if (val["intentName"] == "Cibo") {
+           $("#count_ric").val(1);
+           $("#intent").val("Cibo");
+           
+            
+            
+            if(typeof val['answer']['name'] !== 'undefined'){
+                $(".chat").append(
+                    '<li class="replies">' + 
+                        '<img src="immagini/chatbot.png" alt=""/>' +
+                            '<p>' + val['answer']['name'] +
+                            '</p>'+
+                    '</li>');
+            }
+            else{
+                $("#ric").val(encodeURIComponent(JSON.stringify(val)));
+                
+                procedimento = val.answer.recipes[0][26];
                 $("#procedimento").val(procedimento);
                 
-                ingredients = val['answer']['ingredients'];
+                ingredients = val.answer.recipes[0][24];
                 ingredients = ingredients.replace('[', '');
                 ingredients = ingredients.replace(']', '');
                 ingredients = ingredients.replace(/, /g, '<br>');
-
-                spiegazione = val['answer']['explain'];
+                
+                spiegazione = val.answer.explain;
                 $("#spiegazione").val(spiegazione);
-
+                
                 $(".chat").append(
-                    '<li class="replies">' +
-                    '<img src="immagini/chatbot.png" alt=""/>' +
-                    '<p>Ti consiglio: <br>' +
-                    '<b><a href="' + val['answer']['url'] + '" target="_blank">' + val['answer']['name'] + '</a></b><br>' +
-                    val['answer']['description'] + '<br>' +
-                    '<img style="width: 100%;height: 100%;" src="' + val['answer']['imgURL'] + '">' +
-                    '<br><br><b>Ingredienti:</b><br>' + ingredients +
-                    '<br><br>Vuoi consultare la ricetta?' +
-                    '</p>' +
-                    '</li>');
-            } else {
-                $(".chat").append(
-                    '<li class="replies">' +
-                    '<img src="immagini/chatbot.png" alt=""/>' +
-                    '<p>' + val['answer']['name'] +
-                    '</p>' +
-                    '</li>');
-            }
+                    '<li class="replies">' + 
+                        '<img src="immagini/chatbot.png" alt=""/>' +
+                            '<p>Ti consiglio: <br>' +
+                                '<b><a href="' + val.answer.recipes[0][0] + '" target="_blank">' + val.answer.recipes[0][1] + '</a></b><br>' +
+                                val.answer.recipes[0][5] + '<br>' +
+                                '<img style="width: 100%;height: 100%;" src="' + val.answer.recipes[0][4] + '">' +
+                            '<br><br><b>Ingredients:</b><br>' + ingredients +
+                            '<br><br>Vuoi consultare la ricetta?' +
+                            '</p>'+
+                    '</li><li class="replies">'+
+                                '<img src="immagini/chatbot_hidden.png" alt=""/>'+
+                                '<p id="par' + timestamp + '" </p></li>');
+                
+                
+            }        
 
         } else {
-            var answer = val['answer'] + "Per poter sfruttare le latre funzioni, occore registrarsi a Myrror al seguente indirizzo  <a href='http://90.147.102.243:9090'>90.147.102.243</a>";
+            var answer = val['answer'] + "Per poter sfruttare le altre funzioni, occore registrarsi a Myrror al seguente indirizzo  <a href='http://90.147.102.243:9090'>90.147.102.243</a>";
             $(".chat").append('<li class="replies"><img src="immagini/chatbot.png" alt="" /><p>' + answer + '</p></li>');
         }
+
+
+
 
         if (val['intentName'] == "Default Welcome Intent") {
 
@@ -405,8 +461,10 @@ function setResponse(val) {
         scrollTop: ($(document).height() * 100)
     }, "fast");
 
-    //$(".chat").append('<p  id="hide'+timestamp+'" hidden> "'+quest+'"<p/>');
 }
+
+
+
 
 //Intent avviato all'inizio del dialogo per mostrare la frase di benvenuto e per impostare il nome dell'utente nella schermata
 function welcomeIntent() {
@@ -419,6 +477,7 @@ function welcomeIntent() {
             tempStr = parts.pop().split(";").shift();
             if (tempStr.match(/@/)) {
                 //alert(tempStr);
+
             }
         }
 
@@ -429,3 +488,4 @@ function welcomeIntent() {
 
 
 }
+

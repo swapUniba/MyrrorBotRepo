@@ -15,9 +15,9 @@ function getRecipe($resp,$parameters,$text,$email){
     $text = str_replace("?", "", $text);
     
     
-	$listaParoleRaccomandazioni = array('dammi una ricetta', 'consigliami', 'consigli', 'suggerisc', 'per me' , 'a me', 'cosa posso mangiare');//raccomandazioni
+   $listaParoleRaccomandazioni = array('dammi una ricetta', 'consigliami', 'consigli', 'suggerisc', 'per me' , 'a me', 'cosa posso mangiare');//raccomandazioni
     $listaParoleIngredient = array(' a base di ',' con lo ', ' con la ', ' con le ', ' con gli ', ' con il ', ' con i ', ' con ', 'contenente ', ' di ', ' al ');
-	$listaHealthy = array(' salutare', ' sana', ' sano');
+    $listaHealthy = array(' salutare', ' sana', ' sano');
     $listaLight = array(' leggera', ' light', ' leggero');
     $listaVeg = array(' vegetariana', ' vegetariano');
     $listaLac = array(' lattosio');
@@ -25,13 +25,13 @@ function getRecipe($resp,$parameters,$text,$email){
     $listaGluten = array( ' glutine');
 	
 	
-	$flagRaccomandazioni = false;
-	$flagIngredienti = false;
-	$flagHealthy = false;
+	  $flagRaccomandazioni = false;
+	  $flagIngredienti = false;
+	  $flagHealthy = false;
     $flagLight = false;
     $ingredient = "";
     $flagVeg = false;
-    $flagLac = false;
+    $flagLac = false; //va a true se è lac
     $flagNick = false;
     $flagGluten = false;    
     
@@ -115,24 +115,153 @@ function getRecipe($resp,$parameters,$text,$email){
 		$answer = getPersonalizedRecipe($resp,$parameters,$text,$email, TRUE, $ingredient, $flagHealthy, $flagLight, $flagVeg, $flagLac, $flagNick,$flagGluten);
 	}
 	else if($flagIngredienti){
-		$answer = getRecipeByIngredient($resp,$parameters,$text,$email, $ingredient, $flagHealthy, $flagLight, $flagVeg, $flagLac, $flagNick, $flagGluten);
+		$answer = getRecipeByIngredient($resp,$parameters,$text,$email, $ingredient, $flagHealthy, $flagLight, $flagVeg, $flagLac, $flagNick, TRUE);
 	}
 	else if($flagRaccomandazioni){
 		$answer = getPersonalizedRecipe($resp,$parameters,$text,$email, FALSE, $ingredient, $flagHealthy, $flagLight, $flagVeg, $flagLac, $flagNick, $flagGluten);
+    //print('yay');
 	}
 	else if ($parameters['FoodType'] != "") {
 	   	$answer = getRecipeByType($resp,$parameters,$text,$email, $flagHealthy, $flagLight, $flagVeg, $flagLac, $flagNick, $flagGluten);
  	}
     else{
+      print('qua');
         $answer = getStandardRecipe($resp,$parameters,$text,$email, $flagHealthy, $flagLight, $flagVeg, $flagLac, $flagNick, $flagGluten);
     }
 	
+  return $answer;
+}
+
+function getRecipeSperimentazione($resp,$parameters,$text,$email){
+    $text = str_replace("?", "", $text);
+   // print(" get recepie sperimentazione entriamo nella funzione");
+    
+   $listaParoleRaccomandazioni = array('dammi una ricetta', 'consigliami', 'consigli', 'suggerisc', 'per me' , 'a me', 'cosa posso mangiare');//raccomandazioni
+    $listaParoleIngredient = array(' a base di ',' con lo ', ' con la ', ' con le ', ' con gli ', ' con il ', ' con i ', ' con ', 'contenente ', ' di ', ' al ');
+    $listaHealthy = array(' salutare', ' sana', ' sano');
+    $listaLight = array(' leggera', ' light', ' leggero');
+    $listaVeg = array(' vegetariana', ' vegetariano');
+    $listaLac = array(' lattosio');
+    $listaNick = array(' nickel');
+    $listaGluten = array( ' glutine');
+	
+	
+	$flagRaccomandazioni = false;
+	$flagIngredienti = false;
+	$flagHealthy = false;
+    $flagLight = false;
+    $ingredient = "";
+    $flagVeg = false;
+    $flagLac = false;
+    $flagNick = false;
+    $flagGluten = false;
+
+
+
+//    print("1");
+    
+	//Controllo se sono presenti le parole delle raccomandazioni allora  setto a vero il flag raccomandazione
+	foreach($listaParoleRaccomandazioni as $parola)  {  
+   		if (stripos($text, $parola) !== false) {
+    		//Contiene la parola
+   			$flagRaccomandazioni = true;
+   			break;
+		} 
+   	}
+    
+    //Controllo se sono presenti le parole della lista ingredienti allora setto a vero il flag ingredienti
+	foreach($listaParoleIngredient as $parola)  {  
+   		if (stripos($text, $parola) !== false) {
+    		//Contiene la parola
+   			$flagIngredienti = true;
+            $ingredient = explode($parola, $text)[1];
+   			break;
+		} 
+   	}
+	
+	//Controllo se sono presenti le parole della lista healty allora setto a vero il flag healty
+	foreach($listaHealthy as $parola)  {  
+   		if (stripos($text, $parola) !== false) {
+    		//Contiene la parola
+   			$flagHealthy = true;
+   			break;
+		} 
+   	}
+    
+    //Controllo se sono presenti le parole della lista light allora setto a vero il flag light
+	foreach($listaLight as $parola)  {  
+   		if (stripos($text, $parola) !== false) {
+    		//Contiene la parola
+   			$flagLight = true;
+   			break;
+		} 
+   	}
+    
+    //Controllo se sono presenti le parole della lista veg allora setto a vero il flag veg
+	foreach($listaVeg as $parola)  { 
+   		if (stripos($text, $parola) !== false) {
+    		//Contiene la parola
+   			$flagVeg = true;
+   			break;
+		} 
+   	}
+    
+    //Controllo se sono presenti le parole della lista lac allora setto a vero il flag lac
+	foreach($listaLac as $parola)  {  
+   		if (stripos($text, $parola) !== false) {
+    		//Contiene la parola
+   			$flagLac = true;
+   			break;
+		} 
+   	}
+    
+    //Controllo se sono presenti le parole della lista lac allora setto a vero il flag lac
+	foreach($listaNick as $parola)  {  
+   		if (stripos($text, $parola) !== false) {
+    		//Contiene la parola
+   			$flagNick = true;
+   			break;
+		} 
+   	}
+    
+    //Controllo se sono presenti le parole della lista gluten allora setto a vero il flag gluten
+	foreach($listaGluten as $parola)  {  
+   		if (stripos($text, $parola) !== false) {
+    		//Contiene la parola
+   			$flagGluten = true;
+   			break;
+		} 
+   	}
+	
+//	 print("2");
+        $answer = getStandardRecipe($resp,$parameters,$text,$email, $flagHealthy, $flagLight, $flagVeg, $flagLac, $flagNick, $flagGluten);
+	
+//	 print("3");
+
 	return $answer;
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 function getStandardRecipe($resp,$parameters,$text,$email, $flagHealthy, $flagLight, $flagVeg, $flagLac, $flagNick, $flagGluten){
     $url = "http://localhost:5002/mood/?n=100";
-    
+    //print("entriamo nella funzione");
     if($flagHealthy){
         $url = $url . "&healthy=high";
     }
@@ -255,7 +384,9 @@ function getPersonalizedRecipe($resp,$parameters,$text,$email, $flagIngredient, 
 	$emotion = getLastEmotion($email); //Rilevo l'ultima emozione dell'utente
 	$weight = getWeight($resp,$parameters,$text,$email);
 	$heigh = getHeight($resp,$parameters,$text,$email);
-	$sleep = getSleepBinary($resp,$parameters,$text,$email);
+	//$sleep = getSleepBinary($resp,$parameters,$text,$email); Stava ma non funzionava, lo cambiamo con la mia funzione getYesterdaySleep
+  $yesterday = date('d-m-Y',strtotime("-1 days"));
+  $sleep = fetchYesterdaydSleep("", $yesterday ,$email);
 	$sum = 0;
 	$type = $parameters['FoodType'];
 	
@@ -379,6 +510,9 @@ function getPersonalizedRecipe($resp,$parameters,$text,$email, $flagIngredient, 
 		$url = $url . "category=" .$type . "&";
 	}
 	
+  //spostato per sperimentazione, così do info anche sulle intolleranze
+  $spiegazione = strrev(implode(strrev(' e '), explode(strrev(','), strrev($spiegazione), 2))); 
+
 	
 	if($flagIngredient){
 		$url = $url . "ingredient=" . $ingredient . "&";
@@ -399,17 +533,23 @@ function getPersonalizedRecipe($resp,$parameters,$text,$email, $flagIngredient, 
     
     if($flagLac){
         $url = $url . "&isLactoseFree=1";
+        $spiegazione .= ' e perchè sei intollerante al lattosio';
+
+        //print('lactose free');
     }
     
     if($flagNick){
         $url = $url . "&isLowNickel=1";
+        $spiegazione .= ' e perchè sei intollerante al nickel';
     }
     
     if($flagGluten){
         $url = $url . "&isGlutenFree=1";
+        $spiegazione .= ' e perchè sei celiaco';
     }      
     
-    $spiegazione = strrev(implode(strrev(' e '), explode(strrev(','), strrev($spiegazione), 2)));    
+    //$spiegazione = strrev(implode(strrev(' e '), explode(strrev(','), strrev($spiegazione), 2)));    
+    //$spiegazione .= ' e perchè sei intollerante al lattosio';
     
 	return performRequest($url,$spiegazione);	
 }

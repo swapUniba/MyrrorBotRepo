@@ -73,6 +73,328 @@ function getMusic($resp,$parameters,$text,$email){
 	   	 		$flagGenere = true;
 	   	 		//echo "playlist in base al genere richiesto";
 	   	 		$answer = getMusicByGenre($resp,$parameters,$text,$email);
+	   	 	}else if($flagEmozioni == true){ //questa sezione va tipo bloccata
+	   	 		//echo "playlist in base alle emozioni";
+	   	 		//$answer = getPlaylistByEmotion($resp,$parameters,$text,$email);
+	   	 		//$spiegazione = explainMusicEmotion($resp,$parameters,$text,$email);
+	   	 	}else{
+	   	 		//echo "playlist raccomandata";
+	   	 		//$answer = getMusicCustom($resp,$parameters,$text,$email);
+	   	 		//$spiegazione = explainCustomMusic($resp,$parameters,$text,$email);
+	   	 		$answer = getMusicCustomInterest($resp,$parameters,$text,$email);
+	   	 		if(isset($answer)){
+
+	   	 			$interesse = $answer['explainInterest'];
+	   	 			$answer = $answer['risposta'];
+
+	   	 			$spiegazione = "Ti consiglio questa canzone perchè ho trovato il genere ".$interesse." nei tuoi interessi";
+
+	   	 		}else{ //se non c'è match di interesse, funizone di gianp e gae
+
+	   	 			$answer = getMusicCustom($resp,$parameters,$text,$email);
+	   	 			$spiegazione = explainCustomMusic($resp,$parameters,$text,$email);
+	   	 		}
+
+
+
+	   	 		//return array("param" => $param, "url" => $answer,"explain" => $spiegazione);
+	   	 	}
+
+   		} else{//Effettuo i controlli e verifico se si tratta di un brano oppure una playlist
+
+	   		//Vedo se è valorizzato il genere
+	   		if ($parameters['GeneriMusicali'] != "") {
+	   			$flagGenere = true;
+	   			//echo "playlist in base al genere richiesto";
+	   			$answer = getMusicByGenre($resp,$parameters,$text,$email);
+	   			$param = $parameters['GeneriMusicali'];
+	   		}else{
+
+	   			foreach($listaParoleBrano as $parola)  {  
+			   		if (stripos($text, $parola) !== false) {
+			    		//Contiene la parola
+			   			$flagBrano = true;
+			   			break;
+					} 
+				}
+
+				//Vedo se è valorizzato any
+				if ($parameters['any'] != "") {
+					$flagAny = true;
+					$flagBrano = true;
+				}
+
+				//Vedo se è valorizzato music-artist
+				if ($parameters['music-artist'] != "") {
+					$flagArtist = true;
+				}
+
+				if ($flagBrano == true || $flagAny == true) {//Brano
+
+		   			if ($flagAny == true) {//Prendo il titolo del brano
+		   				//echo "brano con il titolo";
+		   				$answer = getMusicByTrack($resp,$parameters,$text,$email);
+		   				$param = $parameters['any'];
+
+		   			}else{//Verifico se è presente il nome dell'artista
+
+		   				if ($flagArtist == true) {//Prendo il nome dell'artista del brano
+		   					//echo "brano con il nome dell'artista";
+		   					$answer = getMusicByArtist($resp,$parameters,$text,$email);
+		   					$param = $parameters['music-artist'];
+		   				}else{
+		   					//RACCOMANDO UNA PLAYLIST DI CANZONI
+		   					//echo "playlist raccomandata";
+		   					//$answer = getMusicCustom($resp,$parameters,$text,$email);
+		   					//$spiegazione = explainCustomMusic($resp,$parameters,$text,$email);
+		   					$answer = getMusicCustomInterest($resp,$parameters,$text,$email);
+		   					if(isset($answer)){
+
+		   						$interesse = $answer['explainInterest'];
+		   						$answer = $answer['risposta'];
+
+		   						$spiegazione = "Ti consiglio questa canzone perchè ho trovato il genere ".$interesse." nei tuoi interessi";
+
+		   					}else{ //se non c'è match di interesse, funizone di gianp e gae
+
+		   						$answer = getMusicCustom($resp,$parameters,$text,$email);
+		   						$spiegazione = explainCustomMusic($resp,$parameters,$text,$email);
+		   					}
+
+		   				}
+
+		   			}
+
+		   		}else{ //Playlist
+
+		   			if ($flagAny == true) {//Prendo la playlist
+		   				//echo "playlist con il titolo"; -- NIENTE--
+		   			}else{//Verifico se è presente il nome dell'artista
+		   				if ($flagArtist == true) {//Prendo il nome dell'artista della playlist
+		   					//echo "playlist con il nome dell'artista";
+		   					$answer = getPlaylistByArtist($resp,$parameters,$text,$email);
+		   					$param = $parameters['music-artist'];
+		   				}else{
+		   					//RACCOMANDO UNA PLAYLIST DI CANZONI
+		   					//echo "playlist raccomandata";
+		   					//$answer = getMusicCustom($resp,$parameters,$text,$email);
+		   					//$spiegazione = explainCustomMusic($resp,$parameters,$text,$email);
+
+		   					$answer = getMusicCustomInterest($resp,$parameters,$text,$email);
+		   					if(isset($answer)){
+
+		   						$interesse = $answer['explainInterest'];
+		   						$answer = $answer['risposta'];
+
+		   						$spiegazione = "Ti consiglio questa canzone perchè ho trovato il genere ".$interesse." nei tuoi interessi";
+
+		   					}else{ //se non c'è match di interesse, funizone di gianp e gae
+
+		   						$answer = getMusicCustom($resp,$parameters,$text,$email);
+		   						$spiegazione = explainCustomMusic($resp,$parameters,$text,$email);
+		   					}
+
+
+		   				
+		   				}
+		   			}
+		   		} 	
+	   		}
+	   	}
+	}
+
+	return array("param" => $param, "url" => $answer,"explain" => $spiegazione);
+	
+}
+
+
+
+function getMusicCustomInterest($resp,$parameters,$text,$email)
+{
+	$interessi = getInterestsList($email);
+	//print_r($interessi);
+	//print("funizone mia");
+	$api = getApi();
+
+	foreach ($interessi as $key => $value) {
+		$interesse = $key;
+		$interesseTrovato = false;
+		switch ($key) {
+			case 'pop':
+					//Prendo la playlist di quel genere
+					$playlists = $api->getCategoryPlaylists('pop', [
+				    	'country' => 'it',
+					]);
+					$interesseTrovato = true;
+				break;
+
+			case 'rock':
+				$playlists = $api->getCategoryPlaylists('rock', [
+			    	'country' => 'it',
+				]);
+				$interesseTrovato = true;
+
+			break;
+
+
+			case 'indie_alt':
+				$playlists = $api->getCategoryPlaylists('indie_alt', [
+			    	'country' => 'it',
+				]);
+				$interesseTrovato = true;
+
+			break;
+
+
+			case 'party':
+				$playlists = $api->getCategoryPlaylists('party', [
+			    	'country' => 'it',
+				]);
+				$interesseTrovato = true;
+
+			break;
+
+			case 'classical':
+				$playlists = $api->getCategoryPlaylists('pop', [
+			    	'country' => 'it',
+				]);
+				$interesseTrovato = true;
+
+			break;
+
+			case 'blues':
+				$playlists = $api->getCategoryPlaylists('pop', [
+			    	'country' => 'it',
+				]);
+				$interesseTrovato = true;
+			break;
+
+			default:
+			$interesse = 'default';
+			break;
+
+		}
+
+		if($interesseTrovato){
+			break;
+		}else{
+			continue;
+		}
+
+	}
+	if($interesse != 'pop' && $interesse != 'rock' && $interesse != 'indie_alt' && $interesse != 'party' && $interesse!= 'classical' && $interesse != 'blues' ){
+
+		//Se non c'è match con interessi, la funzione restituisce null
+		$answer = null;
+		return $answer;
+
+	}
+	//print_r($interessi);
+
+
+		$nomiPlaylist = array(); 
+
+		//Prendo tutte le playlist di quel genere
+		foreach ($playlists->playlists->items  as $playlist) {
+			$nomiPlaylist[] = $playlist;
+		}
+
+		//Numero casuale
+		$num = rand(0,count($nomiPlaylist)-1);
+
+		//Prendo la playlist corrispondente
+		$playlist = $nomiPlaylist[$num];
+		$playlistId = $playlist->id;
+		 //Nome playlist Spotify
+		//print($playlistId);
+		$answer = getRandomSongByPlaylist($playlistId);
+		
+		return array("risposta" => $answer,"explainInterest" => $interesse);
+		//return $answer;
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+//Aggiunta per sperimentazione, fornisce una versione del 'suggeriscimi una canzone' anche all'utente guest
+//suggerendo una canzone presa casualmente dalla playlist Top 50 - Italia
+function getMusicGuest($resp,$parameters,$text,$email)
+{
+	$flagBrano = false;
+	$flagRaccomandazioni = false;
+	$flagAny = false;
+	$flagArtist = false;
+	$flagGenere = false;
+	$flagEmozioni = false;
+
+	$spiegazione = "";
+	$param = "";
+	
+	$listaParoleBrano = array( 'brano', 'canzone', 'musica' );//brano
+	$listaParoleRaccomandazioni = array( 'musica adatta a me', 'consigliami', 'consigli', 'suggerisc', 'per me' , 'a me');//raccomandazioni
+	$listaParoleEmozioni = array( 'umore', 'emozioni','stato d\'animo');//emozioni
+
+	//Controllo se sono presenti le parole delle raccomandazioni allora vado nella sezione delle PLAYLIST RACCOMANDATE
+	foreach($listaParoleRaccomandazioni as $parola)  {  
+   		if (stripos($text, $parola) !== false) {
+    		//Contiene la parola
+   			$flagRaccomandazioni = true;
+   			break;
+		} 
+   	}
+
+	//Controllo se sono presenti le parole delle emozioni
+   	foreach($listaParoleEmozioni as $parola)  {  
+   		if (stripos($text, $parola) !== false) {
+    		//Contiene la parola
+   			$flagEmozioni = true;
+   			break;
+		} 
+   	}
+
+	//Controllo se sono presenti le parole del singolo brano
+   	foreach($listaParoleBrano as $parola)  {  
+   		if (stripos($text, $parola) !== false) {
+    		//Contiene la parola
+   			$flagBrano = true;
+   			break;
+		} 
+	}
+
+
+	if ($flagBrano == true && $flagEmozioni == true) {
+		//echo "canzone in base alle emozioni";
+		$answer = getMusicByEmotion($resp,$parameters,$text,$email);
+		$spiegazione = explainMusicEmotion($resp,$parameters,$text,$email);
+
+	}else if($flagEmozioni == true){
+		//echo "playlist in base alle emozioni";
+		$answer = getPlaylistByEmotion($resp,$parameters,$text,$email);
+		$spiegazione = explainMusicEmotion($resp,$parameters,$text,$email);
+
+	}else{
+		if ($flagRaccomandazioni == true) { //PLAYLIST RACCOMANDATE
+
+				$top50italia= '37i9dQZEVXbIQnj7RRhdSX';
+				$answer = getRandomSongByPlaylist($top50italia);
+				$spiegazione = "Perchè è una canzone popolare";
+				return array("param" => "vuoto", "url" => $answer,"explain" => "");
+				//echo "Post";
+				//Alterantiva al singolo brano, si può usare la playlist già predefinita
+				//$parameters['GeneriMusicali'] = 'popculture';
+	   	 	if ($parameters['GeneriMusicali'] != "") {
+	   	 		$flagGenere = true;
+	   	 		//echo "playlist in base al genere richiesto";
+	   	 		$answer = getMusicByGenre($resp,$parameters,$text,$email);
 	   	 	}else if($flagEmozioni == true){
 	   	 		//echo "playlist in base alle emozioni";
 	   	 		$answer = getPlaylistByEmotion($resp,$parameters,$text,$email);
@@ -158,6 +480,58 @@ function getMusic($resp,$parameters,$text,$email){
 	return array("param" => $param, "url" => $answer,"explain" => $spiegazione);
 	
 }
+
+
+//Aggiunta per sperimentazione 
+function getRandomSongByPlaylist($id)
+{
+	$api = getApi(); //Api per Spotify
+
+	//Prendo la playlist relativa all'id
+	$playlist = $api->getUserPlaylistTracks('username', $id);
+
+
+	$listaBrani = array();
+
+	foreach ($playlist->items  as $pl) {
+		foreach ($pl as $key => $value) {
+			if (isset($value->external_urls)) {
+
+				foreach ($value->external_urls as $track) {
+					if (stripos($track, 'track')) {
+						$listaBrani[] = $track;
+					}
+
+				}
+			}
+		}
+	}
+
+	$num = rand(0,count($listaBrani)-1);
+	$url = $listaBrani[$num]; //Url brano casuale preso dalla playlist
+
+	/*
+	Aggiungo alla url di Spotify la parola embed/ altrimenti l'iframe non verrà visualizzato per problemi di Copyright
+	Esempio:
+	https://open.spotify.com/track/2J9TGb5CRT4omfAgnKmXn5 ----> https://open.spotify.com/embed/track/2J9TGb5CRT4omfAgnKmXn5
+	*/
+	$answer = substr_replace($url, "embed/", 25, 0);
+	return $answer;
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 //Permette di ottenere il brano richiesto dall'utente e mostrarlo a schermo
 function getMusicByTrack($resp,$parameters,$text,$email){

@@ -140,10 +140,18 @@ function getInterestsNews($email){
 $arr  = array('','','','');
 $articles = array();
 $list = getInterestsList($email);
+//print_r($list);
 //echo $list[0];
 foreach ($list as $key => $value){
 
-	$link = "https://newsapi.org/v2/everything?q=".$key."&sortBy=publishedAt&apiKey=17c1953c3cc7450d958ff14f9e262c02";
+	//print($key);
+	//aggiunto per sperimentazione
+	if($key != 'Business' && $key != 'Sport' && $key != 'Scienza' && $key != 'Tecnologia' && $key != 'Salute' && $key != 'Intrattenimeto'){
+		continue;
+	}
+
+
+	$link = "https://newsapi.org/v2/everything?q=".$key."&Language=it&sortBy=publishedAt&apiKey=17c1953c3cc7450d958ff14f9e262c02"; //Ho aggiunto &language=it per sperimentazione (funziona anche con country=it,lascio questo per ora)
 	$link = str_replace(' ', '%20', $link);
 	$json = googleNewsQuery($link);
 	
@@ -173,7 +181,9 @@ foreach ($list as $key => $value){
 		
 	}
 if(count($articles) == 0){
-	return "";
+	//return ""; //la tolgo per sperimentazione, mettendo la lingua in ita al profilo del prof, non vengono
+	//più trovate notizie, quindi ho dovuto aggiungere la successiva riga di codice.
+	return getTodayNews();
 
 }else{
 	//print_r($articles);
@@ -292,6 +302,7 @@ $list = array();
 if(isset($parameters['any'])){
 $val = $parameters['any'];	
 $val = str_replace(' ', '%20', $val);
+//print($val);
 $link = "https://newsapi.org/v2/everything?q=".$val.
 "&sortBy=publishedAt&Language=it&apiKey=17c1953c3cc7450d958ff14f9e262c02";
 $json = googleNewsQuery($link);
@@ -367,6 +378,9 @@ if ($parameters['Sports'] != null || $parameters['Health'] != null || $parameter
 
 	if ($email == '') {
 		return '';
+	}else if($email == 'UtenteAnonimo'){//aggiunta sperimentazione
+		$answer = getTodayNews();
+		return $answer; //se l'utente è anonimo, restituisco una news topHeadline
 	}
 	$answer = getInterestsNews($email);
 }else{

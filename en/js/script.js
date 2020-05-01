@@ -85,7 +85,7 @@ function send(query) {
     if (flagcitta == true) {
         flagcitta = false;
         temp = $('#contesto').val();
-        temp += " in " + text;
+        temp += " a " + text;
         text = temp;
     }
     var citta = getCity();
@@ -103,29 +103,38 @@ function send(query) {
         }
 
     } else {
-        window.location.href = 'index.html';
+       window.location.href = 'index.html';
     }
 
 
     email = tempStr;
 
-    if (text.match(/why/) || text.match(/explain/)) {
-        var testo = $("#spiegazione").val();
-        $(".chat").append('<li class="replies"><img src="immagini/chatbot.png" alt="" /><p >' + testo + '</p></li>');
 
-    } else if($('#intent').val() == 'Cibo' && (text == 'yes' || text == 'ok'
-			|| text == 'of course' || text == 'procedure' ||text == "i want to see the procedure" ||text == "cooking procedure" ||text == text =="instruction" ||text == "take a look to the instructions")){
-		$("#intent").val("");
+
+    if (  text.toLowerCase().match(/why/) || text.toLowerCase().match(/explain/) ){
 		
+			var testo = $("#spiegazione").val();
+			if(testo != "" && testo != undefined){
+				var testo = $("#spiegazione").val();
+				$(".chat").append('<li class="replies"><img src="immagini/chatbot.png" alt="" /><p >' + testo + '</p></li>');
+			}else{
+				$(".chat").append('<li class="replies"><img src="immagini/chatbot.png" alt="" /><p > match I do not understand what you mean. Try asking your question with other words!</p></li>');
+			}
+			
+
+		
+        
+
+    } else if($('#intent').val() == 'Cibo' && (text.includes('procedure') ||text.includes("instructions"))){
 		
 		var testo = $("#procedimento").val();
 		$(".chat").append('<li class="replies"><img src="immagini/chatbot.png" alt="" /><p >' + testo + '</p></li>');
 
 	}
-    else if($('#intent').val() == 'Cibo' && (text.includes("another")  || text == 'more' || text == 'another one')){
+    else if($('#intent').val() == 'Cibo' && (text.includes("another"))){
         count = $("#count_ric").val();
         val = JSON.parse(decodeURIComponent($("#ric").val()));
-        max = Object.keys( val.answer.recipes ).length
+        max = Object.keys( val.answer.recipes ).length;
         
         if(count<max-1){
             count = parseInt(count, 10) + 1;
@@ -169,7 +178,7 @@ function send(query) {
     else {
 
 
-
+		$("#intent").val("");
         if (text.match(/change/) || text.match(/another/) || text.match(/another one/) || text.match(/read me another one/) || text.match(/give me another one/) ||
             text.match(/read other/) || text.match(/read another news/) || text.match(/change song/) || text.match(/change track/) || text.match(/change another track/) ||
             text.match(/change video/) || text.match(/give me another video/) || text.match(/give me another track/) || text.match(/give me another song/) || text.match(/change music/) || text.match(/change news/)) {
@@ -206,16 +215,17 @@ function setResponse(val) {
 
         //the json is ok
         val = JSON.parse(val);
-        var musicaSpotify = "Here is your request!";
-        var spiegazione = "";
-
+        var musicaSpotify = "I'm playing...";
+		var newsText = "I think you should read...";
+        var spiegazione = "fragola";
         var canzoneNomeSpotify = "Here is the song requested!";
         var canzoneArtistaSpotify = "Here is the song of the requested artist!";
-        var canzoneGenereSpotify = "Here is a playlist of songs of the required genre!";
-        var playlistEmozioniSpotify = "Here is a playlist of songs recommended based on your mood";
+        var canzoneGenereSpotify = "This is a playlist you might like";
+        var playlistEmozioniSpotify = "This is a playlist based on your mood";
         var canzoneEmozioniSpotify = "Here is a suggested song based on your mood";
         var canzoniPersonalizzateSpotify = "Here is a recommended song you might like";
-        var video = "Here is the video requested";
+		var video = "Enjoy this video ";
+        var videoEmo = "This is a video you might like ";
 
         if (val["intentName"] == "Interessi" || val["intentName"] == "Contatti" || val["intentName"] == "Esercizio fisico" || val["intentName"] == "Personalita") {
 
@@ -234,7 +244,6 @@ function setResponse(val) {
             if (val['answer']['explain'] != "") {
                 spiegazione = val['answer']['explain'];
                 $("#spiegazione").val(spiegazione);
-                //$(".chat").append('<li class="replies"><img src="immagini/chatbot.png" alt="" /><p id="par'+timestamp+'"> "<br>"' + musicaSpotify + '&#x1F603;' +'<br>'+ '<iframe src="' + val['answer']['url'] + '" width="250" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe></p></li>');
             }
             $(".chat").append('<li class="replies"><img src="immagini/chatbot.png" alt="" /><p id="par' + timestamp + '">' + musicaSpotify + '&#x1F603;' + '<br>' + '<iframe src="' + val['answer']['url'] + '" width="250" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe></p></li>');
 
@@ -250,20 +259,108 @@ function setResponse(val) {
                     // $(".chat").append('<li class="replies"><img src="immagini/chatbot.png" alt="" /><p id="par'+timestamp+'"> ' + spiegazione + '<br><img style="width: 100%;height: 100%;" src= "'+val['answer']['image']+'"/><a href="'+val['answer']['url']+'">'+val["answer"]['title']+'</a></p></li>');
 
                 }
-                $(".chat").append('<li class="replies"><img src="immagini/chatbot.png" alt="" /><p id="par' + timestamp + '"><img style="width: 100%;height: 100%;" src= "' + val['answer']['image'] + '"/><a id="nw' + timestamp + '" class="news" target="_blank" href="' + val['answer']['url'] + '">"' + val["answer"]['title'] + '"</a></p></li>');
+                $(".chat").append('<li class="replies"><img src="immagini/chatbot.png" alt="" /><p id="par' + timestamp + '">' + newsText+ '<br/><img style="width: 100%;height: 100%;" src= "' + val['answer']['image'] + '"/><a id="nw' + timestamp + '" class="news" target="_blank" href="' + val['answer']['url'] + '">"' + val["answer"]['title'] + '"</a></p></li>');
                 $(".chat").append('<input value="false" type="hidden" id= "flagNews' + timestamp + '" >')
             }
 
-        } else if (val["intentName"] == "Video in base alle emozioni" || val["intentName"] == "Ricerca Video") {
+        } else if (val["intentName"] == "Video in base alle emozioni" || val["intentName"] == "Ricerca Video" ) {
 
 
-            $(".chat").append('<li class="replies"><img src="immagini/chatbot.png" alt="" /><p id="par' + timestamp + '">' + video + ' &#x1F603; <br>' + '<iframe id="ytplayer" type="text/html" width="260" height="260" src="' + val['answer']['ind'] + '" frameborder="0" allowfullscreen/></iframe></p></li>');
+            $(".chat").append('<li class="replies"><img src="immagini/chatbot.png" alt="" /><p id="par' + timestamp + '">' + videoEmo + ' &#x1F603; <br>' + '<iframe id="ytplayer" type="text/html" width="260" height="260" src="' + val['answer']['ind'] + '" frameborder="0" allowfullscreen/></iframe></p></li>');
             if (val['answer']['explain'] != undefined && val['answer']['explain'] != null) {
                 $('#spiegazione').val(val['answer']['explain']);
 
             }
 
-        } else if (val["intentName"] == "meteo binario") {
+        }else if(val["intentName"] == "Allenamento personalizzato"){
+            var localExplain;
+
+            if (val.answer.explain != undefined && val['answer']['explain'] != null) {
+                    spiegazione = val['answer']['explain'];
+                    localExplain = spiegazione;
+                    $("#spiegazione").val(spiegazione);
+
+             }
+
+
+            if(val.answer.url != undefined && val.answer.imgUrl != undefined){
+
+                $(".chat").append(
+                    '<li class="replies">' + 
+                        '<img src="immagini/chatbot.png" alt=""/>' +
+                            '<p>' +
+                                '<a href="javascript:window.open(\''+val.answer.url+'\')">I recommend:</a><br>' +
+
+                                '<a href="javascript:window.open(\''+val.answer.url+'\')"><img style="width: 100%;height: 100%;" src="'+val.answer.imgUrl+'"></a>' +
+
+
+                            '<br><br><b></b></p>'+
+                    '</li>');
+
+
+
+
+
+            }else{
+                $(".chat").append('<li class="replies"><img src="immagini/chatbot.png" alt="" /><p id="par' + timestamp + '">' + localExplain + '</p></li>');
+            }
+
+
+
+
+
+
+        
+            }else if (val.intentName == "Allenamento generico"){
+
+
+                
+
+
+                $(".chat").append(
+                    '<li class="replies">' + 
+                        '<img src="immagini/chatbot.png" alt=""/>' +
+                            '<p>' +
+                                '<a href="javascript:window.open(\''+val.answer.url+'\')">Here is the workout you asked:</a><br>' +
+
+                                '<a href="javascript:window.open(\''+val.answer.url+'\')"><img style="width: 100%;height: 100%;" src="'+val.answer.imgUrl+'"></a>' +
+
+
+                            '<br><br><b></b></p>'+
+                    '</li>');
+
+
+
+            }else if(val.intentName == 'Ritrovamento programma'){
+
+                $(".chat").append('<li class="replies"><img src="immagini/chatbot.png" alt="" /><p id="par' + timestamp + '">' + val["answer"] + '</p></li>'); 
+
+            }else if (val.intentName == 'Raccomandazione programma'){
+
+                var localExplain;
+
+                if (val.answer.explain != undefined && val['answer']['explain'] != null) {
+                        spiegazione = val['answer']['explain'];
+                        localExplain = spiegazione;
+                        $("#spiegazione").val(spiegazione);
+
+                 }
+
+
+                 if(val.answer.result != undefined){
+
+                    $(".chat").append('<li class="replies"><img src="immagini/chatbot.png" alt="" /><p id="par' + timestamp + '">' + val.answer.result + '</p></li>'); 
+
+
+                 }else{
+                    $(".chat").append('<li class="replies"><img src="immagini/chatbot.png" alt="" /><p id="par' + timestamp + '">' + localExplain + '</p></li>');
+                 }
+
+
+
+
+
+            }else if (val["intentName"] == "meteo binario") {
 
             if (getCity() == "" && val['answer']['city'] == undefined) {
                 $(".chat").append('<li class="replies"><img src="immagini/chatbot.png" alt="" /><p >Enter city</p></li>');
@@ -558,5 +655,5 @@ $("ul.chat").on("click", "a.news", function(evnt) {
 });
 
 $("#logout").click(function() {
-    window.location.href = 'index.html';
+   window.location.href = 'index.html';
 });

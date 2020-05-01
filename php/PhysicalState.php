@@ -1,4 +1,5 @@
 <?php
+
 /*
 il metodo serve a leggere il file json completo preso da
 myrror e cercare al suo interno una data specificata,se la 
@@ -115,6 +116,37 @@ if ($count != 0) {
 return $average;
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /*
 @resp frase di risposta standard ricevuta da dialogflow
