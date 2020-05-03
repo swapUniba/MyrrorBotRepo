@@ -7,11 +7,11 @@ In locale la lettura del cookie non funziona correttamente perciò bisogna segui
 le seguenti indicazioni.
 
 SE SI VUOLE ESEGUIRE IL SITO IN LOCALE
-1) commentare in script.js le seguenti righe
+1) commentare in script.js tutte le seguenti righe
 window.location.href = 'index.html';
 
 2)impostare in script js la variabile email staticamente
-var email = "cat@cat.it" alla riga 6 e alla riga 149.
+var email = "cat@cat.it" alla riga 6 e alla riga 105.
 
 3)In readLocalJson.php impostare staticamente la mail
 Es.  $email = "cat@cat.it"; 
