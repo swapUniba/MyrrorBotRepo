@@ -104,7 +104,7 @@ function recommendWorkout($resp, $parameters, $text, $email)
   //$bmi = 39.9;
 
 //print($bmi);
-$bmi = 24.9;
+//$bmi = 24.9;
 
   //$nome = getName($email);
 
