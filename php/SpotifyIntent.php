@@ -255,7 +255,7 @@ function getMusicCustomInterest($resp,$parameters,$text,$email)
 			break;
 
 			case 'classical':
-				$playlists = $api->getCategoryPlaylists('pop', [
+				$playlists = $api->getCategoryPlaylists('classical', [
 			    	'country' => 'it',
 				]);
 				$interesseTrovato = true;
@@ -263,7 +263,7 @@ function getMusicCustomInterest($resp,$parameters,$text,$email)
 			break;
 
 			case 'blues':
-				$playlists = $api->getCategoryPlaylists('pop', [
+				$playlists = $api->getCategoryPlaylists('blues', [
 			    	'country' => 'it',
 				]);
 				$interesseTrovato = true;

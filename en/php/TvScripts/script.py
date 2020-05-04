@@ -15,18 +15,8 @@ filepath = direct+'/'+day+'.csv'
 
 file_prova = 'mondo'
 
-# try:
-#     file_prova = open('guida_tv.csv', mode='w+' , newline='' )
-#     scrittore = csv.writer(file_prova , delimiter = ';')
-#     scrittore.writerow(['NomeCanale'] + ['Titolo'] + ['Tipo'] + ['Genere'] + ['Attori'] + ['orario'])
-#     scrittore.writerow(['aaaaaaaaaaa']*5)
-#     file_prova.flush()
-#     file_prova.close()
-#     print('M\'AGGHIA ROTT U CAZZ FUNZION P FAVOR')
-# except IOError as orrore:
-#     print(orrore)
 
-#print(test)
+
 
 data = {}
 data['canale'] = []
