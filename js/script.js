@@ -4,6 +4,8 @@ $(".messages").animate({
 var timestamp;
 var imageURL;
 var email;
+//email = 'demo@demo.it'; decomentare qui e riga 108  e commentare le righe window.location.href per DEMO
+
 var flagcitta = false;
 
 function getEmail() {
@@ -103,7 +105,7 @@ function send(query) {
     }
 
     email = tempStr;
-    //email = 'dav@dav.it';  
+    //email = 'demo@demo.it';  
 	
 
     if (text.match(/perchè/) || text.match(/spiegami/) || text.match(/Perchè/) || text.match(/Perchè?/) || text.match(/perchè?/) ) {

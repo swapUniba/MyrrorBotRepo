@@ -1,55 +1,66 @@
 <?php
 
-
 function getPeso($param, $email)
 {
 
 $param ="";
 $json_data= queryMyrror($param,$email);
 $peso=133; //preso da myrror, ma non presente nel json
+$flag = false;
 
+foreach ($json_data as $key1 => $value1) {
+  if(isset($value1['weight'])){
+    foreach ($value1['weight'] as $key2 => $value2) {
+      if ($key2 == "value") {
+        $peso = $value2;
+        $flag = true;
+      }   
+    } 
+  }
+}
 
-		foreach ($json_data as $key => $value) {
-			        //trovo il peso
-			        if(isset($value1['weight'])){
-						foreach ($value1['weight'] as $key2 => $value2) {
-							if ($key2 == "value"){
-								$peso = $value2;
-							} 
-								
-						} 	
-			        }	
-		}
+if($flag){
+  return $peso['value'];
+}else{
+  return $peso;
+}
 
-
-return $peso;
 }
 
 
 
 function getAltezza($param, $email)
 {
-
+//echo"email di altezza". $email;
 $param ="";
 $json_data= queryMyrror($param,$email);
-$altezza=198; //preso da myrror, ma non presente nel json
+$altezza=198; //preso da myrror
+$flag = false;
 
 
-		foreach ($json_data as $key => $value) {
-			        //trovo l'altezza
-			        if(isset($value1['weight'])){
-						foreach ($value1['weight'] as $key2 => $value2) {
-							if ($key2 == "value"){
-								$altezza = $value2;
-							} 
-								
-						} 	
-			        }	
-		}
+      foreach ($json_data as $key1 => $value1) {
+        if(isset($value1['height'])) {
+          foreach ($value1['height'] as $key2 => $value2) {
+            if ($key2 == "value") {
+              $altezza = $value2;
+              $flag = true;
+            }   
+          } 
+        }
+      }
 
-
-return $altezza;
+  if($flag){
+    return $altezza['value'];
+  }else{
+    return $altezza;
+  }    
+ 
 }
+
+
+
+
+
 
 
 
@@ -104,7 +115,7 @@ function fetchYesterdaydSleep($resp,$data,$email)
 
     if (isset($timestamp)) {
       $data2 = date('d-m-Y',$timestamp/1000);
-      echo "Gli ultimi dati in mio possesso sono relativi al ".$data2."";
+      //echo "Gli ultimi dati in mio possesso sono relativi al ".$data2."";
     }else{
       //Non ci sono dati passati, restituisco default.
       return 400;

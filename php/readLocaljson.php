@@ -3,9 +3,9 @@
 function queryMyrror($param,$email){
 
 	$json = null;
-	//$email = 'dav@dav.it';
-	$email = 'cat@cat.it';
-	 //$email = 'mirko@mirko.it';	
+
+	//$email = 'demo@demo.it'; decommentare qui e in script.js per attivare profilo demo
+	
 
 	if (isset($_COOKIE['myrror'])) {
 

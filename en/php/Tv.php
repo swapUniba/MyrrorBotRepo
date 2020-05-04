@@ -85,9 +85,9 @@ function retriveTV($resp,$parameters,$text,$email)
 
 
 	//print($text);
-	if(stripos($text , 'con ')!==false){
+	if(stripos($text , 'with ')!==false){
 		//$personaggioRichiesto= true;
-		$personaggioRichiesto = explode('con ', $text);
+		$personaggioRichiesto = explode('with ', $text);
 
 		//print($personaggioRichiesto[1]);
 	}
@@ -323,17 +323,13 @@ function retriveTV($resp,$parameters,$text,$email)
 }//fine retriveTV
 
 
-
-
-
 function recommendTV($resp,$parameters,$text,$email)
 {
 
 
 //Su cosa basiamo la raccomandazione?
 /*	Sicuramente controlliamo gli interessi(leggi in iterest -> value) e facciamo un match di parole
-	poi possiamo controllare l'umore
-		Se sei in un umore negativo, I recommend you un programma di svago per tirarti su.*/
+	poi possiamo controllare l'umore se sei in un umore negativo, ti consiglio un programma di svago per tirarti su.*/
 
 
 
@@ -344,10 +340,6 @@ function recommendTV($resp,$parameters,$text,$email)
 	$mood = 'neutrality';
 	$today = date("d-m-Y");
 
-	//3 istruzioni per il test in locale
-//	$filename = 'output16t.csv';
-//	$path = 'TvScripts/';
-//	$file = $path.$filename;
 
 
 	//Gestione di avvio dello script
@@ -391,6 +383,7 @@ function recommendTV($resp,$parameters,$text,$email)
 		//chmod('script.py', 0777);
 		exec('python3 /var/www/html/en/php/TvScripts/script.py' , $out);
 		//print_r($out);
+		//Istruzione fondamentale per motivi spiegati sopra
 		chmod($completeFile,0777);
 		
 
@@ -419,10 +412,13 @@ function recommendTV($resp,$parameters,$text,$email)
 
 	//print($rows[1]);
 
-	$arrayInteressi = interessi($resp,$parameters,$email);
+	$arrayInteressi = getInterestsList($email);
+	//interessi($resp,$parameters,$email);
+
 	$mood = getTodayEmotion($today,$email);
+	//print_r($arrayInteressi);
 
-
+	//print_r($rows);
 	/*	Per processare ricorda che gli indicis sono:
 		[0] => ﻿NomeCanale
 		[1] => Titolo
@@ -430,18 +426,43 @@ function recommendTV($resp,$parameters,$text,$email)
 		[3] => Genere
 		[4] => Attori //Può essere vuoto, controllalo
 		[5] => orario*/
+		$interesse ="";
+		$result = "";
+
+		foreach ($rows as $key => $rowlet) {
+			
+			$result = explode(';', $rowlet);
+			//print_r($result);
+			$genere = $result[3];
+			//print($genere);
+			//echo$genere."     ";
+			foreach ($arrayInteressi as $interesse => $indice) {
+				//echo "coppia ".$genere."---".$interesse." ";
+				if(stripos($genere, $interesse) !== false){
+				 //match trovato tra genere programma e interesse
+					//echo "coppia ".$genere."---".$interesse;
+					$spiegazione = 'I recommend you this tv show because the genre '.$interesse.' matches your interests';
+					//print($genere);
+					//print($interesse);
+					$raccomandazione = 'I recommend:<br>On '.$result[0]." at ".$result[5]." will go on air ".$result[1]." ".$result[2]." ".$result[3];
+					return array("explain" => $spiegazione, "result" => $raccomandazione);
+
+				}
+
+
+			}
+
+
+
+		}//Fine scansione righe per raccomandazione basata su interessi
+
+
+
+
+
 
 
 	foreach ($rows as $row){
-
-		//corrispondenza contenutoriga-interesse, mostra quello
-		if(stripos($arrayInteressi , $row)!== false){
-
-			$result = explode(';' , $row);
-			$spiegazione = 'I recommend you this show because it suits your interests';
-			$raccomandazione = 'I recommend:<br>On '.$result[0]." at".$result[5]." va in onda ".$result[1]." ".$result[2]." ".$result[3];
-			return array("explain" => $spiegazione, "result" => $raccomandazione);
-		}
 
 		if($mood == 'joy' || $mood == 'surprise' || $mood == 'neutrality'){
 
@@ -449,7 +470,7 @@ function recommendTV($resp,$parameters,$text,$email)
 			//Consiglia un qualsiasi programma, mentalità positiva
 			$result = explode(';', $rows[$randomRow]);
 			$spiegazione = "I recommend you this show because you are feeling ".$mood." therefore anything is okay.";
-			$raccomandazione = 'I recommend you:<br>On '.$result[0]." at".$result[5]." will go on air ".$result[1]." ".$result[2]." ".$result[3];
+			$raccomandazione = 'I recommend:<br>On '.$result[0]." at ".$result[5]." will go on air ".$result[1]." ".$result[2]." ".$result[3];
 			return array("explain" => $spiegazione, "result" => $raccomandazione);
 
 
@@ -459,13 +480,12 @@ function recommendTV($resp,$parameters,$text,$email)
 			//Consigliamo un film della tipologia svago, oppure dell categoria commedia oppure della categoria satira
 			//per far migliorare l'umore
 
-
 			if(stripos($row, '(SVAGO)') !== false || stripos($row, 'Satira') !== false || stripos($row, 'Commedia') !== false){
 
 
 				$result = explode(';', $row);
-				$spiegazione = "I recommend you thi show beacause you are feeling ".$mood." and a little fun can help you.";
-				$raccomandazione = 'I recommend you:<br>On '.$result[0]." at".$result[5]." will go on air ".$result[1]." ".$result[2]." ".$result[3];
+				$spiegazione = " I recommend you this show beacause you are feeling ".$mood." and a little fun will help you.";
+				$raccomandazione = 'I recommend:<br>On '.$result[0]." at ".$result[5]." will go on air ".$result[1]." ".$result[2]." ".$result[3];
 				return array("explain" => $spiegazione, "result" => $raccomandazione);
 
 
@@ -492,17 +512,7 @@ function recommendTV($resp,$parameters,$text,$email)
 
 
 
-
-
-
 }
-
-
-
-
-
-
-
 
 
 
