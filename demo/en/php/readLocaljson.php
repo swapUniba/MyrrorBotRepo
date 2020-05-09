@@ -12,9 +12,9 @@ function queryMyrror($param,$email){
 	  	$email = $_COOKIE['myrror'];
     }
      	if($param == "today"){
-			$json = file_get_contents('../../fileMyrror/today_' . $email . '.json');
+			$json = file_get_contents('../fileMyrror/today_' . $email . '.json');
 		}else{
-			$json = file_get_contents('../../fileMyrror/past_' . $email . '.json');
+			$json = file_get_contents('../fileMyrror/past_' . $email . '.json');
 		}
 		$result = json_decode($json,true);
 

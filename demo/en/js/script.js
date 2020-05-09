@@ -362,9 +362,12 @@ function setResponse(val) {
 
             }else if (val["intentName"] == "meteo binario") {
 
-            if (getCity() == "" && val['answer']['city'] == undefined) {
+            if (val['answer']['city'] == undefined) {
                 $(".chat").append('<li class="replies"><img src="immagini/chatbot.png" alt="" /><p >Enter city</p></li>');
                 flagcitta = true;
+                $(".messages").animate({
+                    scrollTop: ($(document).height() * 100)
+                }, "fast");
             } else {
                 $(".chat").append('<li class="replies"><img src="immagini/chatbot.png" alt="" /><p >' + val['answer']['res'] + '</p></li>');
             }

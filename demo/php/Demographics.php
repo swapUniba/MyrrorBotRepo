@@ -55,6 +55,7 @@ function getEta($resp,$parameters,$text,$email){
 	if($result == null){
 		$answer = "Non sono riuscito a reperire le informazioni relative alla tua data di nascita &#x1F62D;. Verifica che sia presente nel tuo account";
 	}else{
+		$result = $result['value'];
 		$today = date("Y-m-d");
 		$diff = abs(strtotime($today) - strtotime($result));
     	$years = floor($diff / (365*60*60*24));
@@ -86,13 +87,28 @@ function getCountry($resp,$parameters,$text,$email){
 
 	if (isset($result)) {
 
-		$answer = str_replace("X",$result,$resp);
+		$answer = str_replace("X",$result['value'],$resp);
 
 	}else{
 		$answer = "Non sono riuscito a reperire le informazioni relative al tuo luogo di nascita &#x1F62D;. Verifica che sia presente nel tuo account";
 	}
 
 	return $answer;
+}
+
+//Funzione che legge il parametro Location[{"value"}] del profilo olistico e restituisce
+//una risposta relativa alla città dove si vive
+function Ultimacitta($email)
+{
+		$answer = "";
+		$city = citta($email);
+		if(isset($city)) {
+			$answer = "Vivi a ".$city."";
+		}else{
+			$answer = "Non sono riuscito a reperire le informazioni relative alla tua ultima città. Verifica che sia presente nel tuo account";
+		}
+		return $answer;
+
 }
 
 

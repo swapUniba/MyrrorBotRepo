@@ -203,6 +203,10 @@ function selectIntent($email,$intent, $confidence,$text,$resp,$parameters,$city)
                 $answer = getCountry($resp,$parameters,$text,$email);
                 break;
 
+            case 'Ultima citta':
+                $answer = Ultimacitta($email);
+                break;    
+
             case 'Personalita':
                 $answer = personalita($resp,$parameters,$email);
                 break;

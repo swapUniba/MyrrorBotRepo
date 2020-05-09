@@ -187,6 +187,22 @@ function citta($email)
 }
 
 
+//Funzione che legge il parametro Location[{"value"}] del profilo olistico e restituisce
+//una risposta relativa alla città dove si vive
+function Ultimacitta($email)
+{
+		$answer = "";
+		$city = citta($email);
+		if(isset($city)) {
+			$answer = "Vivi a ".$city."";
+		}else{
+			$answer = "Non sono riuscito a reperire le informazioni relative alla tua ultima città. Verifica che sia presente nel tuo account";
+		}
+		return $answer;
+
+}
+
+
 
 
 

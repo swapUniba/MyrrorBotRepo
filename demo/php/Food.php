@@ -447,6 +447,7 @@ function getPersonalizedRecipe($resp,$parameters,$text,$email, $flagIngredient, 
 	$date = date("Y/m/d");
 	$activity = attivitaData($date,$email);
 	$sum = $activity[0] + $activity[1] + $activity[2];
+  //print_r($activity);
 	if($sum >=30){
 		$activity = "high";
 	}

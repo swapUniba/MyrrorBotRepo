@@ -305,12 +305,21 @@ function binaryWeather($city,$parameters,$text){
 
 
 if(isset($parameters['date'])){
-$date = substr($parameters['date'],0,10);
+  $date = substr($parameters['date'],0,10);
 }else{
-$date = date('Y-m-d'); 
+  $date = date('Y-m-d'); 
 }
 
-$json_data = queryWeather($city);
+if (isset($parameters['geo-city'])) {
+  $json_data = queryWeather($parameters['geo-city']);
+}else{
+  $json_data = queryWeather($city);
+}
+
+if(isset($parameters['date-period']['startDate']) && isset($parameters['date-period']['startDate']) != ""){
+  $date = substr($parameters['date-period']['startDate'], 0,10);
+}
+
 if($json_data['cod'] != 200)
   return "";
 $answer ="" ;
@@ -325,7 +334,7 @@ foreach ($json_data['list'] as $key => $value) {
         $temp = $value['main']['temp'];
             
           foreach ($value['weather'] as $key2 => $value2) {
-           $val = 	$value2['main'];
+           $val =   $value2['main'];
            array_push($arr, $val);
            $description = $value2['description'];
           }
@@ -338,46 +347,46 @@ foreach ($json_data['list'] as $key => $value) {
     
    if (strpos($text, 'rain') !== false || strpos($text,'bad') !== false) {
       
-   	if(isset($result['Rain']) && $result['Rain'] > 0){
-   		$answer = "Yes it'll rain";
-   	}else{
-   		$answer = "No,it won't rain";
-   	}
+    if(isset($result['Rain']) && $result['Rain'] > 0){
+      $answer = "Yes, it will rain";
+    }else{
+      $answer = "No, it'won't rain";
+    }
 
    }elseif (strpos($text,'worse') !== false || strpos($text, 'crap') !== false) {
-   	
-   	if(isset($result['Rain']) && $result['Rain'] > 0){
-   		$answer = "Yes it's gonna rain";
-   	}elseif(isset($result['Cloud']) && $result['Cloud'] >= 3 ){
-   		$answer = "Yes it'll be cloudy";
-   	}else {
-   		$answer = "No it will be clear";
-   	}
+    
+    if(isset($result['Rain']) && $result['Rain'] > 0){
+      $answer = "Yes, it'll be rainy";
+    }elseif(isset($result['Cloud']) && $result['Cloud'] >= 3 ){
+      $answer = "Yes, it'll be cloudy";
+    }else {
+      $answer = "No,it'll be sunny";
+    }
 
    }elseif (strpos($text, 'cloudy') !== false) {
  
       if(isset($result['Cloud']) && $result['Cloud'] >= 3 ){
-   		$answer = "Yes it'll be cloudy";
-   	}elseif(isset($result['Rain']) && $result['Rain'] > 0) {
-   		$answer = "No,it'll rain";
-   	}else{
-   		$answer = "no,it'll be sunny";
-   	}
+      $answer = "Yes, it'll be cloudy";
+    }elseif(isset($result['Rain']) && $result['Rain'] > 0) {
+      $answer = "No, it'll be rainy";
+    }else{
+      $answer = "no, it'll be sunny";
+    }
 
-   	
-   }elseif(strpos($text, 'nice') !== false || strpos($text, 'sun') !== false || strpos($text, 'good') !== false){
+    
+   }elseif(strpos($text, 'sun') !== false || strpos($text, 'nice') !== false || strpos($text, 'bel') !== false){
 
-   	 if(isset($result['Cloud']) && $result['Cloud'] >= 3 ){
-   		$answer = "No it'll be cloudy";
-   	}elseif(isset($result['Rain']) && $result['Rain'] > 0) {
-   		$answer = "No,it'll rain";
-   	}else{
-   		$answer = "Yes,it'll be sunny";
-   	}
+     if(isset($result['Cloud']) && $result['Cloud'] >= 3 ){
+      $answer = "No, it'll be cloudy";
+    }elseif(isset($result['Rain']) && $result['Rain'] > 0) {
+      $answer = "No, it'll be rainy";
+    }else{
+      $answer = "Yes, it'll be sunny";
+    }
 
    }
-	
-return $answer;
+  
+return array('res'=>$answer,'city'=>$city);
 
 
 
