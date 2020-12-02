@@ -274,6 +274,130 @@ function selectIntent($email,$intent, $confidence,$text,$resp,$parameters,$city)
 
             case 'Raccomandazione programma':
                 $answer = recommendTV($resp,$parameters,$text,$email);
+                break;   
+                
+            case 'Diagnosi':
+                $answer = getDiagnosis($resp,$parameters,$email);
+                break;
+
+            case 'Diagnosi periodo':
+                $answer = getDiagnosisPeriod($resp,$parameters,$email);
+                break;
+            
+            case 'Analisi':
+                $answer = getAnalysis($resp,$parameters,$email);
+                break;
+
+            case 'Ultima analisi':
+                $answer = getLastAnalysis($resp,$parameters,$email);
+                break;
+
+            case 'Analisi binario':
+                $answer = getAnalysisBinary($parameters,$email);
+                break;
+            
+            case 'Analisi periodo':
+                $answer = getAnalysisPeriod($resp,$parameters,$text,$email);
+                break;
+
+            case 'Analisi sotto controllo':
+                $answer = getAnalysisControl($resp,$parameters,$email);
+                break;
+
+            case 'Analisi sotto controllo binario':
+                $answer = getAnalysisControlBinary($resp,$parameters,$email);
+                break;
+
+            case 'Dettagli analisi':
+                $answer = getAnalysisDetails($parameters,$email);
+                break;
+
+            case 'Risultati analisi':
+                $answer = getAnalysisResult($resp,$parameters,$email);
+                break;
+
+            case 'Andamento risultati analisi':
+                $answer = getAnalysisTrend($resp,$parameters,$email);
+                break;
+
+            case 'Terapie':
+                $answer = getTherapies($resp,$parameters,$email);
+                break;
+
+            case 'Ultima terapia':
+                $answer = getLastTherapy($resp,$parameters,$email);
+                break;
+
+            case 'Terapie periodo':
+                $answer = getTherapiesPeriod($resp,$parameters,$email);
+                break;
+
+            case 'Terapie in corso/concluse':
+                $answer = getTherapiesInProgEnded($resp,$parameters,$email);
+                break;
+
+            case 'Farmaco oggi':
+                $answer = getDrugToday($resp,$parameters,$email);
+                break;            
+
+            case 'Dettagli terapia':
+                $answer = getTherapyDetails($parameters,$email);
+                break;
+
+            case 'Area medica':
+                $answer = getMedicalAreas($resp,$parameters,$email);
+                break;
+
+            case 'Ultima area medica':
+                $answer = getLastMedicalArea($resp,$parameters,$email);
+                break;
+
+            case 'Visite mediche':
+                $answer = getMedicalVisits($resp,$parameters,$email);
+                break;
+    
+            case 'Visite mediche periodo':
+                $answer = getMedicalVisitsPeriod($resp,$parameters,$email);
+                break;
+
+            case 'Dettagli visita medica':
+                $answer = getMedicalVisitDetails($parameters,$email);
+                break;
+
+            case 'Ultima visita medica':
+                $answer = getLastMedicalVisit($resp,$parameters,$email);
+                break;
+
+            case 'Patologie':
+                $answer = getDiseases($resp,$parameters,$email);
+                break;
+    
+            case 'Patologie periodo':
+                $answer = getDiseasesPeriod($resp,$parameters,$email);
+                break;
+    
+            case 'Patologie binario':
+                $answer = getDiseasesBinary($parameters,$email);
+                break;
+
+            case 'Dettagli patologia':
+                $answer = getDiseaseDetails($parameters,$email);
+                break;
+
+            case 'Ospedalizzazioni':
+                $answer = getHospitalizations($resp,$parameters,$email);
+                break;
+
+            case 'Ospedalizzazioni periodo':
+                $answer = getHospitalizationsPeriod($resp,$parameters,$email);
+                break;
+
+            case 'Ultima ospedalizzazione':
+                $answer = getLastHospitalization($resp,$parameters,$email);
+                break;
+
+            case 'Dettagli ospedalizzazione':
+                $answer = getHospitalizationDetails($parameters,$email);
                 break;             
 
 
