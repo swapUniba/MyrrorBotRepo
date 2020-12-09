@@ -452,7 +452,6 @@ function selectIntent($email,$intent, $confidence,$text,$resp,$parameters,$city)
                 $answer = getLastMedicalVisitSpecified($resp, $parameters, $email);
                 break;
 
-
             default:
                 if ($resp != "") { //Small Talk
                     $answer = $resp;
