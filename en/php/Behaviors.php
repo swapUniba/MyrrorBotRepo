@@ -17,7 +17,6 @@ function attivitaInterval($startDate,$endDate,$email){
  $sum =  array(0,0,0);
 
 	foreach ($json_data as $key1 => $value1) {
-
 	if(isset($value1['fromActivity'])){
 		
      	
@@ -1118,4 +1117,52 @@ function getLastAttivitaFisica($resp,$parameters,$text,$email){
 
   return $valori;
 
+}
+
+
+/*@resp contiene la risposta ricevuta da DialogFlow
+   parameters contiene la data o il periodo inserito dall'utente
+   Il metodo restituisce quanta distanza, sotttoforma di risposta, l'utente ha percorso nella data o il periodo inserito
+*/
+function getDistance($resp, $parameters, $text, $email)
+{
+    $param = "";
+    $json_data = queryMyrror($param, $email);
+    $distance = 0.00;
+
+    foreach ($json_data as $key1 => $value1) {
+
+        if (isset($value1['fromActivity'])) {
+            foreach ($value1['fromActivity'] as $key2 => $value2) {
+                if ($value2["nameActivity"] == "distance") {
+                    $timestamp = $value2['timestamp'] / 1000;
+
+                    if($parameters['date'] != null) {
+                        $date = strtotime($parameters['date']);
+
+
+                        $difference = abs($date - $timestamp);
+
+                        if ($difference <= 86400) {
+                            $distance += $value2["distance"];
+                        }
+
+                    }else if(isset($parameters['date-period'])) {
+                        $startDate = strtotime($parameters['date-period']['startDate']);
+                        $endDate = strtotime($parameters['date-period']['endDate']);
+
+                        if ($timestamp >= $startDate && $timestamp <= $endDate) {
+                            $distance += $value2["distance"];
+                        }
+                    }
+                }
+            }
+        }
+    }
+    if ($distance == 0.00) {
+        $answer = "My data shows no distances traveled";
+    } else {
+        $answer = str_replace("X",$distance,$resp);
+    }
+    return $answer;
 }
