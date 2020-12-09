@@ -32,7 +32,7 @@ include 'Tv.php';
 $city = "Bari";
 header('Content-type: text/plain; charset=utf-8');
 ini_set('display_errors', 1);
-//Controllo se la variabile 'testo' ricevuta Ã¨ nulla
+//Controllo se la variabile 'testo' ricevuta ÃƒÂ¨ nulla
 if (isset($_POST{'testo'})) {
     $testo = $_POST{'testo'};
     if (stripos($testo, 'weekend') !== false
