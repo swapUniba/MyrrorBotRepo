@@ -1,0 +1,2 @@
+Utilizzo in localhost con xampp
+Andare nel file php/url.php e cambiare l'url in 127.0.0.1

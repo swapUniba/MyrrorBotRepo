@@ -75,7 +75,7 @@ function detect_intent_texts($projectId,$city,$email, $text, $sessionId, $langua
         //Stampo la risposta relativa all'intent non identificato
         $arr = array('intentName' => "Non identificato", 'confidence' => "0",'answer' => $answer);
         //printf(json_encode($arr,'UTF8'));  //JSON_UNESCAPED_UNICODE utilizzato per il formato UTF8
-	printf(json_encode($arr,JSON_UNESCAPED_UNICODE));  //JSON_UNESCAPED_UNICODE utilizzato per il formato UTF8
+    printf(json_encode($arr,JSON_UNESCAPED_UNICODE));  //JSON_UNESCAPED_UNICODE utilizzato per il formato UTF8
 
 
     }
@@ -178,10 +178,10 @@ function selectIntent($email,$intent, $confidence,$text,$resp,$parameters,$city)
         $flagHealthy = false;
         $flagLight = false;
         $ingredient = "";
-	$flagVeg = false;
-	$flagLac = false;
-	$flagNick = false;
-	$flagGluten = false;
+    $flagVeg = false;
+    $flagLac = false;
+    $flagNick = false;
+    $flagGluten = false;
         
         //Controllo se sono presenti le parole della lista healty allora setto a vero il flag healty
         foreach($listaHealthy as $parola)  {  
@@ -210,7 +210,7 @@ function selectIntent($email,$intent, $confidence,$text,$resp,$parameters,$city)
         }
         
         //$answer = getRecipeByIngredient($resp,$parameters,$text,$email, $ingredient, $flagHealthy, $flagLight);
-	$answer = getRecipeByIngredient($resp,$parameters,$text,$email, $ingredient, $flagHealthy, $flagLight, $flagVeg, $flagLac, $flagNick, $flagGluten);
+    $answer = getRecipeByIngredient($resp,$parameters,$text,$email, $ingredient, $flagHealthy, $flagLight, $flagVeg, $flagLac, $flagNick, $flagGluten);
 
     }
 
@@ -222,7 +222,7 @@ function selectIntent($email,$intent, $confidence,$text,$resp,$parameters,$city)
     if ($arr['intentName'] == 'Canzone per nome') {
         printf("%s",json_encode($arr)); //JSON_UNESCAPED_UNICODE utilizzato per il formato UTF8
     }else{
-	//print_r($arr);
+    //print_r($arr);
         printf("%s",json_encode($arr,JSON_UNESCAPED_UNICODE)); //JSON_UNESCAPED_UNICODE utilizzato per il formato UTF8
     }
 }

@@ -74,7 +74,7 @@ $(window).on('keydown', function(e) {
 
 function send(query) {
     var text = query;
-	
+  
     if (flagcitta == true) {
         flagcitta = false;
         temp = $('#contesto').val();
@@ -193,17 +193,17 @@ function setResponse(val) {
         }else if (val.intentName == "Allenamento generico"){
 
 
-        	$(".chat").append(
-        	    '<li class="replies">' + 
-        	        '<img src="immagini/chatbot.png" alt=""/>' +
-        	            '<p>' +
-        	                '<a href="javascript:window.open(\''+val.answer.url+'\')">Here is the workout you asked:</a><br>' +
+          $(".chat").append(
+              '<li class="replies">' + 
+                  '<img src="immagini/chatbot.png" alt=""/>' +
+                      '<p>' +
+                          '<a href="javascript:window.open(\''+val.answer.url+'\')">Here is the workout you asked:</a><br>' +
 
-        	                '<a href="javascript:window.open(\''+val.answer.url+'\')"><img style="width: 100%;height: 100%;" src="'+val.answer.imgUrl+'"></a>' +
+                          '<a href="javascript:window.open(\''+val.answer.url+'\')"><img style="width: 100%;height: 100%;" src="'+val.answer.imgUrl+'"></a>' +
 
 
-        	            '<br><br><b></b></p>'+
-        	    '</li>');
+                      '<br><br><b></b></p>'+
+              '</li>');
 
 
 
@@ -350,43 +350,43 @@ function setResponse(val) {
             $("#intent").val("Cibo");
             $("#count_ric").val(1);
             
-			if(typeof val['answer']['name'] !== 'undefined'){
+      if(typeof val['answer']['name'] !== 'undefined'){
                 $(".chat").append(
-					'<li class="replies">' + 
-						'<img src="immagini/chatbot.png" alt=""/>' +
-							'<p>' + val['answer']['name'] +
-							'</p>'+
-					'</li>');
+          '<li class="replies">' + 
+            '<img src="immagini/chatbot.png" alt=""/>' +
+              '<p>' + val['answer']['name'] +
+              '</p>'+
+          '</li>');
             }
             else{
                 $("#ric").val(encodeURIComponent(JSON.stringify(val)));
                 
-				procedimento = val.answer.recipes[0][26];
-				$("#procedimento").val(procedimento);
-				
-				ingredients = val.answer.recipes[0][24];
-				ingredients = ingredients.replace('[', '');
-				ingredients = ingredients.replace(']', '');
-				ingredients = ingredients.replace(/, /g, '<br>');
+        procedimento = val.answer.recipes[0][26];
+        $("#procedimento").val(procedimento);
+        
+        ingredients = val.answer.recipes[0][24];
+        ingredients = ingredients.replace('[', '');
+        ingredients = ingredients.replace(']', '');
+        ingredients = ingredients.replace(/, /g, '<br>');
                 
                 spiegazione = val.answer.explain;
                 $("#spiegazione").val(spiegazione);
-				
-				$(".chat").append(
-					'<li class="replies">' + 
-						'<img src="immagini/chatbot.png" alt=""/>' +
-							'<p>I suggest: <br>' +
-								'<b><a href="' + val.answer.recipes[0][0] + '" target="_blank">' + val.answer.recipes[0][1] + '</a></b><br>' +
-								val.answer.recipes[0][5] + '<br>' +
-								'<img style="width: 100%;height: 100%;" src="' + val.answer.recipes[0][4] + '">' +
-							'<br><br><b>Ingredients:</b><br>' + ingredients +
-							'<br><br>Do you want to take a look to the instructions or search for another recipe?' +
-							'</p>'+
-					'</li>');
+        
+        $(".chat").append(
+          '<li class="replies">' + 
+            '<img src="immagini/chatbot.png" alt=""/>' +
+              '<p>I suggest: <br>' +
+                '<b><a href="' + val.answer.recipes[0][0] + '" target="_blank">' + val.answer.recipes[0][1] + '</a></b><br>' +
+                val.answer.recipes[0][5] + '<br>' +
+                '<img style="width: 100%;height: 100%;" src="' + val.answer.recipes[0][4] + '">' +
+              '<br><br><b>Ingredients:</b><br>' + ingredients +
+              '<br><br>Do you want to take a look to the instructions or search for another recipe?' +
+              '</p>'+
+          '</li>');
                 
                 
-			}
-			
+      }
+      
         }else {
             var answer = val['answer'] + "To use all the features, you need to register to Myrror at the following address <a href='http://90.147.102.243:9090'>90.147.102.243</a>";
             $(".chat").append('<li class="replies"><img src="immagini/chatbot.png" alt="" /><p>' + answer + '</p></li>');

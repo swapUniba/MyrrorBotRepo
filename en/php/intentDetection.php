@@ -19,6 +19,9 @@ include 'SpotifyIntent.php';
 include 'Video.php';
 include 'News.php';
 include 'Meteo.php';
+include 'Allenamento.php';
+include 'Programmatv.php';
+include 'Recipes.php';
 include 'Food.php';
 
 include 'Workout.php';
@@ -28,18 +31,17 @@ include 'GetValuesFunctions.php';
 include 'Tv.php';
 
 
-
 header('Content-type: text/plain; charset=utf-8');
-ini_set('display_errors', 1);
-$city = "Bari";
+ ini_set('display_errors', 1);
+ $city = "Bari";
 
-//Controllo se la variabile 'testo' ricevuta Ã¨ nulla
+//Controllo se la variabile 'testo' ricevuta è nulla
 if (isset($_POST{'testo'})) {
     $testo = $_POST{'testo'};
-    if( stripos($testo, 'weekend') !== false
+    if( stripos($testo, 'weekend') !== false  
         && stripos($testo, 'next') == false ){
-        $pos = stripos($testo, 'weekend');
-        $testo = substr_replace($testo, ' next ', $pos, 0);
+      $pos = stripos($testo, 'weekend');
+  $testo = substr_replace($testo, ' next ', $pos, 0);
 
     }elseif ( stripos($testo, 'weekend') !== false  && stripos($testo, 'next') == false) {
         $pos = stripos($testo, 'weekend');
@@ -52,7 +54,7 @@ if(isset($_POST{'city'})){
 }
 
 if(isset($_POST{'mail'})){
-    $email = $_POST{'mail'};
+    $email = urldecode($_POST{'mail'});
 }
 
 
@@ -62,7 +64,7 @@ function detect_intent_texts($projectId,$city,$email, $text, $sessionId, $langua
     $test = array('credentials' => 'myrrorbot-4f360-cbcab170b890.json');
     $sessionsClient = new SessionsClient($test);
     $session = $sessionsClient->sessionName($projectId, $sessionId ?: uniqid());
-
+    
     // create text input
     $textInput = new TextInput();
     $textInput->setText($text);
@@ -71,17 +73,17 @@ function detect_intent_texts($projectId,$city,$email, $text, $sessionId, $langua
     // create query input
     $queryInput = new QueryInput();
     $queryInput->setText($textInput);
-
+    
     // get response and relevant info
     $response = $sessionsClient->detectIntent($session, $queryInput);
     $queryResult = $response->getQueryResult();
-
+ 
 
     $parameters=json_decode($queryResult->getParameters()->serializeToJsonString(), true);
-
+    
     $queryText = $queryResult->getQueryText();
     $intent = $queryResult->getIntent();
-
+    
     //risposta intent
     $fulfilmentText = $queryResult->getFulfillmentText();
 
@@ -89,7 +91,7 @@ function detect_intent_texts($projectId,$city,$email, $text, $sessionId, $langua
         $displayName = $intent->getDisplayName(); //Nome dell'intent
         $confidence = $queryResult->getIntentDetectionConfidence(); //Livello di confidence
         selectIntent($email,$displayName,$confidence,$text,$fulfilmentText,$parameters,$city);
-
+        
     }else{
 
         $answer = "Unfortunally I didn't understand the question.I still have to learn a lot of things &#x1F605;";
@@ -101,71 +103,77 @@ function detect_intent_texts($projectId,$city,$email, $text, $sessionId, $langua
 
 
     }
-
+    
     $sessionsClient->close();
 }
 
-
+function setTecnique($resp,$parameters,$email){
+    if(isset($parameters['rectec'])){
+        $technique = $parameters['rectec'];
+        setcookie('technique',$technique, time() + (86400 * 30), "/");
+        
+    }
+    
+}
 
 function selectIntent($email,$intent, $confidence,$text,$resp,$parameters,$city){
 
-    if(($confidence > 0.86 ||  str_word_count($text) >= 2) && $confidence >= 0.60){
+    if(($confidence > 0.86 ||  str_word_count($text) >= 3) && $confidence >= 0.3){              
 
         $answer = null;
 
         switch ($intent) {
 
             case 'Attivita fisica':
-                $answer = attivitaFisica($resp, $parameters, $text, $email);
+                $answer = attivitaFisica($resp,$parameters,$text,$email);
                 break;
 
             case 'Attivita fisica binario':
-                print_r($parameters);
-                $answer = attivitaFisicaBinary($resp, $parameters, $text, $email);
+                $answer = attivitaFisicaBinary($resp,$parameters,$text,$email);
                 break;
-
+    
             case 'Battito cardiaco':
-                $answer = getCardio($resp, $parameters, $text, $email);
+                $answer= getCardio($resp,$parameters,$text,$email);
                 break;
 
             case 'Battito cardiaco binario':
-                $answer = getCardioBinary($resp, $parameters, $text, $email);
+                $answer= getCardioBinary($resp,$parameters,$text,$email);
                 break;
-
+     
             case 'Calorie bruciate':
-                $answer = getCalories($resp, $parameters, $text, $email);
+                $answer = getCalories($resp,$parameters,$text,$email);
                 break;
 
             case 'Calorie bruciate binario':
-                $answer = getCaloriesBinary($resp, $parameters, $text, $email);
+                $answer = getCaloriesBinary($resp,$parameters,$text,$email);
                 break;
 
             case 'Contapassi':
-                $answer = getSteps($resp, $parameters, $text, $email);
+                $answer = getSteps($resp,$parameters,$text,$email);      
                 break;
 
             case 'Contapassi binario':
-                $answer = getStepsBinary($resp, $parameters, $text, $email);
-                break;
+                $answer = getStepsBinary($resp,$parameters,$text,$email);      
+                break;    
 
             case 'Contatti':
-                $answer = contatti($resp, $parameters, $text, $email);
+                $answer = contatti($resp,$parameters,$text,$email);
                 break;
 
             case 'Contatti_subintent':
-                $answer = contatti($resp, $parameters, $text, $email);
+                $answer = contatti($resp,$parameters,$text,$email);
                 break;
 
             case 'Email':
-                $answer = email($resp, $parameters, $text, $email);
+                $answer = email($resp,$parameters,$text,$email);
                 break;
-
+                
             case 'Peso':
-                $answer = getWeight($resp, $parameters, $text, $email);
+                $answer = getWeight($resp,$parameters,$text,$email);
                 break;
 
             case 'Altezza':
-                $answer = getHeight($resp, $parameters, $text, $email);
+                $answer = getHeight($resp,$parameters,$text,$email);
                 break;
             case 'Ore di Sonno':
                 $answer = getOreDiSonno($resp, $parameters, $text, $email);
@@ -185,12 +193,13 @@ function selectIntent($email,$intent, $confidence,$text,$resp,$parameters,$city)
             case 'Ore di veglia':
                 $answer = getOreDiVeglia($resp,$parameters,$text,$email);
                 break;
+
             case 'Emozioni':
-                $answer = getSentiment(1, $resp, $parameters, $email);
+                $answer = getSentiment(1,$resp,$parameters,$email);
                 break;
 
             case 'Emozioni binario':
-                $answer = getSentimentBinario(1, $resp, $parameters, $email);
+                $answer = getSentimentBinario(1,$resp,$parameters,$email);
                 break;
             case 'Forma fisica':
                 $answer = getFormaFisica($resp, $parameters, $text, $email);
@@ -201,74 +210,115 @@ function selectIntent($email,$intent, $confidence,$text,$resp,$parameters,$city)
             case 'Nazione':
                 $answer = getNazione($resp, $parameters, $text, $email);
                 break;
+
             case 'Umore':
-                $answer = getSentiment(0, $resp, $parameters, $email);
+                $answer = getSentiment(0,$resp,$parameters,$email);
                 break;
+
             case 'Umore binario':
-                $answer = getSentimentBinario(0, $resp, $parameters, $email);
+                $answer = getSentimentBinario(0,$resp,$parameters,$email);
                 break;
+
             case 'Eta':
-                $answer = getEta($resp, $parameters, $text, $email);
+                $answer = getEta($resp,$parameters,$text,$email);
                 break;
+
             case 'Identita utente':
-                $answer = identitaUtente($resp, $parameters, $text, $email);
+                $answer = identitaUtente($resp,$parameters,$text,$email);
                 break;
+
             case 'Interessi':
-                $answer = interessi($resp, $parameters, $email);
+                $answer = interessi($resp,$parameters,$email);
                 break;
+
             case 'Lavoro':
-                $answer = lavoro($resp, $parameters, $text, $email);
+                $answer = lavoro($resp,$parameters,$text,$email);
                 break;
 
             case 'Luogo di nascita':
-                $answer = getCountry($resp, $parameters, $text, $email);
-                break;
-
-            case 'Ultima citta':
-                $answer = Ultimacitta($email);
+                $answer = getCountry($resp,$parameters,$text,$email);
                 break;
 
             case 'Personalita':
-                $answer = personalita($resp, $parameters, $email);
+                $answer = personalita($resp,$parameters,$email);
                 break;
 
             case 'Personalita binario':
-                $answer = personalitaBinario($resp, $parameters, $email);
+                $answer = personalitaBinario($resp,$parameters,$email);
                 break;
 
             case 'Qualita del sonno':
-                $answer = getSleep($resp, $parameters, $text, $email);
+                $answer = getSleep($resp,$parameters,$text,$email);
                 break;
 
             case 'Qualita del sonno binario':
-                $answer = getSleepBinary($resp, $parameters, $text, $email);
+                $answer = getSleepBinary($resp,$parameters,$text,$email);
                 break;
 
             case 'Sedentarieta':
-                $answer = getSedentary($resp, $parameters, $text, $email);
+                $answer = getSedentary($resp,$parameters,$text,$email);
                 break;
 
             case 'Sedentarieta binario':
-                $answer = getSedentaryBinary($resp, $parameters, $text, $email);
+                $answer = getSedentaryBinary($resp,$parameters,$text,$email);
                 break;
+                
+             case 'meteo binario':
+             //$city = "Bari";
+                $answer = binaryWeather($city,$parameters,$text);
+                break; 
 
-            case 'meteo binario':
-                //$city = "Bari";
-                $answer = binaryWeather($city, $parameters, $text);
-                break;
-
-            case 'Meteo odierno':
-                //$city = "Bari";
-                $answer = getTodayWeather($city, $parameters, $text);
-                break;
+             case 'Meteo odierno':
+             //$city = "Bari";
+                $answer = getTodayWeather($city,$parameters,$text);
+                break; 
 
             case 'Meteo citta':
-                $answer = getCityWeather($parameters, $text);
+            
+                $answer = getCityWeather($parameters,$text);
                 break;
 
-            case 'Meteo':
-                //$city = "Bari";
-                $answer = getWeather($city, $parameters, $text, $email); //email aggiunta per sperimentazione
+             case 'Meteo':
+               //$city = "Bari";
+                $answer = getWeather($city,$parameters,$text);
+                break;
+            case 'MusicPreference':
+                $answer = insertPreferenceMusic($parameters,$text,$email);
+                break;
+            case 'Preference-music':
+                $answer = $resp;
+                break;
+            case 'NewsPreference':
+                $answer = insertNewsPreference($parameters,$text,$email);
+                break;
+
+            case 'AllenamentoPreference':
+                $answer = insertPreferenceTraining($parameters,$text,$email);
+                break;
+            case 'Preference-allenamento':
+                $answer = $resp;
+                break;
+
+            case 'VideoPreference':
+                $answer = insertPreferenceVideo($parameters,$text,$email);
+                break;
+            case 'Preference-video':
+                $answer = $resp;
+                break;
+            case 'ProgrammitvPreference':
+                $answer = insertPreferenceProgrammitv($parameters,$text,$email);
+                break;
+            case 'Preference-programmitv':
+                $answer = $resp;
+                break;
+                
+            case 'RicettePreference':
+                $answer = insertRecipesPreference($parameters,$text,$email);
+                break;
+
+            case 'DeletePreference':
+
+                $answer = getLastInterest($email);
                 break;
 
             case 'attiva debug':
@@ -279,7 +329,7 @@ function selectIntent($email,$intent, $confidence,$text,$resp,$parameters,$city)
                 $answer = $resp;
                 break;
 
-            case 'Allenamento personalizzato':
+             case 'Allenamento personalizzato':
                 $answer = recommendWorkout($resp, $parameters, $text, $email);
                 break;
 
@@ -451,6 +501,10 @@ function selectIntent($email,$intent, $confidence,$text,$resp,$parameters,$city)
             case 'Ultima visita medica specifica':
                 $answer = getLastMedicalVisitSpecified($resp, $parameters, $email);
                 break;
+            case 'setTechnique':
+                setTecnique($resp,$parameters,$email);
+                $answer = $resp;
+                break;
 
             default:
                 if ($resp != "") { //Small Talk
@@ -481,7 +535,7 @@ function selectIntent($email,$intent, $confidence,$text,$resp,$parameters,$city)
                 $answer = getVideoByEmotion($resp,$parameters,$text,$email);
                 break;
 
-
+         
 
             case 'Ricerca Video':
                 $answer = getVideoBySearch($resp,$parameters,$text,$email);
@@ -492,18 +546,11 @@ function selectIntent($email,$intent, $confidence,$text,$resp,$parameters,$city)
                 break;
         }
     }
-
+    
     //GOOGLE-NEWS--> Valori soglia diversi
     if($confidence >= 0.50  && ($intent == 'News')){
 
         $answer = getNews($parameters,$email,$text);
-
-    }
-
-    //CIBO
-    if($intent == 'Cibo'){
-
-        $answer = getRecipe($resp,$parameters,$text,$email);
 
     }
 
@@ -515,8 +562,8 @@ function selectIntent($email,$intent, $confidence,$text,$resp,$parameters,$city)
 
 
     }else{
-        echo json_encode($arr); //JSON_UNESCAPED_UNICODE utilizzato per il formato UTF8
-        // printf(json_encode($arr,JSON_UNESCAPED_UNICODE)); //JSON_UNESCAPED_UNICODE utilizzato per il formato UTF8
+     echo json_encode($arr); //JSON_UNESCAPED_UNICODE utilizzato per il formato UTF8
+       // printf(json_encode($arr,JSON_UNESCAPED_UNICODE)); //JSON_UNESCAPED_UNICODE utilizzato per il formato UTF8
     }
 
 }
@@ -524,7 +571,7 @@ function selectIntent($email,$intent, $confidence,$text,$resp,$parameters,$city)
 //date_default_timezone_set('Europe/Madrid'); //Imposto la stessa timezone di Dialogflow (per gli orari)
 
 try {
-    detect_intent_texts('myrrorbot-4f360',$city,$email,$testo,'123456');
+  detect_intent_texts('myrrorbot-4f360',$city,$email,$testo,'123456');
 } catch (ClientErrorResponseException $exception) {
     $responseBody = $exception->getResponse()->getBody(true);
     echo $responseBody;
