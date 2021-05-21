@@ -84,7 +84,7 @@ function getInterestsList($email){
 	$json_data = queryMyrror($param,$email);
 
 	$categorieArray = array();
-
+	if($json_data != ""){
 	foreach ($json_data as $key1 => $value1) {
 
 		if($key1 == "interests"){
@@ -107,6 +107,7 @@ function getInterestsList($email){
 
 			                    $interessiFrequenti = array_count_values($categorieArray); //Genera un array associativo: nome->(occorrenze di nome)
 			                    arsort($interessiFrequenti);//Ordino l'array in relazione al maggior numero di interazioni
+
 		                          //prendo i primi 30 elementi
 			                    $top30 = array_slice($interessiFrequenti, 0, 30);
 								
@@ -118,5 +119,33 @@ function getInterestsList($email){
 			}
         }	
     }
+}
 	return $top30;
+}
+
+
+function getLastInterest($email){
+
+    $top10 = array();
+	$param = "";
+	$json_data = queryMyrror($param,$email);
+
+
+	foreach ($json_data as $key1 => $value1) {
+
+		if($key1 == "interests"){
+			foreach ($value1 as $key => $value) {
+				if (isset($value['value'])) {//Verifico se è valorizzata la variabile 'value'
+
+
+					$val = $value['value']; //Prendo la preference
+
+					array_push($top10, $val);
+					
+				}
+			}
+        }	
+    }
+    
+	return $top10;
 }

@@ -127,6 +127,33 @@ if($url == "")
 }
 
 }
+
+function retrieveContent($res){
+
+$arr = array();
+
+ if (($h = fopen("../Recommender/newsIta.csv", "r")) !== FALSE) {
+    
+    while (($data = fgetcsv($h, 1000, ";")) !== FALSE) { 
+        
+        if(isset($data[1])){
+            #print_r($data);
+            if (in_array($data[1], $res)){
+                array_push($arr,$data);
+        }
+        }
+       
+    }
+
+ }
+
+return $arr;
+
+
+ }
+
+
+
 /*
 il metodo chiama getInterestsList per ottenere la lista
 dei 30 maggiori interessi dell'utente , per ogni interesse 
@@ -139,19 +166,55 @@ function getInterestsNews($email){
 
 $arr  = array('','','','');
 $articles = array();
-$list = getInterestsList($email);
-//print_r($list);
+#$list = getInterestsList($email);
+if(isset($_COOKIE['technique'])){
+	$technique = $_COOKIE['technique'];
+}else{
+	$technique = "W2V";
+}
+
+
+ $res  = array();
+ $file = "";
+ switch ($technique) {
+ 	case 'W2V':
+ 		$file = "rec_news_w2v_it.csv";
+ 		break;
+ 	case 'D2V':
+ 		$file = "rec_news_d2v_it.csv";
+ 		break;
+ 	case 'LSI':
+ 		$file = "rec_news_lsi_it.csv";
+ 		break;
+ 	case 'Fasttext':
+ 		$file = "rec_news_ft_it.csv";
+ 		break;
+ }
+
+ if (($h = fopen("../Recommender/".$file, "r")) !== FALSE) {
+    $counter = 0;
+    while (($data = fgetcsv($h, 1000, ";")) !== FALSE) { 
+        if($data[0] == $email && $data[2] > 0.3 &&  !(in_array($data[1], $res))){
+            array_push($res,$data[1]);
+
+            if(++$counter == 5)
+                break;
+            #print_r($data);
+             #echo "<br>";
+        }
+    }
+    if($counter == 0){
+    	return "";
+    }
+     $lista = retrieveContent($res);
+     $r = rand(0,$counter-1);
+     return array('link' => $lista[$r][5],'url' => $lista[$r][1],'image' => $lista[$r][2], 'title' => $lista[$r][0],'explain' => '' );
+ }
+/*
 //echo $list[0];
 foreach ($list as $key => $value){
 
-	//print($key);
-	//aggiunto per sperimentazione
-	if($key != 'Business' && $key != 'Sport' && $key != 'Scienza' && $key != 'Tecnologia' && $key != 'Salute' && $key != 'Intrattenimeto'){
-		continue;
-	}
-
-
-	$link = "https://newsapi.org/v2/everything?q=".$key."&Language=it&sortBy=publishedAt&apiKey=17c1953c3cc7450d958ff14f9e262c02"; //Ho aggiunto &language=it per sperimentazione (funziona anche con country=it,lascio questo per ora)
+	$link = "https://newsapi.org/v2/everything?q=".$key."&sortBy=publishedAt&apiKey=17c1953c3cc7450d958ff14f9e262c02";
 	$link = str_replace(' ', '%20', $link);
 	$json = googleNewsQuery($link);
 	
@@ -181,9 +244,7 @@ foreach ($list as $key => $value){
 		
 	}
 if(count($articles) == 0){
-	//return ""; //la tolgo per sperimentazione, mettendo la lingua in ita al profilo del prof, non vengono
-	//più trovate notizie, quindi ho dovuto aggiungere la successiva riga di codice.
-	return getTodayNews();
+	return "";
 
 }else{
 	//print_r($articles);
@@ -194,6 +255,8 @@ if(count($articles) == 0){
 
     
 }
+*/
+
 
 /*
 se non viene trovato alcun articolo relativo agli interessi
@@ -239,6 +302,140 @@ principali dell'utente vengono restituite le notizie odierne
 return "Non ho trovato articoli adatti a te e ti ho dato l'ultima notizia  &#x1f600";
 
 }
+
+
+function checkTopic($topic,$file){
+
+        // Open the file for reading
+     if (($h = fopen("../fileMyrror/".$file, "r")) !== FALSE) {
+          
+
+          		$flag = false;
+                $bestk = 10;
+                $best = "";
+            // Convert each line into the local $data variable
+            while (($data = fgetcsv($h, 1000, ",")) !== FALSE) {      
+                
+                // Read the data from a single line
+                $i = 0;
+        
+                    //echo "<br>";
+                while (isset($data[$i])){
+                    //print($data[$i]."\r\n");
+                    $k = abs(strcmp(strtolower($data[$i]),strtolower($topic)));
+                   if (strpos(strtolower($data[$i]),strtolower($topic)) !== false   || strpos(strtolower($topic),strtolower($data[$i])) !== false)  {
+                    //|| 
+                        $flag = true;
+                        return $data[0];
+                    }else if($k <= 3 && $k<$bestk){
+                        $best = $data[0];
+                        $bestk = $k;
+                    }
+  
+                    $i++;
+                }
+                
+            }
+
+            if($flag == false){
+                return $best;
+            }
+            
+
+            // Close the file
+            fclose($h);
+        }
+}
+
+
+
+function insertNewsPreference($parameters,$text,$email){
+
+$res = "";
+
+if ($parameters['sports'] != null) {
+	$val = $parameters['sports'];
+	$res = 'Topic:'.checkTopic($val,'sport.csv');
+
+	
+}elseif ($parameters['health'] != null) {
+	$val = $parameters['health'];
+	$res = 'Topic:'.checkTopic($val,'health.csv');
+	
+}elseif ($parameters['science'] != null) {
+	$res = 'Topic:'.'scienza';
+	
+}elseif ($parameters['entertainment'] != null) {
+	$val = $parameters['entertainment'];
+	$res = checkTopic($val,'entertainment.csv');
+	
+}elseif ($parameters['Technology'] != null) {
+	$res = 'Topic:'.'tecnologia';
+	
+}elseif ($parameters['business'] != null) {
+	$val = $parameters['business'];
+	$res = 'Topic:'.checkTopic($val,'business.csv');
+	
+    
+}elseif($parameters['any'] != null){
+    $res = $parameters['any'];
+    
+}else{
+	return "non ho capito la tua preferenza,riprova";
+
+}
+
+if($parameters['preferencenegative'] != null){
+	$like = 0;
+}else{
+	$like = 1;
+}
+
+        $Preference = [
+			        'email'=> $email,
+			        'topic'=> $res,
+			        'like'=> $like,
+			        'timestamp'=> time()
+			    ];
+
+	if (isset($_COOKIE['x-access-token'] )) {
+		$token =  $_COOKIE['x-access-token'];
+		
+		$ch = curl_init();
+        $headers =[
+            "x-access-token:".$token
+        ];
+
+        curl_setopt($ch, CURLOPT_URL, "http://".$GLOBALS['url'].
+        	":5000/api/news/");
+
+
+        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_HEADER, 0);
+        curl_setopt($ch, CURLOPT_HTTPHEADER,$headers);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($Preference));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);       
+        curl_setopt($ch, CURLOPT_TIMEOUT, 30);   
+
+        curl_exec($ch);
+
+        //Decode JSON
+        //$json_data = json_decode($result2,true);
+
+        curl_close ($ch);
+
+        return "preferenza inserita correttamente";
+
+	}
+
+		return "non ho capito la tua preferenza,riprova.";
+	
+
+
+}
+
+
+
 
 /*
 Questo metodo usa googleNewsQuery($link) per ottenere
@@ -302,7 +499,6 @@ $list = array();
 if(isset($parameters['any'])){
 $val = $parameters['any'];	
 $val = str_replace(' ', '%20', $val);
-//print($val);
 $link = "https://newsapi.org/v2/everything?q=".$val.
 "&sortBy=publishedAt&Language=it&apiKey=17c1953c3cc7450d958ff14f9e262c02";
 $json = googleNewsQuery($link);
@@ -374,13 +570,11 @@ if ($parameters['Sports'] != null || $parameters['Health'] != null || $parameter
  stripos($text, 'ultime')  !== false ){
 	$answer = getTodayNews();
 }elseif (stripos($text, 'interessi') !== false || stripos($text, 'consigliami') !== false || 
-	stripos($text, 'interessano') !== false || stripos($text, 'interessano') !== false) {
+	stripos($text, 'interessano') !== false || stripos($text, 'interessano') !== false || 
+	stripos($text, 'raccom') !== false) {
 
 	if ($email == '') {
 		return '';
-	}else if($email == 'UtenteAnonimo'){//aggiunta sperimentazione
-		$answer = getTodayNews();
-		return $answer; //se l'utente è anonimo, restituisco una news topHeadline
 	}
 	$answer = getInterestsNews($email);
 }else{

@@ -2,7 +2,7 @@
 
 //Restuisce l'elenco dei maggiori interessi dell'utente. N.B. Non vengono presi in considerazione quelli che hanno la dicitura "Category:"
 function interessi($resp,$parameters,$email){
-
+	
 	$param = "";
 	$json_data = queryMyrror($param,$email);
 
@@ -80,11 +80,12 @@ function interessiFrequenti($categorieArray){
 function getInterestsList($email){
 
 	$param = "";
+	$top30 = array();
 	$json_data = queryMyrror($param,$email);
 
 	$categorieArray = array();
-
-	foreach ($json_data as $key1 => $value1) {
+	if($json_data != ""){
+			foreach ($json_data as $key1 => $value1) {
 
 		if($key1 == "interests"){
 			foreach ($value1 as $key => $value) {
@@ -117,5 +118,33 @@ function getInterestsList($email){
 			}
         }	
     }
+	}
+
 	return $top30;
+}
+
+function getLastInterest($email){
+
+    $top10 = array();
+	$param = "";
+	$json_data = queryMyrror($param,$email);
+
+
+	foreach ($json_data as $key1 => $value1) {
+
+		if($key1 == "interests"){
+			foreach ($value1 as $key => $value) {
+				if (isset($value['value'])) {//Verifico se è valorizzata la variabile 'value'
+
+
+					$val = $value['value']; //Prendo la preference
+
+					array_push($top10, $val);
+					
+				}
+			}
+        }	
+    }
+    
+	return $top10;
 }

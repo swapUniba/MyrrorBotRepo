@@ -130,24 +130,11 @@ data presente in parameters e restituisce il meteo e la temperatura per
 fascia oraria
 
 */
-function getWeather($city,$parameters,$text,$email){ //Paramentro email aggiunto per sperimentazione
+function getWeather($city,$parameters,$text){
 
 if (isset($parameters['geo-city']) && $parameters['geo-city'] != "") {
   $city = $parameters['geo-city'];
 }
-
-
-//Commentare il blocco fino a 148 se si vuole il comportameto precendente
-//Da 142 a 148 aggiunte per sperimentazione
-/*
-if(isset($email)){ //Aggiunto per evitare problemi nella parte guest
-  $cittaUltimaLoc = citta($email);
-  if(isset( $cittaUltimaLoc )){
-    $city = $cittaUltimaLoc;
-    //print($city);
-  }
-}
-*/
 
 if(isset($parameters['date']) && $parameters['date'] != ""){
 $date = substr($parameters['date'],0,10);
